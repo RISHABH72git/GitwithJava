@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Git Repository</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+</head>
+<body class="bg-dark">
+<header>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Status</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/commit(path = ${path})}">Commits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/branch(path = ${path})}">Branchs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/author(path = ${path})}">Authors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/config(path = ${path})}">Config</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+</header>
+<br>
+<h3 class="text-center text-light" th:text="Status"></h3>
+<br>
+<h3 class="text-center text-light" th:text="${repoName}"></h3>
+<br>
+<div class="container mt-4 overflow-hidden">
+    <div class="row gy-5">
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Added
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="added : ${status.getAdded()}" th:text="${added}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Changed
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="change : ${status.getChanged()}" th:text="${change}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Removed
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="removed : ${status.getRemoved()}" th:text="${removed}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Missing
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="missing : ${status.getMissing()}" th:text="${missing}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Modified
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="modified : ${status.getModified()}" th:text="${modified}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Untracked
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="untracked : ${status.getUntracked()}"
+                        th:text="${untracked}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">UntrackedFolders
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="untrackedFolders : ${status.getUntrackedFolders()}"
+                        th:text="${untrackedFolders}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Conflicting
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="conflicting : ${status.getConflicting()}"
+                        th:text="${conflicting}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">IgnoredNotInIndex
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li class="dropdown-item" th:each="ignored : ${status.getIgnoredNotInIndex()}"
+                        th:text="${ignored}"></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

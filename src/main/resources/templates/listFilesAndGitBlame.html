@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Repository</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js"
+            integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
+            crossorigin="anonymous"></script>
+</head>
+<body class="bg-dark">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/status(path = ${path})}">Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/branch(path = ${path})}">Branchs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/author(path = ${path})}">Authors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/config(path = ${path})}">Config</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/commit(path = ${path})}">Commits</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<br>
+<h3 class="text-center text-light" th:text="${repoName}"></h3>
+<div class="text-center" th:if="${fileWithBlame != null}">
+    <a th:href="@{/blame(path = ${path}, fileName = ${fileName}, print=${true})}"><button type="button" class="btn btn-primary" >Print All Blame</button></a>
+</div>
+<br>
+
+<div class="container mt-4 overflow-hidden" th:if="${listPath != null}">
+    <div class="row gy-5">
+        <div class="col-6">
+            <div class="card p-3">
+                <figure class="p-3 mb-0">
+                    <blockquote class="blockquote">
+                        <div th:each="entry : ${listPath}">
+                            <ul id="myUL">
+                                <li>
+                                    <a th:href="@{/blame(path = ${path}, fileName = ${entry.toFile().getPath()})}"
+                                       th:text="${entry.getFileName()}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </blockquote>
+                </figure>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:if="${fileWithBlame != null}" class="card p-3">
+    <h4 class="text-center text-black" th:text="${blameFile}"></h4>
+    <div th:each="blame : ${fileWithBlame}">
+        <p class="text-sm-start text-black" th:text="${blame}"></p>
+    </div>
+</div>
+</body>
+</html>
