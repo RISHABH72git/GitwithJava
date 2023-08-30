@@ -1,17 +1,15 @@
 package com.jgit.gitwithjava;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
+import com.jgit.gitwithjava.service.GitHubRestApiService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.io.IOException;
-
 
 @SpringBootApplication
 public class GitwithJavaApplication {
 
-    public static void main(String[] args) throws IOException, GitAPIException {
+    public static void main(String[] args) throws Exception {
         SpringApplication.run(GitwithJavaApplication.class, args);
+        GitHubRestApiService gitHubRestApiService = new GitHubRestApiService();
     }
 
 }

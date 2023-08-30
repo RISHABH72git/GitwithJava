@@ -6,6 +6,7 @@ target/
 report/pages
 report/index.html
 .idea
+.apiToken
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

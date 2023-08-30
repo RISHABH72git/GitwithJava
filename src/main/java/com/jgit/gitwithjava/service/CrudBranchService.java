@@ -670,7 +670,7 @@ public class CrudBranchService {
     }
 
     private List<File> removeGitIgnoreFile(File rootDir) throws IOException {
-        List<String> removeFile = List.of("target", ".git", ".gitignore","node_modules","layers");
+        List<String> removeFile = List.of("target", ".git", ".gitignore", "node_modules", "layers");
         FilenameFilter filenameFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
