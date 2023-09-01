@@ -1,13 +1,14 @@
-package com.jgit.gitwithjava.service;
+package com.jgit.gitwithjava.githubApi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jgit.gitwithjava.githubProjection.CreateRepository;
-import com.jgit.gitwithjava.githubProjection.ListRepository;
-import com.jgit.gitwithjava.githubProjection.RepoData;
-import com.jgit.gitwithjava.githubProjection.commits.GetCommit;
+import com.jgit.gitwithjava.githubApi.model.CreateRepository;
+import com.jgit.gitwithjava.githubApi.model.ListRepository;
+import com.jgit.gitwithjava.githubApi.model.RepoData;
+import com.jgit.gitwithjava.githubApi.model.commits.GetCommit;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.util.Objects;
 
-@Log4j2
+@Log4j2 @Service
 public class GitHubRestApiService {
 
     public String getToken() {

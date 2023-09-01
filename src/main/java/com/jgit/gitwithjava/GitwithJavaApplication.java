@@ -1,6 +1,6 @@
 package com.jgit.gitwithjava;
 
-import com.jgit.gitwithjava.service.GitHubRestApiService;
+import com.jgit.gitwithjava.githubApi.service.GitHubRestApiService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

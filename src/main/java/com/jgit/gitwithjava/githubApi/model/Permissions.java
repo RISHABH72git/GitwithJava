@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.githubProjection;
+package com.jgit.gitwithjava.githubApi.model;
 
 class Permissions{
     public boolean admin;

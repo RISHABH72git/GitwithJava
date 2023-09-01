@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.githubProjection;
+package com.jgit.gitwithjava.githubApi.model;
 
 import lombok.Getter;
 import lombok.Setter;

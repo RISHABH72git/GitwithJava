@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.githubProjection.commits;
+package com.jgit.gitwithjava.githubApi.model.commits;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.ToString;
 import java.util.Date;
 
 @Getter @Setter @ToString
-public class Committer {
+public class Author{
     public String name;
     public String email;
     public Date date;
