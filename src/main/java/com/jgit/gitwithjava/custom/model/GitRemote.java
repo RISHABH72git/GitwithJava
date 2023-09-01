@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.gitCustom.model;
+package com.jgit.gitwithjava.custom.model;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import lombok.Getter;

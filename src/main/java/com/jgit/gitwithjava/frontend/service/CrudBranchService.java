@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.frontendGit.service;
+package com.jgit.gitwithjava.frontend.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import org.apache.tomcat.util.http.fileupload.FileUtils;

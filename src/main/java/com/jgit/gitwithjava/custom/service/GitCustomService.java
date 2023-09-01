@@ -1,14 +1,11 @@
-package com.jgit.gitwithjava.gitCustom.service;
+package com.jgit.gitwithjava.custom.service;
 
-import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.gitCustom.model.GitClone;
-import com.jgit.gitwithjava.gitCustom.model.GitCommit;
-import com.jgit.gitwithjava.gitCustom.model.GitRemote;
+import com.jgit.gitwithjava.custom.model.GitClone;
+import com.jgit.gitwithjava.custom.model.GitCommit;
+import com.jgit.gitwithjava.custom.model.GitRemote;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.URIish;

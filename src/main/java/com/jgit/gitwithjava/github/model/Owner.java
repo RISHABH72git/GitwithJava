@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.githubApi.model;
+package com.jgit.gitwithjava.github.model;
 
 public class Owner{
     public String login;

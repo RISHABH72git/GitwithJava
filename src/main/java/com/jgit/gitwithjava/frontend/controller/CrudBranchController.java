@@ -1,6 +1,6 @@
-package com.jgit.gitwithjava.frontendGit.controller;
+package com.jgit.gitwithjava.frontend.controller;
 
-import com.jgit.gitwithjava.frontendGit.service.CrudBranchService;
+import com.jgit.gitwithjava.frontend.service.CrudBranchService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,12 +1,12 @@
-package com.jgit.gitwithjava.githubApi.service;
+package com.jgit.gitwithjava.github.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.githubApi.model.CreateRepository;
-import com.jgit.gitwithjava.githubApi.model.ListRepository;
-import com.jgit.gitwithjava.githubApi.model.RepoData;
-import com.jgit.gitwithjava.githubApi.model.commits.GetCommit;
+import com.jgit.gitwithjava.github.model.CreateRepository;
+import com.jgit.gitwithjava.github.model.ListRepository;
+import com.jgit.gitwithjava.github.model.RepoData;
+import com.jgit.gitwithjava.github.model.commits.GetCommit;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
