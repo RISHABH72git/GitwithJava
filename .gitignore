@@ -7,6 +7,9 @@ report/pages
 report/index.html
 .idea
 .apiToken
+DefaultCredentials.java
+.gitUser
+.rootFolder
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

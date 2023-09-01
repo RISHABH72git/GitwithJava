@@ -1,5 +1,6 @@
 package com.jgit.gitwithjava.frontendGit.service;
 
+import com.jgit.gitwithjava.DefaultCredentials;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -47,7 +48,7 @@ public class CrudBranchService {
     }
 
     public Object gitCreateBranch(String dirName, String newBranchName) throws IOException {
-        Repository existingRepo = new FileRepositoryBuilder().setGitDir(new File("/home/" + dirName + "/.git")).build();
+        Repository existingRepo = new FileRepositoryBuilder().setGitDir(new File(dirName + "/.git")).build();
         Ref master = existingRepo.findRef("master");
         ObjectId masterTip = master.getObjectId();
         RefUpdate createBranch1 = existingRepo.updateRef("refs/heads/" + newBranchName);
@@ -57,7 +58,7 @@ public class CrudBranchService {
     }
 
     public String gitDeleteBranch(String dirName, String branchName) throws IOException {
-        Git git = Git.open(new File("/home/" + dirName));
+        Git git = Git.open(new File(dirName));
         RefUpdate deleteBranch1 = git.getRepository().updateRef("refs/heads/" + branchName);
         deleteBranch1.setForceUpdate(true);
         deleteBranch1.delete();
@@ -78,7 +79,7 @@ public class CrudBranchService {
             return allFileWithBranch;
         }
         Set<Path> filePath = new HashSet<>();
-        File directoryPath = new File(getRootFile());
+        File directoryPath = new File(DefaultCredentials.getRootFolder());
         //List of all files and directories
         File[] filesList = directoryPath.listFiles();
         for (File file : filesList) {
@@ -291,7 +292,7 @@ public class CrudBranchService {
 
     public void printsAllCommits(String dirName, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
         try (Git git = Git.open(new File(dirName))) {
-            File file = new File("/home/rishabh/Downloads/" + fileName);
+            File file = new File(DefaultCredentials.getRootFolder() + "Downloads/" + fileName);
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             LogCommand logCommand = git.log().all();
             long count = 1;
@@ -307,7 +308,7 @@ public class CrudBranchService {
 
     public void printAuthorsCommits(String dirName, String fileName, boolean timestamp, boolean message, boolean email, String emailAddress) throws IOException, GitAPIException {
         try (Git git = Git.open(new File(dirName))) {
-            File file = new File("/home/rishabh/Downloads/" + fileName);
+            File file = new File(DefaultCredentials.getRootFolder() + "Downloads/" + fileName);
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             LogCommand logCommand = git.log().all();
             long count = 1;
@@ -698,7 +699,7 @@ public class CrudBranchService {
         File file1;
         BufferedWriter writer = null;
         if (print) {
-            file1 = new File("/home/rishabh/Downloads/" + fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf(".")));
+            file1 = new File(DefaultCredentials.getRootFolder() + "Downloads/" + fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf(".")));
             writer = new BufferedWriter(new FileWriter(file1));
         }
         for (int i = 0; i < rawText.size(); i++) {

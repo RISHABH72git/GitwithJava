@@ -2,6 +2,7 @@ package com.jgit.gitwithjava.githubApi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.githubApi.model.CreateRepository;
 import com.jgit.gitwithjava.githubApi.model.ListRepository;
 import com.jgit.gitwithjava.githubApi.model.RepoData;
@@ -10,28 +11,15 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.Objects;
 
 @Log4j2 @Service
 public class GitHubRestApiService {
 
-    public String getToken() {
-        String key = "";
-        try {
-            key = Files.readString(new File(".apiToken").toPath());
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return key;
-    }
-
     private HttpHeaders getHttpHeadersWithToken() {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(getToken());
+        httpHeaders.setBearerAuth(DefaultCredentials.getToken());
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
     }
@@ -64,8 +52,8 @@ public class GitHubRestApiService {
         }
     }
 
-    public void deleteRepository(String owner, String repos) {
-        final String DELETE_REPOSITORY = "https://api.github.com/repos/" + owner + "/" + repos;
+    public void deleteRepository(String repos) {
+        final String DELETE_REPOSITORY = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repos;
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -77,8 +65,8 @@ public class GitHubRestApiService {
         }
     }
 
-    public CreateRepository getRepository(String owner, String repos) {
-        final String GET_REPOSITORY = "https://api.github.com/repos/" + owner + "/" + repos;
+    public CreateRepository getRepository(String repos) {
+        final String GET_REPOSITORY = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repos;
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -90,8 +78,8 @@ public class GitHubRestApiService {
         }
     }
 
-    public GetCommit[] getCommitsOfRepo(String owner, String repos){
-        final String GET_COMMITS = "https://api.github.com/repos/" + owner + "/" + repos+"/commits";
+    public GetCommit[] getCommitsOfRepo(String repos){
+        final String GET_COMMITS = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repos+"/commits";
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
