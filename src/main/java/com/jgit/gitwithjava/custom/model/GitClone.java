@@ -14,11 +14,18 @@ public class GitClone {
 
     private String filePath;
 
+    public GitClone(String remoteUrl, String filePath) {
+        this.remoteUrl = remoteUrl;
+        this.username = DefaultCredentials.getGitUsername();
+        this.password = DefaultCredentials.getToken();
+        this.filePath = DefaultCredentials.getRootFolder()+filePath;
+    }
+
     public GitClone(String remoteUrl, String username, String password, String filePath) {
         this.remoteUrl = remoteUrl;
         this.username = username;
         this.password = password;
-        this.filePath = filePath;
+        this.filePath = DefaultCredentials.getRootFolder()+filePath;
     }
 
     public GitClone() {
