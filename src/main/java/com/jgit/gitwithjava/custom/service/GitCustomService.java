@@ -20,6 +20,8 @@ import java.util.List;
 @Log4j2
 public class GitCustomService {
 
+    public GitCustomService() {
+    }
 
     public List<RemoteConfig> getGitRemoteList(Git git) throws GitAPIException {
         if (!git.remoteList().call().get(0).getName().equals("origin")) {
@@ -29,10 +31,8 @@ public class GitCustomService {
     }
 
     public Git gitFirstPush(Git git, GitRemote gitRemote) throws IOException, GitAPIException {
+        git.remoteRemove().call();
         git.remoteAdd().setName(gitRemote.getRemoteName()).setUri(new URIish(new URL(gitRemote.getRemoteUrl()))).call();
-        //Rename the branch to 'main'
-        git.branchRename().setNewName(gitRemote.getRemoteBranchName()).call();
-        // Push the changes to the 'main' branch
         git.push().setRemote(gitRemote.getRemoteName()).setRefSpecs(new RefSpec("refs/heads/" + gitRemote.getRemoteBranchName() + ":refs/heads/" + gitRemote.getRemoteBranchName())).setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitRemote.getUsername(), gitRemote.getPassword())).call();
         log.info("First push to origin {}", gitRemote.getRemoteUrl());
         return git;
@@ -41,11 +41,12 @@ public class GitCustomService {
     public Git gitPush(Git git) throws IOException, GitAPIException {
         List<RemoteConfig> list = getGitRemoteList(git);
         if (list.size() == 1) {
+            System.out.println(list.get(0).getPushURIs());
             // Push the changes to the remote branch
-            GitRemote gitRemote = new GitRemote(list.get(0).getName(),DefaultCredentials.getGitUsername(),DefaultCredentials.getToken());
+            GitRemote gitRemote = new GitRemote(list.get(0).getName(), DefaultCredentials.getGitUsername(), DefaultCredentials.getToken());
             git.push().setRemote(gitRemote.getRemoteName()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitRemote.getUsername(), gitRemote.getPassword())).call();
             log.info("push to origin");
-        }else {
+        } else {
             log.info("remote size multiple found");
         }
         return git;
@@ -78,7 +79,7 @@ public class GitCustomService {
     }
 
     public Git gitPull(Git git) throws GitAPIException {
-        PullCommand pullCommand = git.pull().setContentMergeStrategy(ContentMergeStrategy.CONFLICT).setRemote(git.remoteList().call().get(0).getName()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(),DefaultCredentials.getToken()));
+        PullCommand pullCommand = git.pull().setContentMergeStrategy(ContentMergeStrategy.CONFLICT).setRemote(git.remoteList().call().get(0).getName()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken()));
         PullResult pullResult = pullCommand.call();
         MergeResult mergeResult = pullResult.getMergeResult();
         System.out.println(mergeResult.getMergeStatus().isSuccessful());

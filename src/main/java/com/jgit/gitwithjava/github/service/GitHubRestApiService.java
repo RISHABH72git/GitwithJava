@@ -11,7 +11,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Log4j2 @Service
@@ -88,6 +91,15 @@ public class GitHubRestApiService {
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void listAllRepositoryAndDeleteRepository() throws Exception {
+        ListRepository [] allRepository = listAllRepository();
+        List<String> allReposName = new ArrayList<>();
+        for (ListRepository listRepository : allRepository){
+            deleteRepository(listRepository.getName());
+            log.warn("{} is Deleted from Github",listRepository.getName());
         }
     }
 }

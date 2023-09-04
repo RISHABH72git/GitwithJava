@@ -29,4 +29,12 @@ public class GitRemote {
         this.username = username;
         this.password = password;
     }
+
+    public GitRemote(String remoteName, String remoteBranchName, String remoteUrl, String username, String password) {
+        this.remoteName = remoteName;
+        this.remoteBranchName = remoteBranchName;
+        this.remoteUrl = remoteUrl;
+        this.username = username;
+        this.password = password;
+    }
 }
