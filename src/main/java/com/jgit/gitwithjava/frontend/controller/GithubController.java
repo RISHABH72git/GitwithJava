@@ -1,18 +1,18 @@
 package com.jgit.gitwithjava.frontend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
+import com.jgit.gitwithjava.frontend.model.RepoModel;
+import com.jgit.gitwithjava.github.model.RepoData;
 import com.jgit.gitwithjava.github.service.GitHubRestApiService;
-import org.apache.logging.log4j.util.Strings;
-import org.json.simple.JSONObject;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Objects;
+import java.io.IOException;
 
 @Controller
 public class GithubController {
@@ -22,18 +22,26 @@ public class GithubController {
 
     @GetMapping("/githubRepositories")
     public String githubRepositories(Model model) throws Exception {
-        model.addAttribute("listAllRepository",gitHubRestApiService.listAllRepository());
+        model.addAttribute("listAllRepository", gitHubRestApiService.listAllRepository());
         return "githubRepo";
     }
 
     @GetMapping("/githubForm")
-    public String githubForm(){
+    public String githubForm(Model model) {
+        model.addAttribute("repoModel", new RepoModel());
         return "githubForm";
     }
 
     @PostMapping("/createGitHubRepo")
-    public String createGitHubRepo(Model model,Object repoModel) throws Exception {
-        //model.addAttribute("listAllRepository",gitHubRestApiService.listAllRepository());
+    public String createGitHubRepo(Model model,RepoModel repoModel) throws Exception {
+        gitHubRestApiService.createRepository(new RepoData(repoModel.getRepoName(), repoModel.getDescription(), repoModel.isAccess()));
+        model.addAttribute("listAllRepository", gitHubRestApiService.listAllRepository());
         return "githubRepo";
+    }
+
+    @PostMapping("/deleteGitHubRepo")
+    public RedirectView deleteGitHubRepo(@RequestParam String repoName) throws IOException, GitAPIException {
+        gitHubRestApiService.deleteRepository(repoName);
+        return new RedirectView("/githubRepositories");
     }
 }

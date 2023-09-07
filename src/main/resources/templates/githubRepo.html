@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>GitHub</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-          crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>GitHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js"
+            integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
+            crossorigin="anonymous"></script>
 </head>
 <body class="bg-dark">
 <header>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/githubRepositories}" >Repositories</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <!--<li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">Your Local Home</a>
-          </li>-->
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" th:href="@{/githubForm}">Create Repository</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/githubRepositories}">Repositories</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!--<li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/">Your Local Home</a>
+                    </li>-->
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/githubForm}">Create Repository</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
 </header>
 <br>
@@ -37,34 +40,59 @@
 <br>
 
 <div class="container mt-4 overflow-hidden">
-  <div class="row gy-5">
-    <div class="col-6" th:each="repos : ${listAllRepository}">
-      <div class="card p-3">
-        <figure class="p-3 mb-0">
-          <blockquote class="blockquote">
-            <div class="text-center">
-              <p th:text="${repos.name}"></p>
-              <ul>
-                <li>
-                  <p th:text="${repos.commits_url}">commitsUrl</p>
-                  <p th:text="${repos.pulls_url}">pull url</p>
-                  <p th:text="${repos.git_url}">git url</p>
-                  <p th:text="${repos.clone_url}">clone url</p>
-                  <p th:text="${repos.url}">url</p>
-                </li>
-              </ul>
-              <!--<a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
-              <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>
-              <a th:href="@{/author(path = ${entry.key})}"><button type="button" class="btn btn-secondary">Authors</button></a>
-              <a th:href="@{/status(path = ${entry.key})}"><button type="button" class="btn btn-danger">Status</button></a>
-              <a th:href="@{/listFiles(path = ${entry.key})}"><button type="button" class="btn btn-warning">Blame</button></a>-->
+    <div class="row gy-5">
+        <div class="col-6" th:each="repos : ${listAllRepository}">
+            <div class="card p-3">
+                <figure class="p-3 mb-0">
+                    <blockquote class="blockquote">
+                        <div class="text-center">
+                            <p th:text="${repos.name}"></p>
+                            <ul>
+                                <li>
+                                    <p th:text="${repos.commits_url}">commitsUrl</p>
+                                    <p th:text="${repos.pulls_url}">pull url</p>
+                                    <p th:text="${repos.git_url}">git url</p>
+                                    <p th:text="${repos.clone_url}">clone url</p>
+                                    <p th:text="${repos.url}">url</p>
+                                </li>
+                            </ul>
+                            <!--<a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
+                            <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>
+                            <a th:href="@{/author(path = ${entry.key})}"><button type="button" class="btn btn-secondary">Authors</button></a>
+                            <a th:href="@{/status(path = ${entry.key})}"><button type="button" class="btn btn-danger">Status</button></a>
+                            <a th:href="@{/listFiles(path = ${entry.key})}"><button type="button" class="btn btn-warning">Blame</button></a>-->
+                            <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
+                        </div>
+                    </blockquote>
+                </figure>
             </div>
-          </blockquote>
-        </figure>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
-
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enter Repository Name For Deletion</h5>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/deleteGitHubRepo(path = ${repoName})}" method="post">
+                    <div class="form-group">
+                        <label for="nameInput">File:</label>
+                        <input type="text" class="form-control" id="nameInput" name="repoName" th:value="${repoName}"
+                               required>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Confirm Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function showModal() {
+        $('#myModal').modal('show');
+    }
+</script>
 </body>
 </html>

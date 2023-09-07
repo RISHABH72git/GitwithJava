@@ -8,7 +8,6 @@
 <body>
 
 <header>
-
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">My Git Repository</a>
@@ -35,7 +34,7 @@
   <form th:action="@{/createGitHubRepo}" th:method="post" th:object="${repoModel}">
     <div class="form-group">
       <label >Repository Name</label>
-      <input type="text" class="form-control" th:field="*{repo}" placeholder="Enter repository name">
+      <input type="text" class="form-control" th:field="*{repoName}" placeholder="Enter repository name">
     </div>
     <div class="form-group">
       <label> Description</label>
@@ -44,8 +43,8 @@
     <div class="form-group">
       <label>Access Level</label>
       <select class="form-control" th:field="*{access}">
-        <option>Public</option>
-        <option>Private</option>
+        <option th:value="false">Public</option>
+        <option th:value="true">Private</option>
       </select>
     </div>
     <br>
