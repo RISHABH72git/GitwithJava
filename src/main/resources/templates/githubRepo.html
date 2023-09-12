@@ -47,16 +47,9 @@
                     <blockquote class="blockquote">
                         <div class="text-center">
                             <p th:text="${repos.name}"></p>
-                            <ul>
-                                <li>
-                                    <p th:text="${repos.commits_url}">commitsUrl</p>
-                                    <p th:text="${repos.pulls_url}">pull url</p>
-                                    <p th:text="${repos.git_url}">git url</p>
-                                    <p th:text="${repos.clone_url}">clone url</p>
-                                    <p th:text="${repos.url}">url</p>
-                                    <p th:text="${repos.branches_url}">url</p>
-                                </li>
-                            </ul>
+                            <a th:href="@{/githubBranchesByRepo(repoName = ${repos.name})}"><button type="button" class="btn btn-primary">Branches</button></a>
+                            <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url})}"><button type="button" class="btn btn-danger">Clone</button></a>
+                            <a th:href="@{/githubAllCommits(repoName = ${repos.name})}"><button type="button" class="btn btn-success">Commits</button></a>
                             <!--<a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
                             <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>
                             <a th:href="@{/author(path = ${entry.key})}"><button type="button" class="btn btn-secondary">Authors</button></a>

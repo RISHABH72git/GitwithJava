@@ -83,6 +83,11 @@
     </div>
     <br>
     <div class="row gy-5">
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search commits...">
+            </div>
+        </div>
         <div class="col-6" th:each="commit : ${AllCommits}">
             <div class="card p-3">
                 <figure class="p-3 mb-0">
@@ -142,6 +147,24 @@
     function showModal() {
         $('#myModal').modal('show');
     }
+
+    function searchRepositories() {
+        let input, filter, cards, card, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        console.log(filter)
+        cards = document.getElementsByClassName("col-6"); // Adjust this class selector to match your repository card class
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            txtValue = card.textContent || card.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        }
+    }
+    document.getElementById("searchInput").addEventListener("input", searchRepositories);
 </script>
 </body>
 </html>

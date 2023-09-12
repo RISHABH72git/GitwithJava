@@ -40,20 +40,34 @@
 <br>
 <h3 class="text-center text-light">Your Local Repositories</h3>
 <br>
-
 <div class="container mt-4 overflow-hidden">
     <div class="row gy-5">
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search repositories...">
+            </div>
+        </div>
         <div class="col-6" th:each="entry : ${gitFileMap}">
             <div class="card p-3">
                 <figure class="p-3 mb-0">
                     <blockquote class="blockquote">
                         <div class="text-center">
                             <p th:text="${entry.value}"></p>
-                            <a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
-                            <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>
-                            <a th:href="@{/author(path = ${entry.key})}"><button type="button" class="btn btn-secondary">Authors</button></a>
-                            <a th:href="@{/status(path = ${entry.key})}"><button type="button" class="btn btn-danger">Status</button></a>
-                            <a th:href="@{/listFiles(path = ${entry.key})}"><button type="button" class="btn btn-warning">Blame</button></a>
+                            <a th:href="@{/branch(path = ${entry.key})}">
+                                <button type="button" class="btn btn-primary">Branchs</button>
+                            </a>
+                            <a th:href="@{/commit(path = ${entry.key})}">
+                                <button type="button" class="btn btn-success">Commits</button>
+                            </a>
+                            <a th:href="@{/author(path = ${entry.key})}">
+                                <button type="button" class="btn btn-secondary">Authors</button>
+                            </a>
+                            <a th:href="@{/status(path = ${entry.key})}">
+                                <button type="button" class="btn btn-danger">Status</button>
+                            </a>
+                            <a th:href="@{/listFiles(path = ${entry.key})}">
+                                <button type="button" class="btn btn-warning">Blame</button>
+                            </a>
                         </div>
                     </blockquote>
                 </figure>
@@ -61,6 +75,25 @@
         </div>
     </div>
 </div>
+<script>
+    function searchRepositories() {
+        let input, filter, cards, card, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        console.log(filter)
+        cards = document.getElementsByClassName("col-6"); // Adjust this class selector to match your repository card class
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            txtValue = card.textContent || card.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        }
+    }
 
+    document.getElementById("searchInput").addEventListener("input", searchRepositories);
+</script>
 </body>
 </html>

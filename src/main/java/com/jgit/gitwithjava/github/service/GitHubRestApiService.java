@@ -94,7 +94,7 @@ public class GitHubRestApiService {
         }
     }
 
-    public void listAllRepositoryAndDeleteRepository() throws Exception {
+    public void deleteAllRepository() throws Exception {
         ListRepository [] allRepository = listAllRepository();
         for (ListRepository listRepository : allRepository){
             deleteRepository(listRepository.getName());

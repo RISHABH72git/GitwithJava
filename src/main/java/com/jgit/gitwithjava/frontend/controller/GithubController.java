@@ -2,6 +2,7 @@ package com.jgit.gitwithjava.frontend.controller;
 
 import com.jgit.gitwithjava.frontend.model.RepoModel;
 import com.jgit.gitwithjava.github.model.RepoData;
+import com.jgit.gitwithjava.github.model.commits.GetCommit;
 import com.jgit.gitwithjava.github.service.GitHubRestApiService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,18 @@ public class GithubController {
     public RedirectView deleteGitHubRepo(@RequestParam String repoName) throws IOException, GitAPIException {
         gitHubRestApiService.deleteRepository(repoName);
         return new RedirectView("/githubRepositories");
+    }
+
+    @GetMapping("/githubBranchesByRepo")
+    public String githubForm(Model model, @RequestParam String repoName) {
+        model.addAttribute("branches", gitHubRestApiService.getAllBranchesByRepo(repoName));
+        return "githubBranches";
+    }
+
+    @GetMapping("/githubAllCommits")
+    public String githubAllCommits(Model model, @RequestParam String repoName){
+        model.addAttribute("repoName",repoName);
+        model.addAttribute("AllCommits", gitHubRestApiService.getCommitsOfRepo(repoName));
+        return "githubCommits";
     }
 }
