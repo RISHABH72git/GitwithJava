@@ -78,13 +78,14 @@ public class GitCustomService {
         return git;
     }
 
-    public Git gitPull(Git git) throws GitAPIException {
+    public void gitPull(Git git) throws GitAPIException {
         PullCommand pullCommand = git.pull().setContentMergeStrategy(ContentMergeStrategy.CONFLICT).setRemote(git.remoteList().call().get(0).getName()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken()));
         PullResult pullResult = pullCommand.call();
         MergeResult mergeResult = pullResult.getMergeResult();
-        System.out.println(mergeResult.getMergeStatus().isSuccessful());
+        log.info("MergeStatus is Successful {}",mergeResult.getMergeStatus().isSuccessful());
         FetchResult fetchResult = pullResult.getFetchResult();
-        System.out.println(fetchResult.getMessages());
-        return git;
+        log.info("Fetching from {}",fetchResult.getURI());
+        log.info("FetchResult Message : {}",fetchResult.getMessages());
+        log.info(fetchResult.getPeerUserAgent());
     }
 }

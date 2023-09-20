@@ -48,7 +48,9 @@ public class GithubController {
 
     @GetMapping("/githubBranchesByRepo")
     public String githubForm(Model model, @RequestParam String repoName) {
-        model.addAttribute("branches", gitHubRestApiService.getAllBranchesByRepo(repoName));
+        model.addAttribute("path","path");
+        model.addAttribute("repoName", repoName);
+        model.addAttribute("AllBranch", gitHubRestApiService.getAllBranchesByRepo(repoName));
         return "githubBranches";
     }
 
