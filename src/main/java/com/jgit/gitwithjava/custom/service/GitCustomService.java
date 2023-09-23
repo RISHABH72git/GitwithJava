@@ -41,11 +41,10 @@ public class GitCustomService {
     public Git gitPush(Git git) throws IOException, GitAPIException {
         List<RemoteConfig> list = getGitRemoteList(git);
         if (list.size() == 1) {
-            System.out.println(list.get(0).getPushURIs());
             // Push the changes to the remote branch
             GitRemote gitRemote = new GitRemote(list.get(0).getName(), DefaultCredentials.getGitUsername(), DefaultCredentials.getToken());
             git.push().setRemote(gitRemote.getRemoteName()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitRemote.getUsername(), gitRemote.getPassword())).call();
-            log.info("push to origin");
+            log.info("push to {} {}",list.get(0).getName(), list.get(0).getURIs());
         } else {
             log.info("remote size multiple found");
         }

@@ -53,7 +53,7 @@
                         <div class="text-center">
                             <p th:text="${repos.name}"></p>
                             <a th:href="@{/githubBranchesByRepo(repoName = ${repos.name})}"><button type="button" class="btn btn-primary">Branches</button></a>
-                            <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url})}"><button type="button" class="btn btn-danger">Clone</button></a>
+                            <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}"><button type="button" class="btn btn-danger">Clone</button></a>
                             <a th:href="@{/githubAllCommits(repoName = ${repos.name})}"><button type="button" class="btn btn-success">Commits</button></a>
                             <!--<a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
                             <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>

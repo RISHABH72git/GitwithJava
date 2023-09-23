@@ -718,4 +718,9 @@ public class CrudBranchService {
         return rawTextList;
     }
 
+    public void cloneRepository(String remoteUrl, String repoName) throws GitAPIException {
+        File localPath = new File(DefaultCredentials.getRootFolder() + "cloneRepository/" + repoName);
+        Git.cloneRepository().setURI(remoteUrl).setDirectory(localPath.getAbsoluteFile()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken())).call();
+    }
+
 }

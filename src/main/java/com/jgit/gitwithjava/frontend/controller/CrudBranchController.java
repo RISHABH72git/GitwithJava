@@ -145,4 +145,10 @@ public class CrudBranchController {
         return "listFilesAndGitBlame";
     }
 
+    @GetMapping("/cloneRepository")
+    public RedirectView cloneRepository(@RequestParam String cloneUrl, String repoName) throws GitAPIException {
+        crudBranchService.cloneRepository(cloneUrl, repoName);
+        return new RedirectView("/");
+    }
+
 }

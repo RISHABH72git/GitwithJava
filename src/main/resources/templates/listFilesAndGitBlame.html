@@ -59,7 +59,7 @@
                             <ul id="myUL">
                                 <li>
                                     <a th:href="@{/blame(path = ${path}, fileName = ${entry.toFile().getPath()})}"
-                                       th:text="${entry.getFileName()}"></a>
+                                       th:text="${entry.getFileName()}"></a> <p th:text="${#dates.format(entry.toFile().lastModified(), 'yyyy-MM-dd HH:mm:ss')}"></p>
                                 </li>
                             </ul>
                         </div>
