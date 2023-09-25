@@ -3,6 +3,7 @@ package com.jgit.gitwithjava.github.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jgit.gitwithjava.DefaultCredentials;
+import com.jgit.gitwithjava.github.model.Users;
 import com.jgit.gitwithjava.github.model.branch.Branch;
 import com.jgit.gitwithjava.github.model.branches.Branches;
 import com.jgit.gitwithjava.github.model.CreateRepository;
@@ -25,6 +26,19 @@ public class GitHubRestApiService {
         httpHeaders.setBearerAuth(DefaultCredentials.getToken());
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
+    }
+
+    public Users getUsers(){
+        final String GET_USERS = "https://api.github.com/users/"+DefaultCredentials.getGitUsername();
+        HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Users> response = restTemplate.exchange(GET_USERS, HttpMethod.GET, entity, Users.class);
+            return Objects.requireNonNull(response.getBody());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public CreateRepository createRepository(RepoData repoData) throws JsonProcessingException {

@@ -2,7 +2,6 @@ package com.jgit.gitwithjava.frontend.controller;
 
 import com.jgit.gitwithjava.frontend.model.RepoModel;
 import com.jgit.gitwithjava.github.model.RepoData;
-import com.jgit.gitwithjava.github.model.commits.GetCommit;
 import com.jgit.gitwithjava.github.service.GitHubRestApiService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ public class GithubController {
 
     @GetMapping("/githubRepositories")
     public String githubRepositories(Model model) throws Exception {
+        model.addAttribute("userDetails", gitHubRestApiService.getUsers());
         model.addAttribute("listAllRepository", gitHubRestApiService.listAllRepository());
         return "githubRepo";
     }
@@ -34,7 +34,7 @@ public class GithubController {
     }
 
     @PostMapping("/createGitHubRepo")
-    public String createGitHubRepo(Model model,RepoModel repoModel) throws Exception {
+    public String createGitHubRepo(Model model, RepoModel repoModel) throws Exception {
         gitHubRestApiService.createRepository(new RepoData(repoModel.getRepoName(), repoModel.getDescription(), repoModel.isAccess()));
         model.addAttribute("listAllRepository", gitHubRestApiService.listAllRepository());
         return "githubRepo";
@@ -48,15 +48,15 @@ public class GithubController {
 
     @GetMapping("/githubBranchesByRepo")
     public String githubForm(Model model, @RequestParam String repoName) {
-        model.addAttribute("path","path");
+        model.addAttribute("path", "path");
         model.addAttribute("repoName", repoName);
         model.addAttribute("AllBranch", gitHubRestApiService.getAllBranchesByRepo(repoName));
         return "githubBranches";
     }
 
     @GetMapping("/githubAllCommits")
-    public String githubAllCommits(Model model, @RequestParam String repoName){
-        model.addAttribute("repoName",repoName);
+    public String githubAllCommits(Model model, @RequestParam String repoName) {
+        model.addAttribute("repoName", repoName);
         model.addAttribute("AllCommits", gitHubRestApiService.getCommitsOfRepo(repoName));
         return "githubCommits";
     }

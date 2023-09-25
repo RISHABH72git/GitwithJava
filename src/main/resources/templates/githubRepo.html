@@ -16,7 +16,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/githubRepositories}">Repositories</a>
+            <a class="navbar-brand" th:href="@{/githubRepositories}">GitHub</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -29,6 +29,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="@{/githubForm}">Create Repository</a>
                     </li>
+                    <!-- <li class="nav-item">
+                         <p class="nav-link active" aria-current="page" th:text="${userDetails.getLogin()}"></p>
+                     </li>-->
                 </ul>
             </div>
         </div>
@@ -36,8 +39,26 @@
 
 </header>
 <br>
-<h3 class="text-center text-light">Your GitHub Repositories</h3>
-<br>
+<h3 class="text-center text-light" th:text="${userDetails.getLogin()}"></h3>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <ul class="list-unstyled">
+                <li class="text-white">Public Repositories: <span th:text="${userDetails.getPublic_repos()}"></span>
+                </li>
+                <li class="text-white">Total Repositories: <span th:text="${listAllRepository.length}"></span></li>
+                <!--                <li>Private Repositories: <span th:text="${userDetails.total_private_repos}"></span></li>-->
+                <li class="text-white">Followers: <span th:text="${userDetails.getFollowers()}"></span></li>
+            </ul>
+        </div>
+        <div class="col-6 col-md-4">
+            <ul class="list-unstyled">
+                <li class="text-white">Created at : <span th:text="${userDetails.getCreated_at()}"></span></li>
+                <li class="text-white">Updated at: <span th:text="${userDetails.getUpdated_at()}"></span></li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <div class="container mt-4 overflow-hidden">
     <div class="row gy-5">
@@ -46,15 +67,21 @@
                 <input type="text" id="searchInput" class="form-control" placeholder="Search commits...">
             </div>
         </div>
-        <div class="col-6" th:each="repos : ${listAllRepository}">
+        <div class="col-6" id="forsearch" th:each="repos : ${listAllRepository}">
             <div class="card p-3">
                 <figure class="p-3 mb-0">
                     <blockquote class="blockquote">
                         <div class="text-center">
                             <p th:text="${repos.name}"></p>
-                            <a th:href="@{/githubBranchesByRepo(repoName = ${repos.name})}"><button type="button" class="btn btn-primary">Branches</button></a>
-                            <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}"><button type="button" class="btn btn-danger">Clone</button></a>
-                            <a th:href="@{/githubAllCommits(repoName = ${repos.name})}"><button type="button" class="btn btn-success">Commits</button></a>
+                            <a th:href="@{/githubBranchesByRepo(repoName = ${repos.name})}">
+                                <button type="button" class="btn btn-primary">Branches</button>
+                            </a>
+                            <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}">
+                                <button type="button" class="btn btn-danger">Clone</button>
+                            </a>
+                            <a th:href="@{/githubAllCommits(repoName = ${repos.name})}">
+                                <button type="button" class="btn btn-success">Commits</button>
+                            </a>
                             <!--<a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
                             <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>
                             <a th:href="@{/author(path = ${entry.key})}"><button type="button" class="btn btn-secondary">Authors</button></a>
@@ -92,12 +119,13 @@
     function showModal() {
         $('#myModal').modal('show');
     }
+
     function searchRepositories() {
         let input, filter, cards, card, i, txtValue;
         input = document.getElementById("searchInput");
         filter = input.value.toUpperCase();
         console.log(filter)
-        cards = document.getElementsByClassName("col-6"); // Adjust this class selector to match your repository card class
+        cards = document.getElementsByClassName("card p-3");// Adjust this class selector to match your repository card class
         for (i = 0; i < cards.length; i++) {
             card = cards[i];
             txtValue = card.textContent || card.innerText;
