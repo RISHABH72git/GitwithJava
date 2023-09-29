@@ -44,15 +44,14 @@
     <div class="row">
         <div class="col-md-8">
             <ul class="list-unstyled">
-                <li class="text-white">Public Repositories: <span th:text="${userDetails.getPublic_repos()}"></span>
-                </li>
+                <li class="text-white">Public Repositories: <span th:text="${counts.get(false).size()}"></span></li>
                 <li class="text-white">Total Repositories: <span th:text="${listAllRepository.length}"></span></li>
-                <!--                <li>Private Repositories: <span th:text="${userDetails.total_private_repos}"></span></li>-->
                 <li class="text-white">Followers: <span th:text="${userDetails.getFollowers()}"></span></li>
             </ul>
         </div>
         <div class="col-6 col-md-4">
             <ul class="list-unstyled">
+                <li class="text-white">Private Repositories : <span th:text="${counts.get(true).size()}"></span></li>
                 <li class="text-white">Created at : <span th:text="${userDetails.getCreated_at()}"></span></li>
                 <li class="text-white">Updated at: <span th:text="${userDetails.getUpdated_at()}"></span></li>
             </ul>
@@ -72,7 +71,8 @@
                 <figure class="p-3 mb-0">
                     <blockquote class="blockquote">
                         <div class="text-center">
-                            <p th:text="${repos.name}"></p>
+                            <p th:if="${repos.myprivate}" class="text-danger" th:text="${repos.name}"></p>
+                            <p th:unless="${repos.myprivate}" th:text="${repos.name}"></p>
                             <a th:href="@{/githubBranchesByRepo(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-primary">Branches</button>
                             </a>
@@ -82,12 +82,13 @@
                             <a th:href="@{/githubAllCommits(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-success">Commits</button>
                             </a>
-                            <!--<a th:href="@{/branch(path = ${entry.key})}"><button type="button" class="btn btn-primary">Branchs</button></a>
-                            <a th:href="@{/commit(path = ${entry.key})}"><button type="button" class="btn btn-success">Commits</button></a>
-                            <a th:href="@{/author(path = ${entry.key})}"><button type="button" class="btn btn-secondary">Authors</button></a>
-                            <a th:href="@{/status(path = ${entry.key})}"><button type="button" class="btn btn-danger">Status</button></a>
-                            <a th:href="@{/listFiles(path = ${entry.key})}"><button type="button" class="btn btn-warning">Blame</button></a>-->
-                            <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
+                            <a th:href="@{/githubAllContributors(repoName = ${repos.name})}">
+                                <button type="button" class="btn btn-success">Contributors</button>
+                            </a>
+                            <a th:href="@{/githubAllActivities(repoName = ${repos.name})}">
+                                <button type="button" class="btn btn-success">Activities</button>
+                            </a>
+                              <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
                         </div>
                     </blockquote>
                 </figure>

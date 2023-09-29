@@ -1,6 +1,7 @@
 package com.jgit.gitwithjava.frontend.controller;
 
 import com.jgit.gitwithjava.frontend.model.RepoModel;
+import com.jgit.gitwithjava.github.model.ListRepository;
 import com.jgit.gitwithjava.github.model.RepoData;
 import com.jgit.gitwithjava.github.service.GitHubRestApiService;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -22,8 +23,10 @@ public class GithubController {
 
     @GetMapping("/githubRepositories")
     public String githubRepositories(Model model) throws Exception {
+        ListRepository[] allRepos = gitHubRestApiService.listAllRepository();
         model.addAttribute("userDetails", gitHubRestApiService.getUsers());
-        model.addAttribute("listAllRepository", gitHubRestApiService.listAllRepository());
+        model.addAttribute("counts", gitHubRestApiService.getCountOfRepos(allRepos));
+        model.addAttribute("listAllRepository", allRepos);
         return "githubRepo";
     }
 
@@ -59,5 +62,19 @@ public class GithubController {
         model.addAttribute("repoName", repoName);
         model.addAttribute("AllCommits", gitHubRestApiService.getCommitsOfRepo(repoName));
         return "githubCommits";
+    }
+
+    @GetMapping("/githubAllContributors")
+    public String githubAllContributors(Model model, @RequestParam String repoName){
+        model.addAttribute("repoName",repoName);
+        model.addAttribute("allContributors", gitHubRestApiService.getReposContributions(repoName));
+        return "githubContributors";
+    }
+
+    @GetMapping("/githubAllActivities")
+    public String githubAllActivities(Model model, @RequestParam String repoName){
+        model.addAttribute("repoName",repoName);
+        model.addAttribute("allActivities", gitHubRestApiService.getReposActivity(repoName));
+        return "githubActivities";
     }
 }

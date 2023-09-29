@@ -3,12 +3,9 @@ package com.jgit.gitwithjava.github.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.github.model.Users;
+import com.jgit.gitwithjava.github.model.*;
 import com.jgit.gitwithjava.github.model.branch.Branch;
 import com.jgit.gitwithjava.github.model.branches.Branches;
-import com.jgit.gitwithjava.github.model.CreateRepository;
-import com.jgit.gitwithjava.github.model.ListRepository;
-import com.jgit.gitwithjava.github.model.RepoData;
 import com.jgit.gitwithjava.github.model.commits.GetCommit;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
@@ -16,9 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-@Log4j2 @Service
+@Log4j2
+@Service
 public class GitHubRestApiService {
 
     private HttpHeaders getHttpHeadersWithToken() {
@@ -28,8 +30,8 @@ public class GitHubRestApiService {
         return httpHeaders;
     }
 
-    public Users getUsers(){
-        final String GET_USERS = "https://api.github.com/users/"+DefaultCredentials.getGitUsername();
+    public Users getUsers() {
+        final String GET_USERS = "https://api.github.com/users/" + DefaultCredentials.getGitUsername();
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -95,8 +97,8 @@ public class GitHubRestApiService {
         }
     }
 
-    public GetCommit[] getCommitsOfRepo(String repos){
-        final String GET_COMMITS = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repos+"/commits";
+    public GetCommit[] getCommitsOfRepo(String repos) {
+        final String GET_COMMITS = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repos + "/commits";
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -109,15 +111,15 @@ public class GitHubRestApiService {
     }
 
     public void deleteAllRepository() throws Exception {
-        ListRepository [] allRepository = listAllRepository();
-        for (ListRepository listRepository : allRepository){
+        ListRepository[] allRepository = listAllRepository();
+        for (ListRepository listRepository : allRepository) {
             deleteRepository(listRepository.getName());
-            log.warn("{} is Deleted from Github",listRepository.getName());
+            log.warn("{} is Deleted from Github", listRepository.getName());
         }
     }
 
-    public Branches[] getAllBranchesByRepo(String repoName){
-        String GET_LIST_BRANCH = "https://api.github.com/repos/"+DefaultCredentials.getGitUsername()+"/"+repoName+"/branches";
+    public Branches[] getAllBranchesByRepo(String repoName) {
+        String GET_LIST_BRANCH = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName + "/branches";
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -129,8 +131,8 @@ public class GitHubRestApiService {
         }
     }
 
-    public Branch getBranchByName(String repoName, String branchName){
-        String GET_BRANCH = "https://api.github.com/repos/"+DefaultCredentials.getGitUsername()+"/"+repoName+"/branches/"+branchName;
+    public Branch getBranchByName(String repoName, String branchName) {
+        String GET_BRANCH = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName + "/branches/" + branchName;
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -142,10 +144,10 @@ public class GitHubRestApiService {
         }
     }
 
-    public String renameBranchByRepoName(String repoName, String oldBranchName, String newBranchName){
-        String GET_BRANCH = "https://api.github.com/repos/"+DefaultCredentials.getGitUsername()+"/"+repoName+"/branches/"+oldBranchName+"/rename";
+    public String renameBranchByRepoName(String repoName, String oldBranchName, String newBranchName) {
+        String GET_BRANCH = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName + "/branches/" + oldBranchName + "/rename";
         String jsonPayload = "{\"new_name\": " + newBranchName + "}";
-        HttpEntity<String> entity = new HttpEntity<>(jsonPayload,getHttpHeadersWithToken());
+        HttpEntity<String> entity = new HttpEntity<>(jsonPayload, getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(URI.create(GET_BRANCH), HttpMethod.GET, entity, String.class);
@@ -154,6 +156,36 @@ public class GitHubRestApiService {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public Contributor[] getReposContributions(String repoName) {
+        String GET_CONTRIBUTOR = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName + "/contributors";
+        HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Contributor[]> response = restTemplate.exchange(URI.create(GET_CONTRIBUTOR), HttpMethod.GET, entity, Contributor[].class);
+            return Objects.requireNonNull(response.getBody());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public Activity[] getReposActivity(String repoName){
+        String GET_CONTRIBUTOR = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName + "/activity";
+        HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Activity[]> response = restTemplate.exchange(URI.create(GET_CONTRIBUTOR), HttpMethod.GET, entity, Activity[].class);
+            return Objects.requireNonNull(response.getBody());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public Map<Boolean, List<Boolean>> getCountOfRepos(ListRepository[] listRepositories) {
+        return Arrays.stream(listRepositories).map(ListRepository::isMyprivate).collect(Collectors.groupingBy(Boolean::booleanValue));
     }
 
 }

@@ -2,7 +2,7 @@ package com.jgit.gitwithjava.github.model;
 
 public class Owner{
     public String login;
-    public int id;
+    public long id;
     public String node_id;
     public String avatar_url;
     public String gravatar_id;
