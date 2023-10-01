@@ -29,9 +29,11 @@
         <figure class="p-3 mb-0">
           <blockquote class="blockquote">
             <p>Ref: <span class="text-primary" th:text="${activity.ref}"></span></p>
+            <p>Before: <span class="text-primary" th:text="${activity.before}"></span></p>
+            <p>After: <span class="text-primary" th:text="${activity.after}"></span></p>
             <p>pushedAt: <span class="text-primary" th:text="${activity.timestamp}"></span></p>
-            <p>pushType: <span class="text-primary" th:text="${activity.push_type}"></span></p>
-            <p>AuthorName: <span class="text-primary" th:text="${activity.actor.login}"></span></p>
+            <p>ActivityType: <span class="text-primary" th:text="${activity.activity_type}"></span></p>
+            <p>Owner: <span class="text-primary" th:text="${activity.actor.login}"></span></p>
           </blockquote>
         </figure>
       </div>

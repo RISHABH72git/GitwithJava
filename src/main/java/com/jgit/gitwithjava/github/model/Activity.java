@@ -11,6 +11,6 @@ public class Activity {
     public String after;
     public String ref;
     public Date timestamp;
-    public String push_type;
+    public String activity_type;
     public Owner actor;
 }
