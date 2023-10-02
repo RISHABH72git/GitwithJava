@@ -29,8 +29,8 @@
             <div class="card p-3">
                 <figure class="p-3 mb-0">
                     <blockquote class="blockquote">
-                        <p>commitId: <a th:href="@{/getCommitDetails(commitId = ${commit.sha})}"><span
-                                class="text-primary" th:text="${commit.sha}"></span></a></p>
+                        <p>commitId: <!--<a th:href="@{/getCommitDetails(commitId = ${commit.sha})}">--><span
+                                class="text-primary" th:text="${commit.sha}"></span></p>
                         <p>AuthorName: <span class="text-primary" th:text="${commit.commit.Author.name}"></span></p>
                         <p>commitMessage: <span class="text-primary" th:text="${commit.commit.message}"></span></p>
                         <p>commitTime: <span class="text-primary" th:text="${commit.commit.committer.date}"></span></p>
@@ -40,6 +40,42 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enter File Name </h5>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/githubPrintCommits(repoName = ${repoName})}" method="post">
+                    <div class="form-group">
+                        <label for="nameInput">File:</label>
+                        <input type="text" class="form-control" id="nameInput" name="fileName" th:value="${fileName}"
+                               required>
+                    </div>
+                    <br>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:checked="false" name="timestamp"
+                               th:value="true">
+                        <label class="form-check-label">Timestamp</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:checked="false" name="email" th:value="true">
+                        <label class="form-check-label">Email</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:checked="false" name="message"
+                               th:value="true">
+                        <label class="form-check-label">Message</label>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function showModal() {
         $('#myModal').modal('show');

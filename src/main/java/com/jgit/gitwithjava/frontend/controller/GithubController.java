@@ -77,4 +77,11 @@ public class GithubController {
         model.addAttribute("allActivities", gitHubRestApiService.getReposActivity(repoName));
         return "githubActivities";
     }
+
+    @PostMapping("/githubPrintCommits")
+    public String githubPrintCommits(Model model,@RequestParam String repoName, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
+        model.addAttribute("repoName", repoName);
+        model.addAttribute("AllCommits", gitHubRestApiService.githubPrintCommits(repoName, fileName, timestamp, message, email));
+        return "githubCommits";
+    }
 }

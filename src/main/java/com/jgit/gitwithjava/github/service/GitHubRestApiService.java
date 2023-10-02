@@ -12,7 +12,15 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -171,7 +179,7 @@ public class GitHubRestApiService {
         }
     }
 
-    public Activity[] getReposActivity(String repoName){
+    public Activity[] getReposActivity(String repoName) {
         String GET_CONTRIBUTOR = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName + "/activity";
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
@@ -184,8 +192,44 @@ public class GitHubRestApiService {
         }
     }
 
+    public String updateRepository(String repoName) {
+        String UPDATE_REPOSITORY = "https://api.github.com/repos/" + DefaultCredentials.getGitUsername() + "/" + repoName;
+        HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(URI.create(UPDATE_REPOSITORY), HttpMethod.PATCH, entity, String.class);
+            return Objects.requireNonNull(response.getBody());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public Map<Boolean, List<Boolean>> getCountOfRepos(ListRepository[] listRepositories) {
         return Arrays.stream(listRepositories).map(ListRepository::isMyprivate).collect(Collectors.groupingBy(Boolean::booleanValue));
     }
 
+    public GetCommit[] githubPrintCommits(String repoName, String fileName, boolean timestamp, boolean message, boolean email) throws IOException {
+        GetCommit[] allCommits = getCommitsOfRepo(repoName);
+        File file = new File(DefaultCredentials.getRootFolder() + "Downloads/" + fileName);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        long count = 1;
+        for (GetCommit commit : allCommits) {
+            String data = count + " - commitId: " + commit.sha;  // Generate the data for each iteration
+            if (email) {
+                data = data + "  Email: " + commit.commit.author.name;
+            }
+            if (message) {
+                data = data + "  Message: " + commit.commit.message;
+            }
+            if (timestamp) {
+                data = data + "  Date: " + commit.commit.committer.date;
+            }
+            writer.write(data);
+            writer.newLine();
+            count++;
+        }
+        writer.close();
+        return allCommits;
+    }
 }

@@ -137,7 +137,6 @@ public class CrudBranchController {
     @GetMapping("/blame")
     public String getBlame(Model model, @RequestParam String path, @RequestParam String fileName, boolean print) throws GitAPIException, IOException {
         model.addAttribute("path", path);
-        System.out.println(print);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
         model.addAttribute("fileName", fileName);
         model.addAttribute("blameFile", fileName.substring(fileName.lastIndexOf("/") + 1));
