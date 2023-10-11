@@ -8,9 +8,8 @@
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             crossorigin="anonymous"></script>
 </head>
-<body class="bg-dark">
+<body>
 <header>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Status</a>
@@ -42,118 +41,40 @@
 
 </header>
 <br>
-<h3 class="text-center text-light" th:text="Status"></h3>
+<h3 class="text-center text-dark" th:text="Status"></h3>
 <br>
-<h3 class="text-center text-light" th:text="${repoName}"></h3>
+<h3 class="text-center text-dark" th:text="${repoName}"></h3>
 <br>
-<div class="container mt-4 overflow-hidden">
-    <div class="row gy-5">
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Added
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="added : ${status.getAdded()}" th:text="${added}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Changed
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="change : ${status.getChanged()}" th:text="${change}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Removed
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="removed : ${status.getRemoved()}" th:text="${removed}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Missing
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="missing : ${status.getMissing()}" th:text="${missing}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Modified
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="modified : ${status.getModified()}" th:text="${modified}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Untracked
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="untracked : ${status.getUntracked()}"
-                        th:text="${untracked}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">UntrackedFolders
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="untrackedFolders : ${status.getUntrackedFolders()}"
-                        th:text="${untrackedFolders}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">Conflicting
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="conflicting : ${status.getConflicting()}"
-                        th:text="${conflicting}"></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">IgnoredNotInIndex
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li class="dropdown-item" th:each="ignored : ${status.getIgnoredNotInIndex()}"
-                        th:text="${ignored}"></li>
-                </ul>
-            </div>
-        </div>
-
-    </div>
-</div>
-
+<div class="container">
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" >File</th>
+            <th scope="col" >Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="modified : ${status.getModified()}" scope="row" class="table-primary">
+            <td class="text-dark" th:text="${modified}"></td>
+            <td class="text-dark" >Modified</td>
+        </tr>
+        <tr th:each="removed : ${status.getRemoved()}" scope="row" class="table-danger">
+            <td class="text-dark" th:text="${removed}"></td>
+            <td class="text-dark">removed</td>
+        </tr>
+        <tr th:each="add : ${status.getAdded()}" scope="row" class="table-secondary">
+            <td class="text-dark" th:text="${add}"></td>
+            <td class="text-dark">Added</td>
+        </tr>
+        <tr th:each="conflict : ${status.getConflicting()}" scope="row" class="table-warning">
+            <td class="text-dark" th:text="${conflict}"></td>
+            <td class="text-dark">Conflict</td>
+        </tr>
+        <tr th:each="untracked : ${status.getUntracked()}" scope="row" class="table-danger">
+            <td class="text-dark" th:text="${untracked}"></td>
+            <td class="text-dark">Untracked</td>
+        </tr>
+        </tbody>
+    </table></div>
 </body>
 </html>

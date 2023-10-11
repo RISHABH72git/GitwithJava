@@ -12,15 +12,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -231,5 +224,21 @@ public class GitHubRestApiService {
         }
         writer.close();
         return allCommits;
+    }
+
+    public void downloadRepositoryZipArchive(String repoName, String branchName){
+        String REPOSITORY_DOWNLOAD_ZIP = "https://api.github.com/repos/"+DefaultCredentials.getGitUsername()+"/"+repoName+"/zipball/"+branchName;
+        HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<byte[]> response = restTemplate.exchange(URI.create(REPOSITORY_DOWNLOAD_ZIP), HttpMethod.GET, entity, byte[].class);
+            FileOutputStream fileOutputStream = new FileOutputStream(DefaultCredentials.getRootFolder()+"Downloads/githubZipRepository/"+repoName+".zip");
+            fileOutputStream.write(Objects.requireNonNull(response.getBody()));
+            log.info("Downloading zip repository in Downloads/githubZipRepository");
+            fileOutputStream.close();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

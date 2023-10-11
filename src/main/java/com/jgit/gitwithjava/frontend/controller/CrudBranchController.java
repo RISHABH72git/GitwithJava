@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -85,10 +86,12 @@ public class CrudBranchController {
     }
 
     @PostMapping("/createRepo")
-    public RedirectView createRepoPage(@RequestParam String repo) throws GitAPIException, IOException {
-        System.out.println(repo);
-        //crudBranchService.gitInitialize("");
-        return new RedirectView("/form");
+    public String createRepoPage(Model model ,@RequestParam String repo) throws GitAPIException, IOException {
+        Map<String,Object> allFile = crudBranchService.gitInitialize(repo);
+        model.addAttribute("repoName", allFile.get("repoName"));
+        model.addAttribute("path", allFile.get("path"));
+        model.addAttribute("listPath", allFile.get("listPath"));
+        return "listFilesAndGitBlame";
     }
 
     @PostMapping("/createBranch")

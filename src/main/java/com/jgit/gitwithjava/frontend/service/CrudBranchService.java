@@ -42,9 +42,14 @@ public class CrudBranchService {
 
     final Map<String, List<String>> allFileWithBranch = new HashMap<>();
 
-    public String gitInitialize(String dirName) throws IOException, GitAPIException {
-        Git git = Git.init().setDirectory(new File(dirName)).call();
-        return git.getRepository().getBranch();
+    public Map<String, Object> gitInitialize(String dirName) throws IOException, GitAPIException {
+        File file = new File(DefaultCredentials.getRootFolder() + "InitRepository/" + dirName);
+        Git.init().setDirectory(file).setInitialBranch("master").call();
+        Map<String, Object> listFile = new HashMap<>();
+        listFile.put("path", file.getPath());
+        listFile.put("repoName", file.getName());
+        listFile.put("listPath", Arrays.stream(Objects.requireNonNull(file.listFiles())).map(File::toPath).collect(Collectors.toSet()));
+        return listFile;
     }
 
     public Object gitCreateBranch(String dirName, String newBranchName) throws IOException {
@@ -647,6 +652,9 @@ public class CrudBranchService {
     public Set<Path> getAllFilesFromDirectory(String dirName) throws IOException {
         File directoryPath = new File(dirName);
         Set<Path> filePath = new HashSet<>();
+        if (Objects.requireNonNull(directoryPath.listFiles()).length <= 1) {
+            return new HashSet<>();
+        }
         List<File> listFiles = removeGitIgnoreFile(directoryPath);
         listFiles.forEach(file -> {
             if (file.isDirectory()) {
@@ -670,12 +678,7 @@ public class CrudBranchService {
 
     private List<File> removeGitIgnoreFile(File rootDir) throws IOException {
         List<String> removeFile = List.of("target", ".git", ".gitignore", "node_modules", "layers");
-        FilenameFilter filenameFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".gitignore");
-            }
-        };
+        FilenameFilter filenameFilter = (dir, name) -> name.endsWith(".gitignore");
         File[] gitIgnoreFile = rootDir.listFiles(filenameFilter);
         Assert.notNull(gitIgnoreFile, ".gitIgnore file not found in " + rootDir.getName());
         File gitFile = gitIgnoreFile[0];
