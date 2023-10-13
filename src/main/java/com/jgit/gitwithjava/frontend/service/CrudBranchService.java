@@ -726,4 +726,14 @@ public class CrudBranchService {
         Git.cloneRepository().setURI(remoteUrl).setDirectory(localPath.getAbsoluteFile()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken())).call();
     }
 
+    public Map<String, Boolean> getAllHome() {
+        File file = new File(DefaultCredentials.getRootFolder());
+        Map<String, Boolean> allFiles = new HashMap<>();
+        for (File file1 : Objects.requireNonNull(file.listFiles())) {
+            if (!file1.isHidden()) {
+                allFiles.put(file1.getName(), file1.isDirectory());
+            }
+        }
+        return allFiles;
+    }
 }

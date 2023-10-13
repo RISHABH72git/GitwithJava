@@ -226,13 +226,13 @@ public class GitHubRestApiService {
         return allCommits;
     }
 
-    public void downloadRepositoryZipArchive(String repoName, String branchName){
+    public void downloadRepositoryZipArchive(String repoName, String branchName) throws FileNotFoundException {
         String REPOSITORY_DOWNLOAD_ZIP = "https://api.github.com/repos/"+DefaultCredentials.getGitUsername()+"/"+repoName+"/zipball/"+branchName;
+        FileOutputStream fileOutputStream = new FileOutputStream(DefaultCredentials.getRootFolder()+"Downloads/githubZipRepository/"+repoName+".zip");
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<byte[]> response = restTemplate.exchange(URI.create(REPOSITORY_DOWNLOAD_ZIP), HttpMethod.GET, entity, byte[].class);
-            FileOutputStream fileOutputStream = new FileOutputStream(DefaultCredentials.getRootFolder()+"Downloads/githubZipRepository/"+repoName+".zip");
             fileOutputStream.write(Objects.requireNonNull(response.getBody()));
             log.info("Downloading zip repository in Downloads/githubZipRepository");
             fileOutputStream.close();
