@@ -163,8 +163,9 @@ public class CrudBranchController {
     }
 
     @GetMapping("/newHome")
-    public String newHome(Model model) {
-        model.addAttribute("getAllHome", crudBranchService.getAllHome());
+    public String newHome(Model model, String path){
+        model.addAttribute("path", path);
+        model.addAttribute("getAllHome", crudBranchService.getAllHome(path));
         return "newHome";
     }
 

@@ -1,6 +1,7 @@
 package com.jgit.gitwithjava.frontend.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
+import com.jgit.gitwithjava.frontend.model.FileModel;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -726,12 +727,24 @@ public class CrudBranchService {
         Git.cloneRepository().setURI(remoteUrl).setDirectory(localPath.getAbsoluteFile()).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken())).call();
     }
 
-    public Map<String, Boolean> getAllHome() {
-        File file = new File(DefaultCredentials.getRootFolder());
-        Map<String, Boolean> allFiles = new HashMap<>();
+    public List<FileModel> getAllHome(String path) {
+        File file;
+        if (Objects.isNull(path)) {
+            file = new File(DefaultCredentials.getRootFolder());
+        } else {
+            file = new File(DefaultCredentials.getRootFolder() + path);
+        }
+        List<FileModel> allFiles = new ArrayList<>(20);
         for (File file1 : Objects.requireNonNull(file.listFiles())) {
-            if (!file1.isHidden()) {
-                allFiles.put(file1.getName(), file1.isDirectory());
+            if (!file1.isHidden() && file1.isDirectory()) {
+                FileModel fileModel = new FileModel();
+                fileModel.setFileName(file1.getName());
+                fileModel.setFileParentName(file1.getParent());
+                fileModel.setIsDirectory(file1.isDirectory());
+                fileModel.setIsHidden(file1.isHidden());
+                boolean gitAval = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
+                fileModel.setHasGit(gitAval);
+                allFiles.add(fileModel);
             }
         }
         return allFiles;
