@@ -37,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CrudBranchService {
@@ -742,11 +743,29 @@ public class CrudBranchService {
                 fileModel.setFileParentName(file1.getParent());
                 fileModel.setIsDirectory(file1.isDirectory());
                 fileModel.setIsHidden(file1.isHidden());
-                boolean gitAval = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
-                fileModel.setHasGit(gitAval);
+                boolean gitAvail = false;
+                if(file1.isDirectory()){
+                    gitAvail = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
+                }
+                fileModel.setHasGit(gitAvail);
                 allFiles.add(fileModel);
             }
         }
         return allFiles;
+    }
+
+    public Map<String, Integer> directoryDetails(String path) throws GitAPIException, IOException {
+        File file = new File(DefaultCredentials.getRootFolder() + path);
+        return getAuthorsNameAndCommitsCount(file);
+    }
+
+    private Map<String,Integer> getAuthorsNameAndCommitsCount(File file) throws IOException, GitAPIException {
+        Git git = Git.open(file);
+        Map<String, Integer> authorCommitCounts = new HashMap<>();
+        git.log().call().forEach(commit -> {
+            String author = commit.getAuthorIdent().getEmailAddress();
+            authorCommitCounts.put(author, authorCommitCounts.getOrDefault(author, 0) + 1);
+        });
+        return authorCommitCounts;
     }
 }

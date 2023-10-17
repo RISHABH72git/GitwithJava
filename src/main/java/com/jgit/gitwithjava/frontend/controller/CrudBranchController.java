@@ -169,4 +169,11 @@ public class CrudBranchController {
         return "newHome";
     }
 
+    @GetMapping("/directoryDetails")
+    public String directoryDetails(Model model, String path) throws GitAPIException, IOException {
+        model.addAttribute("path",path);
+        model.addAttribute("chartData", crudBranchService.directoryDetails(path));
+        return "directoryDetails";
+    }
+
 }
