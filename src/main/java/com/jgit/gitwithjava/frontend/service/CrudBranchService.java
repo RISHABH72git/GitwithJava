@@ -2,6 +2,7 @@ package com.jgit.gitwithjava.frontend.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.frontend.model.FileModel;
+import lombok.SneakyThrows;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -30,14 +31,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Service
 public class CrudBranchService {
@@ -744,7 +743,7 @@ public class CrudBranchService {
                 fileModel.setIsDirectory(file1.isDirectory());
                 fileModel.setIsHidden(file1.isHidden());
                 boolean gitAvail = false;
-                if(file1.isDirectory()){
+                if (file1.isDirectory()) {
                     gitAvail = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
                 }
                 fileModel.setHasGit(gitAvail);
@@ -754,18 +753,54 @@ public class CrudBranchService {
         return allFiles;
     }
 
-    public Map<String, Integer> directoryDetails(String path) throws GitAPIException, IOException {
+    /*public Map<String, Integer> directoryDetails(String path) throws GitAPIException, IOException {
         File file = new File(DefaultCredentials.getRootFolder() + path);
         return getAuthorsNameAndCommitsCount(file);
-    }
+    }*/
 
-    private Map<String,Integer> getAuthorsNameAndCommitsCount(File file) throws IOException, GitAPIException {
-        Git git = Git.open(file);
+    public Map<String, Integer> getAuthorsNameAndCommitsCount(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         Map<String, Integer> authorCommitCounts = new HashMap<>();
         git.log().call().forEach(commit -> {
             String author = commit.getAuthorIdent().getEmailAddress();
             authorCommitCounts.put(author, authorCommitCounts.getOrDefault(author, 0) + 1);
         });
         return authorCommitCounts;
+    }
+
+    public Map<String, Integer> getLastDayCommits(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        LinkedList<RevCommit> commitLinkedList = new LinkedList<>();
+        git.log().call().forEach(revCommit -> {
+            Instant commitInstant = Instant.ofEpochSecond(revCommit.getCommitTime());
+            ZonedDateTime authorDateTime = ZonedDateTime.ofInstant(commitInstant, ZoneId.systemDefault());
+            ZonedDateTime firstCommitDate = null;
+            if (!commitLinkedList.isEmpty()) {
+                Instant getDate = Instant.ofEpochSecond(commitLinkedList.getFirst().getCommitTime());
+                firstCommitDate = ZonedDateTime.ofInstant(getDate, ZoneId.systemDefault());
+            }
+            if (commitLinkedList.isEmpty() || authorDateTime.toLocalDate().equals(firstCommitDate.toLocalDate())) {
+                commitLinkedList.add(revCommit);
+            }
+        });
+        return commitLinkedList.stream().collect(Collectors.groupingBy(commit -> commit.getAuthorIdent().getName(), Collectors.summingInt(commit -> 1)));
+    }
+
+    public Map<String, String> getParentDirectoryAndChildDirectory(String path) throws IOException {
+        Path file = Paths.get(DefaultCredentials.getRootFolder() + path);
+        Map<String, String> allFile = new HashMap<>();
+        allFile.put(file.toFile().getName(), "");
+        List<File> allFilterFile = removeGitIgnoreFile(file.toFile());
+        allFilterFile.forEach(file1 -> {
+            try (Stream<Path> filePath = Files.walk(file1.toPath())) {
+                filePath.filter(Files::isDirectory).forEach(path1 -> {
+                    allFile.put(path1.toFile().getName(), path1.toFile().getParentFile().getName());
+//                System.out.println(path.toFile().getName()+" ------ "+path.toFile().getParentFile().getName());
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return allFile;
     }
 }
