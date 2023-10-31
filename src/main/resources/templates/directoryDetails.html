@@ -12,100 +12,79 @@
     <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-<!--<div id="series_chart_div" style="width: 900px; height: 500px;"></div>
-<div id="chart_div"></div>-->
+<div id="calendar_basic" style="width: 1000px; height: 350px;"></div>
 <div id="piechart" style="width: 900px; height: 500px;"></div>
-<div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+<div id="top_x_div" style="text-align:center; width: 600px; height: 400px;"></div>
 <script th:inline="javascript">
     $(document).ready(function () {
         google.charts.load('current', {
-            packages: ['corechart', 'bar', "orgchart"]
+            packages: ['corechart', 'bar', "orgchart", "calendar"]
         });
-        // google.charts.setOnLoadCallback(drawColumnChart);
         google.charts.setOnLoadCallback(drawPieChart);
-        google.charts.setOnLoadCallback(drawLastCommitChart);
-        // google.charts.setOnLoadCallback(drawSeriesChart);
-        // google.charts.setOnLoadCallback(drawOrgChart);
+        google.charts.setOnLoadCallback(drawStuff);
+        google.charts.setOnLoadCallback(drawCalenderChart);
     });
 
     function drawPieChart() {
-        var data = new google.visualization.DataTable();
+        let data = new google.visualization.DataTable();
         data.addColumn('string', 'Year');
         data.addColumn('number', 'Views');
         let real_data = [[${pieChart}]]
         Object.keys(real_data).forEach(function (key) {
             data.addRow([key, real_data[key]]);
         });
-        var options = {
+        let options = {
             title: 'Total Commits',
             is3D: true
         };
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        let chart = new google.visualization.PieChart(document.getElementById('piechart'));
         chart.draw(data, options);
     }
 
-    function drawOrgChart() {
+    function drawStuff() {
         let data = new google.visualization.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('string', 'Manager');
-        // data.addColumn('string', 'ToolTip');
-        let chartData = [[${orgChart}]]
-        // For each orgchart box, provide the name, manager, and tooltip to show.
-        Object.keys(chartData).forEach(function (key) {
-            data.addRow([key, chartData[key]]);
-        });
-        // Create the chart.
-        let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-        // Draw the chart, setting the allowHtml option to true for the tooltips.
-        chart.draw(data, {'allowHtml': true});
-    }
-
-    function drawSeriesChart() {
-        let data = google.visualization.arrayToDataTable([
-            ['ID', 'Life Expectancy', 'Fertility Rate', 'Region',     'Population'],
-            ['CAN',    80.66,              1.67,      'North America',  33739900],
-            ['DEU',    79.84,              1.36,      'Europe',         81902307],
-            ['DNK',    78.6,               1.84,      'Europe',         5523095],
-            ['EGY',    72.73,              2.78,      'Middle East',    79716203],
-            ['GBR',    80.05,              2,         'Europe',         61801570],
-            ['IRN',    72.49,              1.7,       'Middle East',    73137148],
-            ['IRQ',    68.09,              4.77,      'Middle East',    31090763],
-            ['ISR',    81.55,              2.96,      'Middle East',    7485600],
-            ['RUS',    68.6,               1.54,      'Europe',         141850000],
-            ['USA',    78.09,              2.05,      'North America',  307007000]
-        ]);
-
-        let options = {
-            title: 'Total Commits',
-            hAxis: {title: 'Life Expectancy'},
-            vAxis: {title: 'Fertility Rate'},
-            bubble: {textStyle: {fontSize: 11}}
-        };
-
-        let chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
-        chart.draw(data, options);
-    }
-
-    function drawLastCommitChart() {
-        let data = google.visualization.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('string', 'Count');
-        let real_data = [[${columnChart}]]
+        data.addColumn('string', 'author');
+        data.addColumn('number', 'commits');
+        let real_data = [[${scatterChart}]]; // Assuming scatterChart is a JavaScript array of data
         Object.keys(real_data).forEach(function (key) {
             data.addRow([key, real_data[key]]);
         });
+        let options = {
+            width: 300,
+            legend: {position: 'none'},
+            chart: {
+                title: 'Last Commits on ' + [[${scatterChartDate}]],
+                // subtitle: 'popularity by percentage' },
+            },
+            axes: {
+                x: {
+                    0: {side: 'top', label: 'Authors'} // Top x-axis.
+                }
+            },
+            bar: {groupWidth: "90%"}
+        };
 
-        let view = new google.visualization.DataView(data);
+        let chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        // Convert the Classic options to Material options.
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+    };
+
+    function drawCalenderChart() {
+        let dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'date', id: 'Date'});
+        dataTable.addColumn({type: 'number', id: 'commits'});
+        let real_data = [[${calenderChart}]]; // Assuming scatterChart is a JavaScript array of data
+        Object.keys(real_data).forEach(function (key) {
+            dataTable.addRow([new Date(key), real_data[key]]);
+        });
+
+        let chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
 
         let options = {
-            title: "Density of Precious Metals, in g/cm^3",
-            width: 600,
-            height: 400,
-            bar: {groupWidth: "95%"},
-            legend: { position: "none" },
+            title: "Commits over time",
+            height: 350,
         };
-        let chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-        chart.draw(view, options);
+        chart.draw(dataTable, options);
     }
 </script>
 </body>

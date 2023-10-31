@@ -768,9 +768,9 @@ public class CrudBranchService {
         return authorCommitCounts;
     }
 
-    public Map<String, Integer> getLastDayCommits(String path) throws IOException, GitAPIException {
+    public Map<String, Object> getLastDayCommits(String path) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
-        LinkedList<RevCommit> commitLinkedList = new LinkedList<>();
+        LinkedList<RevCommit> commitLinkedList = new LinkedList<RevCommit>();
         git.log().call().forEach(revCommit -> {
             Instant commitInstant = Instant.ofEpochSecond(revCommit.getCommitTime());
             ZonedDateTime authorDateTime = ZonedDateTime.ofInstant(commitInstant, ZoneId.systemDefault());
@@ -783,7 +783,21 @@ public class CrudBranchService {
                 commitLinkedList.add(revCommit);
             }
         });
-        return commitLinkedList.stream().collect(Collectors.groupingBy(commit -> commit.getAuthorIdent().getName(), Collectors.summingInt(commit -> 1)));
+        Map<String, Integer> allCommits = commitLinkedList.stream().collect(Collectors.groupingBy(commit -> commit.getAuthorIdent().getName(), Collectors.summingInt(commit -> 1)));
+        Instant getDate = Instant.ofEpochSecond(commitLinkedList.getFirst().getCommitTime());
+        ZonedDateTime firstCommitDate = ZonedDateTime.ofInstant(getDate, ZoneId.systemDefault());
+        return Map.of("commits", allCommits, "lastDate", firstCommitDate.toLocalDate());
+    }
+
+    public Map<Object, Integer> getAllCommitInCalenderChart(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        LinkedList<RevCommit> commitLinkedList = new LinkedList<>();
+        git.log().call().forEach(commitLinkedList::add);
+        return commitLinkedList.stream().collect(Collectors.groupingBy(revCommit -> {
+            Instant getDate = Instant.ofEpochSecond(revCommit.getCommitTime());
+            ZonedDateTime firstCommitDate = ZonedDateTime.ofInstant(getDate, ZoneId.systemDefault());
+            return firstCommitDate.toLocalDate();
+        }, Collectors.summingInt(commit -> 1)));
     }
 
     public Map<String, String> getParentDirectoryAndChildDirectory(String path) throws IOException {

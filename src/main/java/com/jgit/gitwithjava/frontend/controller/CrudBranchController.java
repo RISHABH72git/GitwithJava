@@ -163,7 +163,7 @@ public class CrudBranchController {
     }
 
     @GetMapping("/newHome")
-    public String newHome(Model model, String path){
+    public String newHome(Model model, String path) {
         model.addAttribute("path", path);
         model.addAttribute("getAllHome", crudBranchService.getAllHome(path));
         return "newHome";
@@ -171,10 +171,11 @@ public class CrudBranchController {
 
     @GetMapping("/directoryDetails")
     public String directoryDetails(Model model, String path) throws GitAPIException, IOException {
-        model.addAttribute("path",path);
+        model.addAttribute("path", path);
         model.addAttribute("pieChart", crudBranchService.getAuthorsNameAndCommitsCount(path));
-        model.addAttribute("columnChart",crudBranchService.getLastDayCommits(path));
-//        model.addAttribute("orgChart", crudBranchService.getParentDirectoryAndChildDirectory(path));
+        model.addAttribute("scatterChart", crudBranchService.getLastDayCommits(path).get("commits"));
+        model.addAttribute("scatterChartDate", crudBranchService.getLastDayCommits(path).get("lastDate"));
+        model.addAttribute("calenderChart", crudBranchService.getAllCommitInCalenderChart(path));
         return "directoryDetails";
     }
 

@@ -2,37 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Git Repository</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Status</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a aria-current="page" class="nav-link active" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/commit(path = ${path})}">Commits</a>
+                        <a aria-current="page" class="nav-link active" th:href="@{/commit(path = ${path})}">Commits</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/branch(path = ${path})}">Branchs</a>
+                        <a aria-current="page" class="nav-link active" th:href="@{/branch(path = ${path})}">Branchs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/author(path = ${path})}">Authors</a>
+                        <a aria-current="page" class="nav-link active" th:href="@{/author(path = ${path})}">Authors</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/config(path = ${path})}">Config</a>
+                        <a aria-current="page" class="nav-link active" th:href="@{/config(path = ${path})}">Config</a>
                     </li>
                 </ul>
             </div>
@@ -40,41 +35,162 @@
     </nav>
 
 </header>
-<br>
-<h3 class="text-center text-dark" th:text="Status"></h3>
-<br>
 <h3 class="text-center text-dark" th:text="${repoName}"></h3>
 <br>
+<h5 class="text-center text-dark" th:text="Status"></h5>
 <div class="container">
-    <table class="table">
+    <table class="table" th:unless="${status.getModified().isEmpty()}">
         <thead class="thead-dark">
         <tr>
-            <th scope="col" >File</th>
-            <th scope="col" >Status</th>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">ModifiedFile</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="modified : ${status.getModified()}" scope="row" class="table-primary">
+        <tr class="table-primary" scope="row" th:each="modified : ${status.getModified()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${modified}"
+                       th:value="${modified}"
+                       type="checkbox">
+            </td>
             <td class="text-dark" th:text="${modified}"></td>
-            <td class="text-dark" >Modified</td>
+            <td class="text-dark">Yes</td>
         </tr>
-        <tr th:each="removed : ${status.getRemoved()}" scope="row" class="table-danger">
-            <td class="text-dark" th:text="${removed}"></td>
-            <td class="text-dark">removed</td>
+        </tbody>
+    </table>
+    <table class="table" th:unless="${status.getAdded().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">AddedFile</th>
         </tr>
-        <tr th:each="add : ${status.getAdded()}" scope="row" class="table-secondary">
-            <td class="text-dark" th:text="${add}"></td>
+        </thead>
+        <tbody>
+        <tr class="table-success" scope="row" th:each="add : ${status.getAdded()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${add}" th:value="${add}"
+                       type="checkbox">
+            </td>
+            <td  class="text-dark" th:text="${add}"></td>
             <td class="text-dark">Added</td>
         </tr>
-        <tr th:each="conflict : ${status.getConflicting()}" scope="row" class="table-warning">
-            <td class="text-dark" th:text="${conflict}"></td>
-            <td class="text-dark">Conflict</td>
+        </tbody>
+    </table>
+    <table class="table" th:unless="${status.getUntracked().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">UntrackedFile</th>
         </tr>
-        <tr th:each="untracked : ${status.getUntracked()}" scope="row" class="table-danger">
+        </thead>
+        <tbody>
+        <tr class="table-danger" scope="row" th:each="untracked : ${status.getUntracked()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${untracked}"
+                       th:value="${untracked}" type="checkbox">
+            </td>
             <td class="text-dark" th:text="${untracked}"></td>
             <td class="text-dark">Untracked</td>
         </tr>
         </tbody>
-    </table></div>
+    </table>
+    <table class="table" th:unless="${status.getRemoved().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">RemovedFile</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-danger" scope="row" th:each="removed : ${status.getRemoved()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${removed}"
+                       th:value="${removed}"
+                       type="checkbox">
+            </td>
+            <td class="text-dark" th:text="${removed}"></td>
+            <td class="text-dark">removed</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table" th:unless="${status.getConflicting().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">ConflictingFile</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-warning" scope="row" th:each="conflict : ${status.getConflicting()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${conflict}"
+                       th:value="${conflict}"
+                       type="checkbox">
+            </td>
+            <td class="text-dark" th:text="${conflict}"></td>
+            <td class="text-dark">Conflict</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table" th:unless="${status.getChanged().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">ChangedFile</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-warning" scope="row" th:each="changed : ${status.getChanged()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${changed}"
+                       th:value="${changed}"
+                       type="checkbox">
+            </td>
+            <td class="text-dark" th:text="${changed}"></td>
+            <td class="text-dark">Changed</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table" th:unless="${status.getIgnoredNotInIndex().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">File</th>
+            <th scope="col">IgnoredFile</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-warning" scope="row" th:each="ignoredIndex : ${status.getIgnoredNotInIndex()}">
+            <td class="text-dark" th:text="${ignoredIndex}"></td>
+            <td class="text-dark">Ignored</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table" th:unless="${status.getMissing().isEmpty()}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">File</th>
+            <th scope="col">MissingFile</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-warning" scope="row" th:each="missing : ${status.getMissing()}">
+            <td>
+                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${missing}"
+                       th:value="${missing}"
+                       type="checkbox">
+            </td>
+            <td class="text-dark" th:text="${missing}"></td>
+            <td class="text-dark">missing</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
