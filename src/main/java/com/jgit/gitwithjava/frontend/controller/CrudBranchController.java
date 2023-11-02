@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -177,6 +178,12 @@ public class CrudBranchController {
         model.addAttribute("scatterChartDate", crudBranchService.getLastDayCommits(path).get("lastDate"));
         model.addAttribute("calenderChart", crudBranchService.getAllCommitInCalenderChart(path));
         return "directoryDetails";
+    }
+
+    @PostMapping("/addCommit")
+    public RedirectView addCommit(@RequestParam String path, @RequestParam String message, @RequestParam String[] selectedValues) throws GitAPIException, IOException {
+        crudBranchService.addCommit(path, message, selectedValues);
+        return new RedirectView("/status?path=" + path);
     }
 
 }

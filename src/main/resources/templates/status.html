@@ -7,6 +7,9 @@
     <script crossorigin="anonymous"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
+            src="https://code.jquery.com/jquery-3.6.3.slim.min.js"></script>
 </head>
 <body>
 <header>
@@ -38,159 +41,266 @@
 <h3 class="text-center text-dark" th:text="${repoName}"></h3>
 <br>
 <h5 class="text-center text-dark" th:text="Status"></h5>
-<div class="container">
-    <table class="table" th:unless="${status.getModified().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">ModifiedFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-primary" scope="row" th:each="modified : ${status.getModified()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${modified}"
-                       th:value="${modified}"
-                       type="checkbox">
-            </td>
-            <td class="text-dark" th:text="${modified}"></td>
-            <td class="text-dark">Yes</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getAdded().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">AddedFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-success" scope="row" th:each="add : ${status.getAdded()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${add}" th:value="${add}"
-                       type="checkbox">
-            </td>
-            <td  class="text-dark" th:text="${add}"></td>
-            <td class="text-dark">Added</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getUntracked().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">UntrackedFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-danger" scope="row" th:each="untracked : ${status.getUntracked()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${untracked}"
-                       th:value="${untracked}" type="checkbox">
-            </td>
-            <td class="text-dark" th:text="${untracked}"></td>
-            <td class="text-dark">Untracked</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getRemoved().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">RemovedFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-danger" scope="row" th:each="removed : ${status.getRemoved()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${removed}"
-                       th:value="${removed}"
-                       type="checkbox">
-            </td>
-            <td class="text-dark" th:text="${removed}"></td>
-            <td class="text-dark">removed</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getConflicting().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">ConflictingFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-warning" scope="row" th:each="conflict : ${status.getConflicting()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${conflict}"
-                       th:value="${conflict}"
-                       type="checkbox">
-            </td>
-            <td class="text-dark" th:text="${conflict}"></td>
-            <td class="text-dark">Conflict</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getChanged().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">ChangedFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-warning" scope="row" th:each="changed : ${status.getChanged()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${changed}"
-                       th:value="${changed}"
-                       type="checkbox">
-            </td>
-            <td class="text-dark" th:text="${changed}"></td>
-            <td class="text-dark">Changed</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getIgnoredNotInIndex().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">File</th>
-            <th scope="col">IgnoredFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-warning" scope="row" th:each="ignoredIndex : ${status.getIgnoredNotInIndex()}">
-            <td class="text-dark" th:text="${ignoredIndex}"></td>
-            <td class="text-dark">Ignored</td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table" th:unless="${status.getMissing().isEmpty()}">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">File</th>
-            <th scope="col">MissingFile</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-warning" scope="row" th:each="missing : ${status.getMissing()}">
-            <td>
-                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${missing}"
-                       th:value="${missing}"
-                       type="checkbox">
-            </td>
-            <td class="text-dark" th:text="${missing}"></td>
-            <td class="text-dark">missing</td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container mb-4">
+    <div th:unless="${status.getModified().isEmpty() or status.getAdded().isEmpty()}">
+        <div class="mt-5 border border-1 rounded">
+            <form method="post" th:action="@{/createRepo}">
+                <div class="form-group">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Select</th>
+                            <th scope="col">File</th>
+                            <th scope="col">Modified / Added</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="table-primary" scope="row" th:each="modified : ${status.getModified()}"
+                            th:unless="${status.getModified().isEmpty()}">
+                            <td>
+                                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${modified}"
+                                       th:value="${modified}"
+                                       type="checkbox">
+                            </td>
+                            <td class="text-dark" th:text="${modified}"></td>
+                            <td class="text-dark">Modified</td>
+                        </tr>
+                        <tr class="table-success" scope="row" th:each="add : ${status.getAdded()}"
+                            th:unless="${status.getAdded().isEmpty()}">
+                            <td>
+                                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${add}"
+                                       th:value="${add}"
+                                       type="checkbox">
+                            </td>
+                            <td class="text-dark" th:text="${add}"></td>
+                            <td class="text-dark">Added</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-danger" type="submit" value="rollback">Rollback</button>
+                </div>
+            </form>
+        </div>
+        <div class="text-center mt-3">
+            <button class="btn btn-success" id="commitButton" onclick="showModal()" type="button">Commit</button>
+        </div>
+    </div>
+
+    <div class="mt-5 border border-1 rounded" th:unless="${status.getUntracked().isEmpty()}">
+        <form method="post">
+            <div class="form-group">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">File</th>
+                        <th scope="col">UntrackedFile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="table-danger" scope="row" th:each="untracked : ${status.getUntracked()}">
+                        <td>
+                            <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${untracked}"
+                                   th:value="${untracked}" type="checkbox">
+                        </td>
+                        <td class="text-dark" th:text="${untracked}"></td>
+                        <td class="text-dark">Not Added</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-success" type="submit" value="add">Add</button>
+                <button class="btn btn-danger" type="submit" value="removed">Removed</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-5 border border-1 rounded" th:unless="${status.getRemoved().isEmpty()}">
+        <form method="post">
+            <div class="form-group">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">File</th>
+                        <th scope="col">RemovedFile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="table-danger" scope="row" th:each="removed : ${status.getRemoved()}">
+                        <td>
+                            <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${removed}"
+                                   th:value="${removed}"
+                                   type="checkbox">
+                        </td>
+                        <td class="text-dark" th:text="${removed}"></td>
+                        <td class="text-dark">removed</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-primary" type="submit">submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-5 border border-1 rounded" th:unless="${status.getConflicting().isEmpty()}">
+        <form method="post">
+            <div class="form-group">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">File</th>
+                        <th scope="col">ConflictingFile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="table-warning" scope="row" th:each="conflict : ${status.getConflicting()}">
+                        <td>
+                            <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${conflict}"
+                                   th:value="${conflict}"
+                                   type="checkbox">
+                        </td>
+                        <td class="text-dark" th:text="${conflict}"></td>
+                        <td class="text-dark">Conflict</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-primary" type="submit">submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-5 border border-1 rounded" th:unless="${status.getChanged().isEmpty()}">
+        <form method="post">
+            <div class="form-group">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">File</th>
+                        <th scope="col">ChangedFile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="table-warning" scope="row" th:each="changed : ${status.getChanged()}">
+                        <td>
+                            <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${changed}"
+                                   th:value="${changed}"
+                                   type="checkbox">
+                        </td>
+                        <td class="text-dark" th:text="${changed}"></td>
+                        <td class="text-dark">Changed</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-primary" type="submit">submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="mt-5 border border-1 rounded" th:unless="${status.getMissing().isEmpty()}">
+        <form method="post">
+            <div class="form-group">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">File</th>
+                        <th scope="col">MissingFile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="table-danger" scope="row" th:each="missing : ${status.getMissing()}">
+                        <td>
+                            <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${missing}"
+                                   th:value="${missing}"
+                                   type="checkbox">
+                        </td>
+                        <td class="text-dark" th:text="${missing}"></td>
+                        <td class="text-dark">removed</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-success" type="submit">Add</button>
+            </div>
+        </form>
+    </div>
+    <div class="mt-5 border border-1 rounded" th:unless="${status.getIgnoredNotInIndex().isEmpty()}">
+        <table class="table" th:unless="${status.getIgnoredNotInIndex().isEmpty()}">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">File</th>
+                <th scope="col">IgnoredFile</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="table-warning" scope="row" th:each="ignoredIndex : ${status.getIgnoredNotInIndex()}">
+                <td class="text-dark" th:text="${ignoredIndex}"></td>
+                <td class="text-dark">Ignored</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">enter message to commit</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" onsubmit="return submitForm()" th:action="@{/addCommit(path = ${path})}"
+                      th:id="myForm">
+                    <div class="form-group">
+                        <label for="nameInput">Message:</label>
+                        <input class="form-control" id="nameInput" name="message" required th:value="${message}"
+                               type="text">
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" type="submit">Commit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function showModal() {
+        $('#myModal').modal('show');
+    }
+
+    function submitForm() {
+        // Get all checkboxes with the "form-check-input" class
+        let checkboxes = document.querySelectorAll(".form-check-input");
+
+        let selectedValues = [];
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedValues.push(checkbox.value);
+            }
+        });
+
+        // Create a hidden input field in the form to send the selected values
+        let selectedValuesInput = document.createElement('input');
+        selectedValuesInput.setAttribute('type', 'hidden');
+        selectedValuesInput.setAttribute('name', 'selectedValues');
+        selectedValuesInput.setAttribute('value', selectedValues.join(',')); // Convert the array to a comma-separated string
+
+        // Append the hidden input to the form
+        document.getElementById('myForm').appendChild(selectedValuesInput);
+        return true; // Allow the form to submit
+    }
+
+    /*document.getElementById("commitButton").addEventListener("click", function() {
+        // Get all checkboxes with the "form-check-input" class
+        let checkboxes = document.querySelectorAll(".form-check-input");
+
+        let selectedValues = [];
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                console.log(checkbox.value)
+                selectedValues.push(checkbox.value);
+            }
+        });
+    });*/
+</script>
 </body>
 </html>

@@ -2,7 +2,7 @@ package com.jgit.gitwithjava.frontend.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.frontend.model.FileModel;
-import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -31,14 +31,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Log4j2
 public class CrudBranchService {
 
     final Map<String, List<String>> allFileWithBranch = new HashMap<>();
@@ -816,5 +818,23 @@ public class CrudBranchService {
             }
         });
         return allFile;
+    }
+
+    public void addCommit(String path, String message, String[] selectedValue) throws IOException, GitAPIException {
+        Git git = Git.open(new File(path));
+        LinkedList<String> nameAndEmail = git.getRepository().getConfig().getBaseConfig().toText().lines().filter(s -> s.contains("name") || s.contains("email")).map(String::trim).collect(Collectors.toCollection(LinkedList::new));
+        if (!nameAndEmail.isEmpty() && git.getRepository().getRepositoryState().canCommit()) {
+            String rawName = nameAndEmail.getFirst();
+            String rawEmail = nameAndEmail.getLast();
+            String name = rawName.substring(rawName.indexOf("=") + 1);
+            String email = rawEmail.substring(rawEmail.indexOf("=") + 1);
+            CommitCommand commitCommand = git.commit();
+            commitCommand.setMessage(message);
+            commitCommand.setAuthor(name, email);
+            commitCommand.call();
+            log.info("commit by {} on {}", email, path.substring(path.lastIndexOf("/") + 1));
+        } else {
+            log.error("name and email not found");
+        }
     }
 }
