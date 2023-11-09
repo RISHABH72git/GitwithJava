@@ -822,12 +822,12 @@ public class CrudBranchService {
 
     public void addCommit(String path, String message, String[] selectedValue) throws IOException, GitAPIException {
         Git git = Git.open(new File(path));
-        LinkedList<String> nameAndEmail = git.getRepository().getConfig().getBaseConfig().toText().lines().filter(s -> s.contains("name") || s.contains("email")).map(String::trim).collect(Collectors.toCollection(LinkedList::new));
-        if (!nameAndEmail.isEmpty() && git.getRepository().getRepositoryState().canCommit()) {
-            String rawName = nameAndEmail.getFirst();
-            String rawEmail = nameAndEmail.getLast();
-            String name = rawName.substring(rawName.indexOf("=") + 1);
-            String email = rawEmail.substring(rawEmail.indexOf("=") + 1);
+        for (String file : selectedValue) {
+            git.add().addFilepattern(file).call();
+        }
+        String name = git.getRepository().getConfig().getString("user", null, "name");
+        String email = git.getRepository().getConfig().getString("user", null, "email");
+        if (name != null && email != null) {
             CommitCommand commitCommand = git.commit();
             commitCommand.setMessage(message);
             commitCommand.setAuthor(name, email);

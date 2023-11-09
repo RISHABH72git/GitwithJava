@@ -42,7 +42,7 @@
 <br>
 <h5 class="text-center text-dark" th:text="Status"></h5>
 <div class="container mb-4">
-    <div th:unless="${status.getModified().isEmpty() or status.getAdded().isEmpty()}">
+    <div th:unless="${status.getModified().isEmpty()} and ${status.getAdded().isEmpty()}">
         <div class="mt-5 border border-1 rounded">
             <form method="post" th:action="@{/createRepo}">
                 <div class="form-group">
