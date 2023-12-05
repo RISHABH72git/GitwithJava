@@ -42,7 +42,7 @@
 <br>
 <h5 class="text-center text-dark" th:text="Status"></h5>
 <div class="container mb-4">
-    <div th:unless="${status.getModified().isEmpty()} and ${status.getAdded().isEmpty()}">
+    <div th:unless="${status.getModified().isEmpty()} and ${status.getAdded().isEmpty()} and ${status.getRemoved().isEmpty()}">
         <div class="mt-5 border border-1 rounded">
             <form method="post" th:action="@{/createRepo}">
                 <div class="form-group">
@@ -51,16 +51,16 @@
                         <tr>
                             <th scope="col">Select</th>
                             <th scope="col">File</th>
-                            <th scope="col">Modified / Added</th>
+                            <th scope="col">Modified / Added / Removed</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr class="table-primary" scope="row" th:each="modified : ${status.getModified()}"
                             th:unless="${status.getModified().isEmpty()}">
                             <td>
-                                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${modified}"
-                                       th:value="${modified}"
-                                       type="checkbox">
+                                <input aria-label="Select" class="form-check-input" onchange="updateCommitButtonVisibility()"
+                                       th:id="'checkbox_' + ${modified}"
+                                       th:value="${modified}" type="checkbox">
                             </td>
                             <td class="text-dark" th:text="${modified}"></td>
                             <td class="text-dark">Modified</td>
@@ -68,12 +68,22 @@
                         <tr class="table-success" scope="row" th:each="add : ${status.getAdded()}"
                             th:unless="${status.getAdded().isEmpty()}">
                             <td>
-                                <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${add}"
-                                       th:value="${add}"
-                                       type="checkbox">
+                                <input aria-label="Select" class="form-check-input" onchange="updateCommitButtonVisibility()"
+                                       th:id="'checkbox_' + ${add}"
+                                       th:value="${add}" type="checkbox">
                             </td>
                             <td class="text-dark" th:text="${add}"></td>
                             <td class="text-dark">Added</td>
+                        </tr>
+                        <tr class="table-secondary" scope="row" th:each="removed : ${status.getRemoved()}"
+                            th:unless="${status.getRemoved().isEmpty()}">
+                            <td>
+                                <input aria-label="Select" class="form-check-input" onchange="updateCommitButtonVisibility()"
+                                       th:id="'checkbox_' + ${removed}"
+                                       th:value="${removed}" type="checkbox">
+                            </td>
+                            <td class="text-dark" th:text="${removed}"></td>
+                            <td class="text-dark">removed</td>
                         </tr>
                         </tbody>
                     </table>
@@ -81,9 +91,9 @@
                 </div>
             </form>
         </div>
-        <div class="text-center mt-3">
-            <button class="btn btn-success" id="commitButton" onclick="showModal()" type="button">Commit</button>
-        </div>
+        <button STYLE="align-items: center ; display: none" class="btn btn-success" id="commitButton" onclick="showModal()" type="button">
+            Commit
+        </button>
     </div>
 
     <div class="mt-5 border border-1 rounded" th:unless="${status.getUntracked().isEmpty()}">
@@ -110,34 +120,6 @@
                 </table>
                 <button class="btn btn-success" type="submit" value="add">Add</button>
                 <button class="btn btn-danger" type="submit" value="removed">Removed</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="mt-5 border border-1 rounded" th:unless="${status.getRemoved().isEmpty()}">
-        <form method="post">
-            <div class="form-group">
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Select</th>
-                        <th scope="col">File</th>
-                        <th scope="col">RemovedFile</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="table-danger" scope="row" th:each="removed : ${status.getRemoved()}">
-                        <td>
-                            <input aria-label="Select" class="form-check-input" th:id="'checkbox_' + ${removed}"
-                                   th:value="${removed}"
-                                   type="checkbox">
-                        </td>
-                        <td class="text-dark" th:text="${removed}"></td>
-                        <td class="text-dark">removed</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <button class="btn btn-primary" type="submit">submit</button>
             </div>
         </form>
     </div>
@@ -205,7 +187,7 @@
                     <tr>
                         <th scope="col">Select</th>
                         <th scope="col">File</th>
-                        <th scope="col">MissingFile</th>
+                        <th scope="col">MissingFileFromCommit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -220,7 +202,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <button class="btn btn-success" type="submit">Add</button>
+                <button class="btn btn-success" type="submit">Restore</button>
+                <button class="btn btn-danger" type="submit">Remove</button>
             </div>
         </form>
     </div>
@@ -287,6 +270,19 @@
         // Append the hidden input to the form
         document.getElementById('myForm').appendChild(selectedValuesInput);
         return true; // Allow the form to submit
+    }
+
+    function updateCommitButtonVisibility() {
+        let checkboxes = document.querySelectorAll('.form-check-input');
+        let commitButton = document.getElementById('commitButton');
+
+        // Check if any checkbox is checked
+        let anyCheckboxChecked = Array.from(checkboxes).some(function (checkbox) {
+            return checkbox.checked;
+        });
+        console.log(anyCheckboxChecked)
+        // Toggle visibility of the "Commit" button
+        commitButton.style.display = anyCheckboxChecked ? 'block' : 'none';
     }
 
     /*document.getElementById("commitButton").addEventListener("click", function() {

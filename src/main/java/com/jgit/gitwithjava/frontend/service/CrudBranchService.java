@@ -731,25 +731,40 @@ public class CrudBranchService {
 
     public List<FileModel> getAllHome(String path) {
         File file;
+        List<FileModel> allFiles = new ArrayList<>(20);
         if (Objects.isNull(path)) {
             file = new File(DefaultCredentials.getRootFolder());
+            for (File file1 : Objects.requireNonNull(file.listFiles())) {
+                if (!file1.isHidden() && file1.isDirectory()) {
+                    FileModel fileModel = new FileModel();
+                    fileModel.setFileName(file1.getName());
+                    fileModel.setFileParentName(file1.getParent());
+                    fileModel.setIsDirectory(file1.isDirectory());
+                    fileModel.setIsHidden(file1.isHidden());
+                    boolean gitAvail = false;
+                    if (file1.isDirectory()) {
+                        gitAvail = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
+                    }
+                    fileModel.setHasGit(gitAvail);
+                    allFiles.add(fileModel);
+                }
+            }
         } else {
             file = new File(DefaultCredentials.getRootFolder() + path);
-        }
-        List<FileModel> allFiles = new ArrayList<>(20);
-        for (File file1 : Objects.requireNonNull(file.listFiles())) {
-            if (!file1.isHidden() && file1.isDirectory()) {
-                FileModel fileModel = new FileModel();
-                fileModel.setFileName(file1.getName());
-                fileModel.setFileParentName(file1.getParent());
-                fileModel.setIsDirectory(file1.isDirectory());
-                fileModel.setIsHidden(file1.isHidden());
-                boolean gitAvail = false;
-                if (file1.isDirectory()) {
-                    gitAvail = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
+            for (File file1 : Objects.requireNonNull(file.listFiles())) {
+                if (!file1.isHidden()) {
+                    FileModel fileModel = new FileModel();
+                    fileModel.setFileName(file1.getName());
+                    fileModel.setFileParentName(file1.getParent());
+                    fileModel.setIsDirectory(file1.isDirectory());
+                    fileModel.setIsHidden(file1.isHidden());
+                    boolean gitAvail = false;
+                    if (file1.isDirectory()) {
+                        gitAvail = Arrays.asList(Objects.requireNonNull(file1.list())).contains(".git");
+                    }
+                    fileModel.setHasGit(gitAvail);
+                    allFiles.add(fileModel);
                 }
-                fileModel.setHasGit(gitAvail);
-                allFiles.add(fileModel);
             }
         }
         return allFiles;
