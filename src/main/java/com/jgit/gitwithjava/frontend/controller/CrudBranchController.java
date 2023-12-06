@@ -1,5 +1,6 @@
 package com.jgit.gitwithjava.frontend.controller;
 
+import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.frontend.service.CrudBranchService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,14 +154,14 @@ public class CrudBranchController {
         return new RedirectView("/");
     }
 
-    @GetMapping("/newHome")
+    /*@GetMapping("/newHome")
     public String newHome(Model model, String path) {
         model.addAttribute("path", path);
         model.addAttribute("getAllHome", crudBranchService.getAllHome(path));
         return "newHome";
-    }
+    }*/
 
-    @GetMapping("/directoryDetails")
+    /*@GetMapping("/directoryDetails")
     public String directoryDetails(Model model, String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
         model.addAttribute("pieChart", crudBranchService.getAuthorsNameAndCommitsCount(path));
@@ -168,12 +169,18 @@ public class CrudBranchController {
         model.addAttribute("scatterChartDate", crudBranchService.getLastDayCommits(path).get("lastDate"));
         model.addAttribute("calenderChart", crudBranchService.getAllCommitInCalenderChart(path));
         return "directoryDetails";
-    }
+    }*/
 
     @PostMapping("/addCommit")
     public RedirectView addCommit(@RequestParam String path, @RequestParam String message, @RequestParam String[] selectedValues) throws GitAPIException, IOException {
         crudBranchService.addCommit(path, message, selectedValues);
         return new RedirectView("/status?path=" + path);
     }
+
+    /*@GetMapping("/directoryDetails")
+    public String directoryDetails(Model model, String path){
+        model.addAttribute("path", DefaultCredentials.getRootFolder()+path);
+        return "details";
+    }*/
 
 }
