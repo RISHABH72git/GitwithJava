@@ -5,6 +5,8 @@
     <title>Sidebar Example</title>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
         #content {
             padding: 20px;
@@ -14,7 +16,6 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" id="sidebar">
             <div class="navbar-brand">
                 <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none" href="/"
@@ -23,7 +24,7 @@
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <button class="btn btn-link" th:onclick="loadContent('/api/getCommits')" type="button">Commits
+                        <button class="btn btn-link" th:onclick="loadCommits('/api/getCommits')" type="button">Commits
                         </button>
                     </li>
                     <li class="nav-item">
@@ -32,7 +33,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <button class="btn btn-link" th:onclick="loadContent('/api/getAuthors')" type="button">Graph
+                        <button class="btn btn-link" th:onclick="loadGraphs('/api/getGraph')" type="button">Graph
                         </button>
                     </li>
                 </ul>
@@ -42,49 +43,13 @@
 
         <!-- Content -->
         <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
+            <div id="commits_by_date" style="width: 1000px; height: 350px;"></div>
+            <div id="author_commits_count" style="width: 900px; height: 500px;"></div>
             <div th:id="dynamicContent">
-                &lt;!&ndash; Dynamic content will be loaded here &ndash;&gt;
             </div>
         </main>
     </div>
 </div>
-
-<!--
-<div class="container-fluid">
-  <div class="row">
-    &lt;!&ndash; Sidebar &ndash;&gt;
-    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="#" th:onclick="loadContent('/status')">
-              Status
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" th:onclick="loadContent('/bar')">
-              Bar
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" th:onclick="loadContent('/commits')">
-              Commits
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    &lt;!&ndash; Content &ndash;&gt;
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" id="content">
-      <div th:id="dynamicContent">
-        &lt;!&ndash; Dynamic content will be loaded here &ndash;&gt;
-      </div>
-    </main>
-  </div>
-</div>
--->
-
 <!-- Bootstrap JS and Popper.js -->
 <script crossorigin="anonymous"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -97,9 +62,17 @@
         src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
 
 <script th:inline="javascript">
-    function loadContent(url) {
-        let real_data = [[${path}]]
-        let finalUrl = url + "?path=" + real_data
+    $(document).ready(function () {
+        google.charts.load('current', {
+            packages: ['corechart', 'bar', "orgchart", "calendar"]
+        });
+        google.charts.setOnLoadCallback(drawCalenderChart);
+        google.charts.setOnLoadCallback(drawPieChart);
+    });
+    const path = [[${path}]]
+
+    function loadCommits(url) {
+        let finalUrl = `${url}?path=${path}`
         console.log(finalUrl)
         // Make an AJAX request to the server
         $.get(finalUrl, function (data) {
@@ -129,6 +102,45 @@
         } else {
             dynamicContent.append('<p>No data available.</p>');
         }
+    }
+
+    function loadGraphs(url) {
+        let finalUrl = `${url}?path=${path}`
+        console.log(finalUrl)
+        // Make an AJAX request to the server
+        $.get(finalUrl, function (data) {
+            // Update the dynamic content with the response
+            console.log(data)
+            console.log(data.authorCommitsCount)
+            console.log(data.commitsByDate)
+            console.log(data.lastDayCommits)
+            drawCalenderChart(data.commitsByDate)
+            drawPieChart(data.authorCommitsCount)
+        });
+    }
+
+    function drawCalenderChart(commitsByDate) {
+        let dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'date', id: 'Date'});
+        dataTable.addColumn({type: 'number', id: 'commits'});
+        for (const commitKey in commitsByDate) {
+            dataTable.addRow([new Date(commitKey), commitsByDate[commitKey]]);
+        }
+        let chart = new google.visualization.Calendar(document.getElementById('commits_by_date'));
+        let options = {title: "Commits over time", height: 350};
+        chart.draw(dataTable, options);
+    }
+
+    function drawPieChart(authorCommitsCount) {
+        let data = new google.visualization.DataTable();
+        data.addColumn('string', 'Year');
+        data.addColumn('number', 'Views');
+        for (const authorKey in authorCommitsCount) {
+            data.addRow([authorKey, authorCommitsCount[authorKey]]);
+        }
+        let options = {title: 'Total Commits', is3D: true};
+        let chart = new google.visualization.PieChart(document.getElementById('author_commits_count'));
+        chart.draw(data, options);
     }
 </script>
 </body>
