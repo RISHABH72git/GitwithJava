@@ -16,7 +16,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/githubRepositories}">GitHub</a>
+            <a class="navbar-brand" href="#">GitHub</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -27,7 +27,7 @@
                       <a class="nav-link active" aria-current="page" href="/">Your Local Home</a>
                     </li>-->
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/githubForm}">Create Repository</a>
+                        <a class="nav-link active" aria-current="page" th:href="@{github/createRepositoryForm}">Create Repository</a>
                     </li>
                     <!-- <li class="nav-item">
                          <p class="nav-link active" aria-current="page" th:text="${userDetails.getLogin()}"></p>
@@ -73,22 +73,22 @@
                         <div class="text-center">
                             <p th:if="${repos.myprivate}" class="text-danger" th:text="${repos.name}"></p>
                             <p th:unless="${repos.myprivate}" th:text="${repos.name}"></p>
-                            <a th:href="@{/githubBranchesByRepo(repoName = ${repos.name})}">
+                            <a th:href="@{github/branches(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-primary">Branches</button>
                             </a>
                             <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-danger">Clone</button>
                             </a>
-                            <a th:href="@{/githubAllCommits(repoName = ${repos.name})}">
+                            <a th:href="@{github/commits(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-success">Commits</button>
                             </a>
-                            <a th:href="@{/githubAllContributors(repoName = ${repos.name})}">
+                            <a th:href="@{github/contributors(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-dark">Contributors</button>
                             </a>
-                            <a th:href="@{/githubAllActivities(repoName = ${repos.name})}">
+                            <a th:href="@{github/activities(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-warning">Activities</button>
                             </a>
-                              <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
+                            <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
                         </div>
                     </blockquote>
                 </figure>
@@ -103,7 +103,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Enter Repository Name For Deletion</h5>
             </div>
             <div class="modal-body">
-                <form th:action="@{/deleteGitHubRepo(path = ${repoName})}" method="post">
+                <form th:action="@{github/delete(path = ${repoName})}" method="post">
                     <div class="form-group">
                         <label for="nameInput">File:</label>
                         <input type="text" class="form-control" id="nameInput" name="repoName" th:value="${repoName}"
