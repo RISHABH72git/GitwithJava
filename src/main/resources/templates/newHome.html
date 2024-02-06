@@ -8,6 +8,9 @@
     <script crossorigin="anonymous"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
+            src="https://code.jquery.com/jquery-3.6.3.slim.min.js"></script>
 </head>
 <body>
 <header>
@@ -16,13 +19,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a aria-current="page" class="nav-link active" th:href="@{/newHome}">Home</a>
+                        <a class="btn btn-link" type="button" th:href="@{/local}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a aria-current="page" class="nav-link active" th:href="@{/form}">Init Repository</a>
+                        <a class="btn btn-link" type="button" th:href="@{/form}">Init Repository</a>
                     </li>
                     <li class="nav-item">
-                        <input aria-label="Search" class="form-control" id="searchInput" placeholder="search folders ..."
+                        <a class="btn btn-link" type="button" th:href="@{/github}">GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-link" onclick="showModal()" type="button">Directory</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-link" onclick="showModal()" type="button">File</button>
+                    </li>
+                    <li class="nav-item">
+                        <input aria-label="Search" class="form-control" id="searchInput"
+                               placeholder="search folders ..."
                                type="search">
                     </li>
                 </ul>
@@ -41,10 +54,14 @@
                         <a th:href="@{/local(path=${path != null} ? ${path+ '/' + entry.getFileName()} : ${entry.getFileName()})}">
                             <img alt="Image"
                                  crossorigin=""
-                                 height="100" src="https://raw.githubusercontent.com/blackcatprog/folder-icons/main/Other/git.ico" th:if="${entry.getIsDirectory() and entry.getHasGit()}" width="100">
+                                 height="100"
+                                 src="https://raw.githubusercontent.com/blackcatprog/folder-icons/main/Other/git.ico"
+                                 th:if="${entry.getIsDirectory() and entry.getHasGit()}" width="100">
                             <img alt="Image"
                                  crossorigin=""
-                                 height="100" src="https://raw.githubusercontent.com/blackcatprog/folder-icons/main/OS/ubuntu.ico" th:unless="${entry.getIsDirectory() and entry.getHasGit()}" width="100"></a>
+                                 height="100"
+                                 src="https://raw.githubusercontent.com/blackcatprog/folder-icons/main/OS/ubuntu.ico"
+                                 th:unless="${entry.getIsDirectory() and entry.getHasGit()}" width="100"></a>
                         <a th:href="@{/local/fileDetails(path=${path != null} ? ${path+ '/' + entry.getFileName()} : ${entry.getFileName()})}"
                            th:if="${entry.getHasGit()}">
                             <p th:text="${entry.getFileName()}"></p>
@@ -59,7 +76,33 @@
         </div>
     </div>
 </div>
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enter Directory Name</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{local/createFolder(path = ${path})}">
+                    <div class="form-group">
+                        <label for="nameInput">directory:</label>
+                        <input class="form-control" id="nameInput" name="fileName" required
+                               th:value="${directoryName}"
+                               type="text">
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" type="submit">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    function showModal() {
+        $('#myModal').modal('show');
+    }
+
     function searchRepositories() {
         let input, filter, cards, card, i, txtValue;
         input = document.getElementById("searchInput");
