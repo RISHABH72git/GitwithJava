@@ -19,19 +19,19 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="btn btn-link" type="button" th:href="@{/local}">Home</a>
+                        <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" type="button" th:href="@{/form}">Init Repository</a>
+                        <a class="btn btn-link" th:href="@{/form}" type="button">Init Repository</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" type="button" th:href="@{/github}">GitHub</a>
+                        <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
                     </li>
                     <li class="nav-item">
                         <button class="btn btn-link" onclick="showModal()" type="button">Directory</button>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-link" onclick="showModal()" type="button">File</button>
+                        <button class="btn btn-link" onclick="showFileModal()" type="button">File</button>
                     </li>
                     <li class="nav-item">
                         <input aria-label="Search" class="form-control" id="searchInput"
@@ -86,8 +86,30 @@
                 <form method="post" th:action="@{local/createFolder(path = ${path})}">
                     <div class="form-group">
                         <label for="nameInput">directory:</label>
-                        <input class="form-control" id="nameInput" name="fileName" required
-                               th:value="${directoryName}"
+                        <input class="form-control" id="nameInput" name="name" required
+                               th:value="${name}"
+                               type="text">
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" type="submit">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="myFileModal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Enter File Name</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{local/createFile(path = ${path})}">
+                    <div class="form-group">
+                        <label for="nameInput">file:</label>
+                        <input class="form-control" name="filename" required
+                               th:value="${filename}"
                                type="text">
                     </div>
                     <br>
@@ -101,6 +123,10 @@
 <script>
     function showModal() {
         $('#myModal').modal('show');
+    }
+
+    function showFileModal() {
+        $('#myFileModal').modal('show');
     }
 
     function searchRepositories() {

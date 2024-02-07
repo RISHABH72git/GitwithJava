@@ -120,4 +120,23 @@ public class LocalService {
         return authorCommitCounts;
     }
 
+    public void createFolder(String path, String name) {
+        File file;
+        if (Objects.isNull(path)) {
+            file = new File(DefaultCredentials.getRootFolder() + name);
+        } else {
+            file = new File(DefaultCredentials.getRootFolder() + path + "/" + name);
+        }
+        System.out.println("folder created - " + file.mkdir());
+    }
+
+    public void createFile(String path, String filename) throws IOException {
+        File file;
+        if (Objects.isNull(path)) {
+            file = new File(DefaultCredentials.getRootFolder() + filename + ".txt");
+        } else {
+            file = new File(DefaultCredentials.getRootFolder() + path + "/" + filename + ".txt");
+        }
+        System.out.println("file created - " + file.createNewFile());
+    }
 }
