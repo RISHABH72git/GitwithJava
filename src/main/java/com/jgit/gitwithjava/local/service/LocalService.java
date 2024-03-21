@@ -3,7 +3,9 @@ package com.jgit.gitwithjava.local.service;
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.frontend.model.FileModel;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,5 +141,42 @@ public class LocalService {
             file = new File(DefaultCredentials.getRootFolder() + path + "/" + filename + ".txt");
         }
         System.out.println("file created - " + file.createNewFile());
+    }
+
+    public Map<String, Set<String>> getGitStatus(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        Status status = gitServices.getStatus(git);
+        Map<String, Set<String>> stringSetMap = new HashMap<>();
+        stringSetMap.put("added", status.getAdded());
+        stringSetMap.put("modified", status.getModified());
+        stringSetMap.put("remove", status.getRemoved());
+        stringSetMap.put("untracked", status.getUntracked());
+        stringSetMap.put("conflict", status.getConflicting());
+        stringSetMap.put("change", status.getChanged());
+        stringSetMap.put("missing", status.getMissing());
+        stringSetMap.put("ignore", status.getIgnoredNotInIndex());
+        return stringSetMap;
+    }
+
+    public List<Map<String, Object>> getBranch(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        List<Ref> list = gitServices.getBranch(git);
+        List<Map<String, Object>> branchList = new ArrayList<>();
+        AtomicLong count = new AtomicLong(1);
+        list.forEach(ref -> {
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("no", count.getAndIncrement());
+            objectMap.put("name", ref.getName());
+            objectMap.put("objectName", ref.getObjectId().getName());
+            objectMap.put("leafName", ref.getLeaf().getName());
+            objectMap.put("targetName", ref.getTarget().getName());
+            if (ref.getName().contains("remotes")) {
+                objectMap.put("branchType", "remote");
+            } else {
+                objectMap.put("branchType", "local");
+            }
+            branchList.add(objectMap);
+        });
+        return branchList;
     }
 }

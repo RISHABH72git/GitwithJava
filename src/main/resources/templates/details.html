@@ -44,12 +44,6 @@
                     <li class="nav-item">
                         <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
                     </li>
-                    <li class="nav-item">
-                        <button class="btn btn-link" onclick="showModal()" type="button">Directory</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-link" onclick="showModal()" type="button">File</button>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -59,11 +53,11 @@
     <div class="row">
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" id="sidebar">
             <div class="navbar-brand">
-                <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
-                   th:text="${path}">
-                </a>
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <button class="btn btn-link" id="statusButton" onclick="loadStatus()">Status</button>
+                    </li>
                     <li class="nav-item">
                         <button class="btn btn-link" id="commitsButton" onclick="loadCommits()">Commits</button>
                     </li>
@@ -74,7 +68,7 @@
                         <button class="btn btn-link" id="graphsButton" onclick="loadGraphs()">Graph</button>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-link" id="statusButton">Status</button>
+                        <button class="btn btn-link" id="branchButton" onclick="loadBranch()">Branch</button>
                     </li>
                 </ul>
                 <hr>
@@ -83,7 +77,11 @@
 
         <!-- Content -->
         <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
+            <h2 class="col text-center"
+                th:text="${path}">
+            </h2>
             <div id="dynamicContent"></div>
+
         </main>
     </div>
 </div>
@@ -93,6 +91,7 @@
         google.charts.load('current', {
             packages: ['corechart', 'bar', "orgchart", "calendar"]
         });
+        loadStatus()
     });
     const path = [[${path}]]
 
@@ -108,10 +107,10 @@
     function displayData(data) {
         if (data.length > 0) {
             const table = document.createElement('table');
-            table.classList.add('table');
-
+            table.classList.add("table", "table-striped"); // Add the "table-striped" class
             // Create table header
             const thead = document.createElement('thead');
+            thead.classList.add("thead-dark");
             const headerRow = document.createElement('tr');
             ['commitDate', 'commitId', 'parentCount', 'name', 'email'].forEach(headerText => {
                 const th = document.createElement('th');
@@ -256,6 +255,113 @@
         }
     }
 
+    function loadStatus() {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getStatus?path=${path}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+            displayStatus(data)
+        });
+    }
+
+    function displayStatus(data) {
+        // Create table element
+        let table = document.createElement("table");
+        table.classList.add("table");
+
+        // Create table head
+        let thead = document.createElement("thead");
+        thead.classList.add("thead-dark");
+        let headRow = document.createElement("tr");
+        let headers = ["Type", "Path"];
+        headers.forEach(function (headerText) {
+            let th = document.createElement("th");
+            th.textContent = headerText;
+            headRow.appendChild(th);
+        });
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        // Create table body
+        let tbody = document.createElement("tbody");
+        for (let key in data) {
+            if (data.hasOwnProperty(key) && Array.isArray(data[key])) {
+                data[key].forEach(function (item) {
+                    let row = document.createElement("tr");
+                    let typeCell = document.createElement("td");
+                    typeCell.textContent = key;
+                    let pathCell = document.createElement("td");
+                    pathCell.textContent = item;
+                    row.appendChild(typeCell);
+                    row.appendChild(pathCell);
+                    if (key === "ignore") {
+                        row.classList.add("table-warning");
+                    } else if (key === 'modified') {
+                        row.classList.add("table-primary");
+                    } else if (key === 'added') {
+                        row.classList.add("table-success");
+                    } else if (key === 'remove') {
+                        row.classList.add("table-secondary");
+                    } else if (key === 'untracked') {
+                        row.classList.add("table-danger");
+                    }
+                    tbody.appendChild(row);
+                });
+            }
+        }
+        table.appendChild(tbody);
+
+        // Append table to container
+        let container = document.getElementById("dynamicContent");
+        container.appendChild(table);
+    }
+
+    function loadBranch() {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getBranch?path=${path}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+            displayBranch(data)
+        });
+    }
+
+    function displayBranch(data) {
+        if (data.length > 0) {
+            const table = document.createElement('table');
+            table.classList.add('table', 'table-hover');
+
+            // Create table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            ['no', 'name', 'branchType', "objectName"].forEach(headerText => {
+                const th = document.createElement('th');
+                th.scope = 'col';
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            const tbody = document.createElement('tbody');
+            data.forEach(dataRow => {
+                const tr = document.createElement('tr');
+                ['no', 'name', 'branchType', "objectName"].forEach(key => {
+                    const td = document.createElement('td');
+                    td.textContent = dataRow[key];
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+
+            // Append table to the container
+            const tableContainer = document.getElementById('dynamicContent');
+            tableContainer.appendChild(table);
+        }
+    }
 </script>
 </body>
 </html>

@@ -2,9 +2,12 @@ package com.jgit.gitwithjava.local.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +39,7 @@ public class GitServices {
         return revCommitList;
     }
 
-    public List<Map<String, String>> getAuthors(Git git) throws IOException, GitAPIException {
+    public List<Map<String, String>> getAuthors(Git git) throws GitAPIException {
         List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> authorName = new HashMap<>();
         git.log().call().forEach(ref -> {
@@ -49,5 +52,13 @@ public class GitServices {
             list.add(map);
         });
         return list;
+    }
+
+    public Status getStatus(Git git) throws GitAPIException {
+        return git.status().call();
+    }
+
+    public List<Ref> getBranch(Git git) throws GitAPIException {
+        return git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
     }
 }
