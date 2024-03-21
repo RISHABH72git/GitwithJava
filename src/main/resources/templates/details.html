@@ -13,6 +13,16 @@
             src="https://code.jquery.com/jquery-3.6.3.slim.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Bootstrap JS and Popper.js -->
+    <script crossorigin="anonymous"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
     <style>
         #content {
             padding: 20px;
@@ -49,28 +59,22 @@
     <div class="row">
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" id="sidebar">
             <div class="navbar-brand">
-                <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none" href="/"
+                <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
                    th:text="${path}">
                 </a>
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <button class="btn btn-link" th:onclick="loadCommits('/api/getCommits')" type="button">Commits
-                        </button>
+                        <button class="btn btn-link" id="commitsButton" onclick="loadCommits()">Commits</button>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-link" th:onclick="loadContent('/api/getAuthors')" type="button">Authors
-                        </button>
+                        <button class="btn btn-link" id="authorsButton" onclick="loadAuthors()">Authors</button>
                     </li>
-
                     <li class="nav-item">
-                        <button class="btn btn-link" th:onclick="loadGraphs('/api/getGraph')" type="button">Graph
-                        </button>
+                        <button class="btn btn-link" id="graphsButton" onclick="loadGraphs()">Graph</button>
                     </li>
-
                     <li class="nav-item">
-                        <button class="btn btn-link" th:onclick="loadStatus('/api/getStatus')" type="button">Status
-                        </button>
+                        <button class="btn btn-link" id="statusButton">Status</button>
                     </li>
                 </ul>
                 <hr>
@@ -79,105 +83,179 @@
 
         <!-- Content -->
         <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-            <div id="commits_by_date" style="width: 1000px; height: 350px;"></div>
-            <div id="author_commits_count" style="width: 900px; height: 500px;"></div>
-            <div th:id="dynamicContent">
-            </div>
+            <div id="dynamicContent"></div>
         </main>
     </div>
 </div>
-<!-- Bootstrap JS and Popper.js -->
-<script crossorigin="anonymous"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-        src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
 
 <script th:inline="javascript">
     $(document).ready(function () {
         google.charts.load('current', {
             packages: ['corechart', 'bar', "orgchart", "calendar"]
         });
-        google.charts.setOnLoadCallback(drawCalenderChart);
-        google.charts.setOnLoadCallback(drawPieChart);
     });
     const path = [[${path}]]
 
-    function loadCommits(url) {
-        let finalUrl = `${url}?path=${path}`
-        console.log(finalUrl)
-        // Make an AJAX request to the server
+    function loadCommits() {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty(); // Clear existing content
+        let finalUrl = `/api/getCommits?path=${path}`
         $.get(finalUrl, function (data) {
-            // Update the dynamic content with the response
-            console.log(data)
             displayData(data);
         });
     }
 
     function displayData(data) {
-        // Assuming you want to display the data in #dynamicContent
-        let dynamicContent = $('#dynamicContent');
-        dynamicContent.empty(); // Clear existing content
-
         if (data.length > 0) {
-            for (let i = 0; i < data.length; i++) {
-                let item = data[i];
-                let content = '<div>' +
-                    'Parent Count: ' + item.parentCount + '<br>' +
-                    'Name: ' + item.name + '<br>' +
-                    'Commit ID: ' + item.commitId + '<br>' +
-                    'Email: ' + item.email + '<br>' +
-                    '</div>';
+            const table = document.createElement('table');
+            table.classList.add('table');
 
-                dynamicContent.append(content);
-            }
-        } else {
-            dynamicContent.append('<p>No data available.</p>');
+            // Create table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            ['commitDate', 'commitId', 'parentCount', 'name', 'email'].forEach(headerText => {
+                const th = document.createElement('th');
+                th.scope = 'col';
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            const tbody = document.createElement('tbody');
+            data.forEach(dataRow => {
+                const tr = document.createElement('tr');
+                ['timestamp', 'commitId', 'parentCount', 'name', 'email'].forEach(key => {
+                    const td = document.createElement('td');
+                    if (key === 'timestamp') {
+                        let timestamp = dataRow[key]
+                        td.textContent = new Date(timestamp * 1000).toDateString();
+                    } else {
+                        td.textContent = dataRow[key];
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+
+            // Append table to the container
+            const tableContainer = document.getElementById('dynamicContent');
+            tableContainer.appendChild(table);
         }
     }
 
-    function loadGraphs(url) {
-        let finalUrl = `${url}?path=${path}`
-        console.log(finalUrl)
-        // Make an AJAX request to the server
+    function loadGraphs() {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getGraph?path=${path}`
         $.get(finalUrl, function (data) {
             // Update the dynamic content with the response
             console.log(data)
             console.log(data.authorCommitsCount)
             console.log(data.commitsByDate)
             console.log(data.lastDayCommits)
-            drawCalenderChart(data.commitsByDate)
-            drawPieChart(data.authorCommitsCount)
+            let mainElement = document.getElementById('dynamicContent');
+            drawCalenderChart(data.commitsByDate, mainElement)
+            drawPieChart(data.authorCommitsCount, mainElement)
         });
     }
 
-    function drawCalenderChart(commitsByDate) {
-        let dataTable = new google.visualization.DataTable();
-        dataTable.addColumn({type: 'date', id: 'Date'});
-        dataTable.addColumn({type: 'number', id: 'commits'});
-        for (const commitKey in commitsByDate) {
-            dataTable.addRow([new Date(commitKey), commitsByDate[commitKey]]);
+    function drawCalenderChart(commitsByDate, mainElement) {
+        let existingElement = document.getElementById("commits_by_date");
+        if (!existingElement) {
+            // Create a new div element
+            let divElement = document.createElement("div");
+            divElement.setAttribute("id", "commits_by_date");
+            divElement.setAttribute("style", "width: 1000px; height: 350px;");
+            mainElement.appendChild(divElement);
+
+            let dataTable = new google.visualization.DataTable();
+            dataTable.addColumn({type: 'date', id: 'Date'});
+            dataTable.addColumn({type: 'number', id: 'commits'});
+            for (const commitKey in commitsByDate) {
+                dataTable.addRow([new Date(commitKey), commitsByDate[commitKey]]);
+            }
+            let chart = new google.visualization.Calendar(divElement);
+            let options = {title: "Commits over time", height: 350};
+            chart.draw(dataTable, options);
         }
-        let chart = new google.visualization.Calendar(document.getElementById('commits_by_date'));
-        let options = {title: "Commits over time", height: 350};
-        chart.draw(dataTable, options);
     }
 
-    function drawPieChart(authorCommitsCount) {
-        let data = new google.visualization.DataTable();
-        data.addColumn('string', 'Year');
-        data.addColumn('number', 'Views');
-        for (const authorKey in authorCommitsCount) {
-            data.addRow([authorKey, authorCommitsCount[authorKey]]);
+    function drawPieChart(authorCommitsCount, mainElement) {
+        let existingElement = document.getElementById("author_commits_count");
+        if (!existingElement) {
+            // Create a new div element
+            let divElement = document.createElement("div");
+            divElement.setAttribute("id", "author_commits_count");
+            divElement.setAttribute("style", "width: 900px; height: 500px;");
+            mainElement.appendChild(divElement);
+
+            let data = new google.visualization.DataTable();
+            data.addColumn('string', 'Year');
+            data.addColumn('number', 'Views');
+            for (const authorKey in authorCommitsCount) {
+                data.addRow([authorKey, authorCommitsCount[authorKey]]);
+            }
+            let options = {title: 'Total Commits', is3D: true};
+            let chart = new google.visualization.PieChart(divElement);
+            chart.draw(data, options);
         }
-        let options = {title: 'Total Commits', is3D: true};
-        let chart = new google.visualization.PieChart(document.getElementById('author_commits_count'));
-        chart.draw(data, options);
     }
+
+    function loadAuthors() {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty(); // Clear existing content
+        let finalUrl = `/api/getAuthors?path=${path}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+            displayAuthorsData(data)
+        });
+    }
+
+    function displayAuthorsData(data) {
+        if (data.length > 0) {
+            const table = document.createElement('table');
+            table.classList.add('table');
+
+            // Create table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            ['no', 'name', 'email'].forEach(headerText => {
+                const th = document.createElement('th');
+                th.scope = 'col';
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            const tbody = document.createElement('tbody');
+            let no = 1;
+            data.forEach(dataRow => {
+                const tr = document.createElement('tr');
+                ['no', 'name', 'email'].forEach(key => {
+                    const td = document.createElement('td');
+                    if (key === 'no') {
+                        td.textContent = no
+                    } else {
+                        td.textContent = dataRow[key];
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+                no += 1;
+            });
+            table.appendChild(tbody);
+
+            // Append table to the container
+            const tableContainer = document.getElementById('dynamicContent');
+            tableContainer.appendChild(table);
+        }
+    }
+
 </script>
 </body>
 </html>

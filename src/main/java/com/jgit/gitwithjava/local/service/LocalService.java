@@ -68,7 +68,7 @@ public class LocalService {
         return gitServices.getCommits(git);
     }
 
-    public Map<String, String> getAuthors(String path) throws IOException, GitAPIException {
+    public List<Map<String, String>> getAuthors(String path) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         return gitServices.getAuthors(git);
     }

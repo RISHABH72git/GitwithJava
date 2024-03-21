@@ -30,7 +30,7 @@ public class ApiLocalController {
     }
 
     @GetMapping("/getAuthors")
-    public Map<String, String> getAuthors(@RequestParam String path) throws GitAPIException, IOException {
+    public List<Map<String, String>> getAuthors(@RequestParam String path) throws GitAPIException, IOException {
         return localService.getAuthors(path);
     }
 
