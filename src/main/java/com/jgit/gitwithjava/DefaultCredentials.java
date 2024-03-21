@@ -1,0 +1,43 @@
+package com.jgit.gitwithjava;
+
+import lombok.experimental.UtilityClass;
+import lombok.extern.log4j.Log4j2;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+@Log4j2
+@UtilityClass
+public class DefaultCredentials {
+
+    public String getToken() {
+        String key = "";
+        try {
+            key = Files.readString(new File(".apiToken72").toPath());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return key;
+    }
+
+    public String getGitUsername() {
+        String username = "";
+        try {
+            username = Files.readString(new File(".gitUser72").toPath());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return username;
+    }
+
+    public String getRootFolder() {
+        String root = "";
+        try {
+            root = Files.readString(new File(".rootFolder").toPath());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return root;
+    }
+}
