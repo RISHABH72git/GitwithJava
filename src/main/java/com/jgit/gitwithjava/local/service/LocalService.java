@@ -5,7 +5,9 @@ import com.jgit.gitwithjava.frontend.model.FileModel;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -178,5 +180,20 @@ public class LocalService {
             branchList.add(objectMap);
         });
         return branchList;
+    }
+
+    public Map<String, Object> getConfig(String path) throws GitAPIException, IOException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        StoredConfig storedConfig = gitServices.getConfig(git);
+        Map<String, Object> objectMap = new HashMap<>();
+        String name = storedConfig.getString("user", null, "name");
+        String email = storedConfig.getString("user", null, "email");
+        String remoteUrl = storedConfig.getString("remote", "origin", "url");
+        objectMap.put("config", Map.of("name", name, "email", email, "remote", remoteUrl));
+        Config config = storedConfig.getBaseConfig();
+        String baseName = config.getString("user", null, "name");
+        String baseEmail = config.getString("user", null, "email");
+        objectMap.put("baseConfig", Map.of("name", baseName, "email", baseEmail));
+        return objectMap;
     }
 }

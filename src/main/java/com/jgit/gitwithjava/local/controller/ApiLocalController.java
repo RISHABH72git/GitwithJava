@@ -49,4 +49,9 @@ public class ApiLocalController {
     public List<Map<String, Object>> getBranch(@RequestParam String path) throws GitAPIException, IOException {
         return localService.getBranch(path);
     }
+
+    @GetMapping("/getConfig")
+    public Map<String, Object> getConfig(@RequestParam String path) throws GitAPIException, IOException {
+        return localService.getConfig(path);
+    }
 }

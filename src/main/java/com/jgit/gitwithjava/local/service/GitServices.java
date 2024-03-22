@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.springframework.stereotype.Service;
 
@@ -61,4 +62,9 @@ public class GitServices {
     public List<Ref> getBranch(Git git) throws GitAPIException {
         return git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
     }
+
+    public StoredConfig getConfig(Git git) {
+        return git.getRepository().getConfig();
+    }
+
 }

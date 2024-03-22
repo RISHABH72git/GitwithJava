@@ -70,6 +70,9 @@
                     <li class="nav-item">
                         <button class="btn btn-link" id="branchButton" onclick="loadBranch()">Branch</button>
                     </li>
+                    <li class="nav-item">
+                        <button class="btn btn-link" id="configButton" onclick="loadConfig()">Config</button>
+                    </li>
                 </ul>
                 <hr>
             </div>
@@ -361,6 +364,69 @@
             const tableContainer = document.getElementById('dynamicContent');
             tableContainer.appendChild(table);
         }
+    }
+
+    function loadConfig() {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getConfig?path=${path}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+            displayConfig(data)
+        });
+    }
+
+    function displayConfig(data) {
+        let container = document.createElement("div");
+        container.classList.add("container", "mt-4", "overflow-hidden");
+
+        let row = document.createElement("div");
+        row.classList.add("row", "gy-5");
+
+        Object.keys(data).forEach(function (object) {
+            // Create the column element
+            let column = document.createElement("div");
+            column.classList.add("col-6");
+
+            // Create the card element
+            let card = document.createElement("div");
+            card.classList.add("card", "p-3");
+
+            let headingElement = document.createElement("h3");
+            headingElement.classList.add("text-center");
+            headingElement.textContent = object;
+            // Create the paragraph element with text
+            let paragraph = document.createElement("p");
+            let nameSpan = document.createElement("span");
+            nameSpan.textContent = "Name: " + data[object].name;
+            nameSpan.style.display = "block"; // Display as block to show on a new line
+
+            // Create a span element for the email
+            let emailSpan = document.createElement("span");
+            emailSpan.textContent = "Email: " + data[object].email;
+            emailSpan.style.display = "block"; // Display as block to show on a new line
+
+            let remoteSpan = document.createElement("span");
+            remoteSpan.textContent = "Remote: " + data[object].remote ? data[object].remote : "";
+
+            // Append the name and email spans to the paragraph
+            paragraph.appendChild(nameSpan);
+            paragraph.appendChild(emailSpan);
+            paragraph.appendChild(remoteSpan)
+            // Append figure to card
+            card.appendChild(headingElement)
+            card.appendChild(paragraph);
+
+            // Append card to column
+            column.appendChild(card);
+
+            // Append column to row
+            row.appendChild(column);
+        });
+        container.appendChild(row);
+        // Append table to the container
+        const tableContainer = document.getElementById('dynamicContent');
+        tableContainer.appendChild(container);
     }
 </script>
 </body>
