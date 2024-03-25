@@ -6,6 +6,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Config;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -194,6 +195,22 @@ public class LocalService {
         String baseName = config.getString("user", null, "name");
         String baseEmail = config.getString("user", null, "email");
         objectMap.put("baseConfig", Map.of("name", baseName, "email", baseEmail));
+        return objectMap;
+    }
+
+    public Map<String, Object> getCommit(String path, String commitId) throws IOException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        RevCommit revCommit = gitServices.getCommit(git, commitId);
+        ObjectLoader objectLoader = git.getRepository().getObjectDatabase().open(revCommit.toObjectId());
+
+        objectLoader.copyTo(System.out);
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("message", revCommit.getFullMessage());
+        objectMap.put("id", revCommit.getName());
+        objectMap.put("name", revCommit.getCommitterIdent().getName());
+        objectMap.put("email", revCommit.getCommitterIdent().getEmailAddress());
+        objectMap.put("time", revCommit.getCommitTime());
+        System.out.println(revCommit.getTree());
         return objectMap;
     }
 }

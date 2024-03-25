@@ -4,10 +4,7 @@ import com.jgit.gitwithjava.local.service.LocalService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,5 +50,10 @@ public class ApiLocalController {
     @GetMapping("/getConfig")
     public Map<String, Object> getConfig(@RequestParam String path) throws GitAPIException, IOException {
         return localService.getConfig(path);
+    }
+
+    @GetMapping("/getCommit/{commitId}")
+    public Map<String, Object> getCommits(@RequestParam String path, @PathVariable String commitId) throws GitAPIException, IOException {
+        return localService.getCommit(path, commitId);
     }
 }

@@ -6,10 +6,12 @@ import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -65,6 +67,11 @@ public class GitServices {
 
     public StoredConfig getConfig(Git git) {
         return git.getRepository().getConfig();
+    }
+
+    public RevCommit getCommit(Git git, String commitId) throws IOException {
+        ObjectId objectId = git.getRepository().resolve(commitId);
+        return git.getRepository().parseCommit(objectId);
     }
 
 }

@@ -133,6 +133,18 @@
                     if (key === 'timestamp') {
                         let timestamp = dataRow[key]
                         td.textContent = new Date(timestamp * 1000).toDateString();
+                    }else if (key === 'commitId'){
+                        const anchorElement = document.createElement('a');
+                        anchorElement.textContent = dataRow[key];
+/*
+                        anchorElement.setAttribute('href', dataRow[key]);
+*/
+                        anchorElement.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            // Call your function here
+                            getCommit(dataRow[key]);
+                        });
+                        td.appendChild(anchorElement)
                     } else {
                         td.textContent = dataRow[key];
                     }
@@ -427,6 +439,14 @@
         // Append table to the container
         const tableContainer = document.getElementById('dynamicContent');
         tableContainer.appendChild(container);
+    }
+    function getCommit(commitId){
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getCommit/${commitId}?path=${path}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+        });
     }
 </script>
 </body>
