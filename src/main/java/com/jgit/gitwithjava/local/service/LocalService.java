@@ -2,9 +2,11 @@ package com.jgit.gitwithjava.local.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.frontend.model.FileModel;
+import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
@@ -23,6 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class LocalService {
 
     @Autowired
@@ -201,22 +204,31 @@ public class LocalService {
     public Map<String, Object> getCommit(String path, String commitId) throws IOException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         RevCommit revCommit = gitServices.getCommit(git, commitId);
-        ObjectLoader objectLoader = git.getRepository().getObjectDatabase().open(revCommit.toObjectId());
-
-        objectLoader.copyTo(System.out);
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("message", revCommit.getFullMessage());
         objectMap.put("id", revCommit.getName());
         objectMap.put("name", revCommit.getCommitterIdent().getName());
         objectMap.put("email", revCommit.getCommitterIdent().getEmailAddress());
         objectMap.put("time", revCommit.getCommitTime());
-        System.out.println(revCommit.getTree());
         return objectMap;
     }
 
-    public void commitDiffEntry(String path, String commitId) throws IOException {
+    public List<Object> commitDiffEntry(String path, String commitId) throws IOException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         RevCommit revCommit = gitServices.getCommit(git, commitId);
-        gitServices.commitDiffEntry(git, revCommit);
+        List<Object> objectList = new ArrayList<>();
+        if (revCommit.getParentCount() > 0) {
+            List<DiffEntry> diffEntries = gitServices.commitDiffEntry(git, revCommit);
+            diffEntries.forEach(diffEntry -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("oldPath", diffEntry.getOldPath());
+                map.put("changeType", diffEntry.getChangeType().name());
+                map.put("newPath", diffEntry.getNewPath());
+                objectList.add(map);
+            });
+        } else {
+            log.error("This Commit {} has not Parent ", commitId);
+        }
+        return objectList;
     }
 }

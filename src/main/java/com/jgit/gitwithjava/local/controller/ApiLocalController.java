@@ -58,7 +58,7 @@ public class ApiLocalController {
     }
 
     @GetMapping("/commitDiffEntry/{commitId}")
-    public void commitDiffEntry(@RequestParam String path, @PathVariable String commitId) throws IOException {
-        localService.commitDiffEntry(path, commitId);
+    public List<Object> commitDiffEntry(@RequestParam String path, @PathVariable String commitId) throws IOException {
+        return localService.commitDiffEntry(path, commitId);
     }
 }
