@@ -1,24 +1,24 @@
 package com.jgit.gitwithjava.local.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
-import org.eclipse.jgit.api.LogCommand;
-import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.revwalk.*;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.util.IO;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -72,6 +72,13 @@ public class GitServices {
     public RevCommit getCommit(Git git, String commitId) throws IOException {
         ObjectId objectId = git.getRepository().resolve(commitId);
         return git.getRepository().parseCommit(objectId);
+    }
+
+    public List<DiffEntry> commitDiffEntry(Git git, RevCommit commit) throws IOException {
+        DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
+        diffFormatter.setRepository(git.getRepository());
+        diffFormatter.setDetectRenames(true);
+        return diffFormatter.scan(commit.getId(), commit.getParent(0).getId());
     }
 
 }

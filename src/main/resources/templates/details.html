@@ -133,13 +133,13 @@
                     if (key === 'timestamp') {
                         let timestamp = dataRow[key]
                         td.textContent = new Date(timestamp * 1000).toDateString();
-                    }else if (key === 'commitId'){
+                    } else if (key === 'commitId') {
                         const anchorElement = document.createElement('a');
                         anchorElement.textContent = dataRow[key];
-/*
-                        anchorElement.setAttribute('href', dataRow[key]);
-*/
-                        anchorElement.addEventListener('click', function(event) {
+                        /*
+                                                anchorElement.setAttribute('href', dataRow[key]);
+                        */
+                        anchorElement.addEventListener('click', function (event) {
                             event.preventDefault();
                             // Call your function here
                             getCommit(dataRow[key]);
@@ -173,8 +173,45 @@
             let mainElement = document.getElementById('dynamicContent');
             drawCalenderChart(data.commitsByDate, mainElement)
             drawPieChart(data.authorCommitsCount, mainElement)
+            drawStuff(data.lastDayCommits, mainElement)
         });
     }
+
+    function drawStuff(lastDayCommits, mainElement) {
+        let existingElement = document.getElementById("last_day_commits");
+        if (!existingElement) {
+            let divElement = document.createElement("div");
+            divElement.setAttribute("id", "last_day_commits");
+            divElement.setAttribute("style", "width: 600px; height: 400px;");
+            mainElement.appendChild(divElement);
+
+            let data = new google.visualization.DataTable();
+            data.addColumn('string', 'author');
+            data.addColumn('number', 'commits');
+
+            for (const commitKey in lastDayCommits.commits) {
+                data.addRow([commitKey, lastDayCommits.commits[commitKey]]);
+            }
+            let options = {
+                width: 300,
+                legend: {position: 'none'},
+                chart: {
+                    title: 'Last Commits on ' + lastDayCommits.lastDate,
+                    // subtitle: 'popularity by percentage' },
+                },
+                axes: {
+                    x: {
+                        0: {side: 'top', label: 'Authors'} // Top x-axis.
+                    }
+                },
+                bar: {groupWidth: "90%"}
+            };
+
+            let chart = new google.charts.Bar(divElement);
+            // Convert the Classic options to Material options.
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+    };
 
     function drawCalenderChart(commitsByDate, mainElement) {
         let existingElement = document.getElementById("commits_by_date");
@@ -440,11 +477,17 @@
         const tableContainer = document.getElementById('dynamicContent');
         tableContainer.appendChild(container);
     }
-    function getCommit(commitId){
+
+    function getCommit(commitId) {
         let dynamicContent = $('#dynamicContent');
         dynamicContent.empty();
         let finalUrl = `/api/getCommit/${commitId}?path=${path}`
         $.get(finalUrl, function (data) {
+            console.log(data)
+        });
+
+        let commitFiles = `/api/commitDiffEntry/${commitId}?path=${path}`
+        $.get(commitFiles, function (data) {
             console.log(data)
         });
     }

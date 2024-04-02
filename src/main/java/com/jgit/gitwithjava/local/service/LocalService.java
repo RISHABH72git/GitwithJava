@@ -213,4 +213,10 @@ public class LocalService {
         System.out.println(revCommit.getTree());
         return objectMap;
     }
+
+    public void commitDiffEntry(String path, String commitId) throws IOException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        RevCommit revCommit = gitServices.getCommit(git, commitId);
+        gitServices.commitDiffEntry(git, revCommit);
+    }
 }
