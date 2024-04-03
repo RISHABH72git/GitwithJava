@@ -520,11 +520,16 @@
         let listItem3 = document.createElement("li");
         listItem3.className = "list-group-item";
         listItem3.textContent = "message : " + data.message;
-
-// Append list items to the list group
+        // Append list items to the list group
         listGroupUl.appendChild(listItem1);
         listGroupUl.appendChild(listItem2);
         listGroupUl.appendChild(listItem3);
+        if (data.parent) {
+            let listItem4 = document.createElement("li");
+            listItem4.className = "list-group-item";
+            listItem4.textContent = "parent : " + data.parent;
+            listGroupUl.appendChild(listItem4)
+        }
 
 // Append the card header and list group to the card
         cardDiv.appendChild(cardHeaderDiv);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -210,6 +211,13 @@ public class LocalService {
         objectMap.put("name", revCommit.getCommitterIdent().getName());
         objectMap.put("email", revCommit.getCommitterIdent().getEmailAddress());
         objectMap.put("time", revCommit.getCommitTime());
+        if (revCommit.getParentCount() > 0) {
+            List<Object> parentCommits = new ArrayList<>();
+            for (RevCommit revCommit1 : revCommit.getParents()) {
+                parentCommits.add(revCommit1.getName());
+            }
+            objectMap.put("parent", parentCommits);
+        }
         return objectMap;
     }
 
