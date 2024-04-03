@@ -484,12 +484,55 @@
         let finalUrl = `/api/getCommit/${commitId}?path=${path}`
         $.get(finalUrl, function (data) {
             console.log(data)
+            addCommitDetails(data)
         });
 
         let commitFiles = `/api/commitDiffEntry/${commitId}?path=${path}`
         $.get(commitFiles, function (data) {
             console.log(data)
         });
+    }
+
+    function addCommitDetails(data) {
+        // Create the outer card element
+        let cardDiv = document.createElement("div");
+        cardDiv.classList.add("card");
+        cardDiv.style.width = "50rem";
+
+        let cardHeaderDiv = document.createElement("div");
+        cardHeaderDiv.classList.add("card-header", "text-center");
+        cardHeaderDiv.textContent = `${data.id}`;
+        let dateHeaderDiv = document.createElement("div");
+        dateHeaderDiv.classList.add("card-header", "text-center");
+        dateHeaderDiv.textContent = `${new Date(data.time * 1000).toTimeString()} - ${new Date(data.time * 1000).toDateString()}`;
+        let listGroupUl = document.createElement("ul");
+        listGroupUl.className = "list-group list-group-flush";
+
+        // Create list items
+        let listItem1 = document.createElement("li");
+        listItem1.className = "list-group-item";
+        listItem1.textContent = "name : " + data.name;
+
+        let listItem2 = document.createElement("li");
+        listItem2.className = "list-group-item";
+        listItem2.textContent = "email : " + data.email;
+
+        let listItem3 = document.createElement("li");
+        listItem3.className = "list-group-item";
+        listItem3.textContent = "message : " + data.message;
+
+// Append list items to the list group
+        listGroupUl.appendChild(listItem1);
+        listGroupUl.appendChild(listItem2);
+        listGroupUl.appendChild(listItem3);
+
+// Append the card header and list group to the card
+        cardDiv.appendChild(cardHeaderDiv);
+        cardDiv.appendChild(dateHeaderDiv);
+        cardDiv.appendChild(listGroupUl);
+
+        const tableContainer = document.getElementById('dynamicContent');
+        tableContainer.appendChild(cardDiv);
     }
 </script>
 </body>
