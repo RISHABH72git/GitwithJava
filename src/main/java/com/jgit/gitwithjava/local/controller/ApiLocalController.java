@@ -61,4 +61,9 @@ public class ApiLocalController {
     public List<Object> commitDiffEntry(@RequestParam String path, @PathVariable String commitId) throws IOException {
         return localService.commitDiffEntry(path, commitId);
     }
+
+    @GetMapping("/getFiles")
+    public  Map<String, Object> getFiles(@RequestParam String path) throws GitAPIException, IOException {
+        return localService.getFiles(path);
+    }
 }

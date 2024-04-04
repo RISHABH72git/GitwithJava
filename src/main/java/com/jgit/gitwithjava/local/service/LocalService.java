@@ -16,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -238,5 +241,32 @@ public class LocalService {
             log.error("This Commit {} has not Parent ", commitId);
         }
         return objectList;
+    }
+
+    public Map<String, Object> getFiles(String path) throws IOException, GitAPIException {
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        List<Object> objectList = new ArrayList<>();
+        String finalPath = DefaultCredentials.getRootFolder() + path;
+        /*Git git = Git.open(new File(finalPath));
+        Status status = gitServices.getStatus(git);
+        Set<String> ignoreFiles = status.getIgnoredNotInIndex();*/
+        File directoryPath = new File(finalPath);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (Objects.requireNonNull(directoryPath.list()).length > 0) {
+            File[] listFiles = directoryPath.listFiles();
+            for (File file : listFiles) {
+                Date date = new Date(file.lastModified());
+                Map<String, Object> fileMap = new HashMap<>();
+                fileMap.put("fileName", file.getName());
+                fileMap.put("isDirectory", file.isDirectory());
+                fileMap.put("lastModified", sdf.format(date));
+                objectList.add(fileMap);
+            }
+        } else {
+            log.error("This path [{}] has not any file ", path);
+        }
+        stringObjectMap.put("files", objectList);
+        stringObjectMap.put("oldPath", path);
+        return stringObjectMap;
     }
 }

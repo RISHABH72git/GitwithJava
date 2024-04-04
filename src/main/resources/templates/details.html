@@ -73,6 +73,9 @@
                     <li class="nav-item">
                         <button class="btn btn-link" id="configButton" onclick="loadConfig()">Config</button>
                     </li>
+                    <li class="nav-item">
+                        <button class="btn btn-link" id="files" onclick="getFiles(path)">Files</button>
+                    </li>
                 </ul>
                 <hr>
             </div>
@@ -538,6 +541,126 @@
 
         const tableContainer = document.getElementById('dynamicContent');
         tableContainer.appendChild(cardDiv);
+    }
+
+    function getFiles(path) {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+
+        let getFilesUrl = `/api/getFiles?path=${path}`
+        $.get(getFilesUrl, function (data) {
+            console.log(data)
+            showFiles(data)
+        });
+    }
+
+    function showFiles(data) {
+        let mainDiv = document.createElement("div");
+
+        let navElement = document.createElement("nav");
+        navElement.setAttribute("aria-label", "breadcrumb");
+        let olElement = document.createElement("ol");
+        olElement.className = "breadcrumb";
+
+        if (data.oldPath !== path) {
+            let liElement = document.createElement("li");
+            liElement.className = "breadcrumb-item active";
+            liElement.setAttribute("aria-current", "page");
+            const anchorElement = document.createElement('a');
+            anchorElement.textContent = path;
+            anchorElement.setAttribute('href', '');
+            anchorElement.addEventListener('click', function (event) {
+                event.preventDefault();
+                // Call your function here
+                getFiles(path);
+            });
+            liElement.appendChild(anchorElement)
+            olElement.appendChild(liElement);
+
+            let latestPath = data.oldPath
+            let folders = latestPath.substring(path.length + 1).split('/')
+            for (const folder of folders) {
+                let editPath = getPathAndFolder(folder, latestPath)
+                let liElement = document.createElement("li");
+                liElement.className = "breadcrumb-item";
+                const anchorElement = document.createElement('a');
+                anchorElement.textContent = folder;
+                anchorElement.setAttribute('href', '');
+                anchorElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Call your function here
+                    getFiles(`${editPath}${folder}`);
+                });
+                liElement.appendChild(anchorElement)
+                olElement.appendChild(liElement);
+            }
+        } else {
+            let liElement = document.createElement("li");
+            liElement.className = "breadcrumb-item active";
+            liElement.setAttribute("aria-current", "page");
+            liElement.textContent = `${path}`;
+            olElement.appendChild(liElement);
+        }
+
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-hover');
+
+        // Create table header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        ['fileName', 'isDirectory', 'lastModified'].forEach(headerText => {
+            const th = document.createElement('th');
+            th.scope = 'col';
+            th.textContent = headerText;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create table body
+        const tbody = document.createElement('tbody');
+        for (const dataRow of data.files) {
+            const tr = document.createElement('tr');
+            if (dataRow.isDirectory === true) {
+                tr.classList.add("table-primary")
+
+                const td1 = document.createElement('td');
+                const anchorElement = document.createElement('a');
+                anchorElement.textContent = dataRow.fileName;
+                anchorElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Call your function here
+                    getFiles(`${data.oldPath}/${dataRow.fileName}`);
+                });
+                td1.appendChild(anchorElement)
+                tr.appendChild(td1)
+            } else {
+                const td1 = document.createElement('td');
+                td1.textContent = dataRow.fileName;
+                tr.appendChild(td1)
+            }
+
+            const td2 = document.createElement('td');
+            td2.textContent = dataRow.isDirectory;
+            const td3 = document.createElement('td');
+            td3.textContent = dataRow.lastModified;
+
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(tbody);
+
+        navElement.appendChild(olElement);
+        mainDiv.appendChild(navElement)
+        mainDiv.appendChild(table)
+        const tableContainer = document.getElementById('dynamicContent');
+        tableContainer.appendChild(mainDiv);
+    }
+
+    function getPathAndFolder(folder, path) {
+        return path.substring(0, path.indexOf(folder));
     }
 </script>
 </body>
