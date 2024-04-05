@@ -243,16 +243,18 @@
             // Create a new div element
             let divElement = document.createElement("div");
             divElement.setAttribute("id", "author_commits_count");
-            divElement.setAttribute("style", "width: 900px; height: 500px;");
+            divElement.setAttribute("style", "width: 1200px; height: 800px;");
             mainElement.appendChild(divElement);
 
             let data = new google.visualization.DataTable();
             data.addColumn('string', 'Year');
             data.addColumn('number', 'Views');
+            let totalCount = 0;
             for (const authorKey in authorCommitsCount) {
+                totalCount = totalCount + authorCommitsCount[authorKey]
                 data.addRow([authorKey, authorCommitsCount[authorKey]]);
             }
-            let options = {title: 'Total Commits', is3D: true};
+            let options = {title: 'Total Commits  - ' + totalCount, is3D: true, fontSize:20};
             let chart = new google.visualization.PieChart(divElement);
             chart.draw(data, options);
         }
