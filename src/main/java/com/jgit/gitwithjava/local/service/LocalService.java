@@ -1,6 +1,7 @@
 package com.jgit.gitwithjava.local.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
+import com.jgit.gitwithjava.custom.model.GitClone;
 import com.jgit.gitwithjava.frontend.model.FileModel;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.Git;
@@ -11,6 +12,7 @@ import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -270,5 +272,14 @@ public class LocalService {
         stringObjectMap.put("files", objectList);
         stringObjectMap.put("oldPath", path);
         return stringObjectMap;
+    }
+
+    public void cloneRepository(GitClone gitClone, String path) throws GitAPIException {
+        if (path.isEmpty()) {
+            gitClone.setFilePath(DefaultCredentials.getRootFolder() + path);
+        } else {
+            gitClone.setFilePath(DefaultCredentials.getRootFolder() + path + "/");
+        }
+        gitServices.cloneRepository(gitClone);
     }
 }

@@ -499,7 +499,7 @@
     function showFilesAndChangeType(data) {
         let accordion = document.createElement('div');
         accordion.classList.add("accordion");
-        let listOfData = [" ADD", "MODIFY", "DELETE", "RENAME"]
+        let listOfData = ["ADD", "MODIFY", "DELETE", "RENAME"]
         let keys = Object.keys(data)
         for (const listOfDatum of listOfData) {
             if (keys.includes(listOfDatum)) {

@@ -1,5 +1,7 @@
 package com.jgit.gitwithjava.local.service;
 
+import com.jgit.gitwithjava.DefaultCredentials;
+import com.jgit.gitwithjava.custom.model.GitClone;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -9,12 +11,14 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.*;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.util.IO;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -78,7 +82,15 @@ public class GitServices {
         DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
         diffFormatter.setRepository(git.getRepository());
         diffFormatter.setDetectRenames(true);
-        return diffFormatter.scan(commit.getId(), commit.getParent(0).getId());
+        return diffFormatter.scan(commit.getParent(0).getId(), commit.getId());
+    }
+
+    public void cloneRepository(GitClone gitClone) throws GitAPIException {
+        // Clone the repository
+        File file = new File(gitClone.getFilePath());
+        Git.cloneRepository().setURI(gitClone.getRemoteUrl()).setDirectory(file)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitClone.getUsername(), gitClone.getPassword())).call();
+        log.info("clone repository {}", file.getName());
     }
 
 }
