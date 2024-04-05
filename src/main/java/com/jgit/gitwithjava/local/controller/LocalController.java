@@ -1,12 +1,14 @@
 package com.jgit.gitwithjava.local.controller;
 
 import com.jgit.gitwithjava.local.service.LocalService;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
@@ -27,6 +29,26 @@ public class LocalController {
         model.addAttribute("path", path);
         model.addAttribute("getAllHome", localService.localAllFile(path));
         return "newHome";
+    }
+
+    @GetMapping("/createRepositoryForm")
+    public String createRepositoryForm(Model model, @RequestParam String path) {
+        model.addAttribute("path", path);
+        return "createRepositoryForm";
+    }
+
+    @PostMapping("/createRepository")
+    public RedirectView createRepository(Model model, @RequestParam String path, @RequestParam String repo) throws GitAPIException, IOException {
+        String repoPath = "";
+        String customPath = "";
+        if (!path.equals("")) {
+            customPath = "?path=" + path;
+            repoPath = path + "/" + repo;
+        } else {
+            repoPath = repo;
+        }
+        localService.createRepository(repoPath);
+        return new RedirectView("/local" + customPath);
     }
 
     @GetMapping("/fileDetails")

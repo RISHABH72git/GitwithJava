@@ -8,7 +8,6 @@ import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Config;
-import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -16,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -74,6 +70,11 @@ public class LocalService {
             }
         }
         return allFiles;
+    }
+
+    public void createRepository(String path) throws IOException, GitAPIException {
+        File file = new File(DefaultCredentials.getRootFolder() + path);
+        Git.init().setDirectory(file).setInitialBranch("master").call();
     }
 
     public List<Object> getCommits(String path) throws IOException, GitAPIException {
@@ -254,12 +255,14 @@ public class LocalService {
         if (Objects.requireNonNull(directoryPath.list()).length > 0) {
             File[] listFiles = directoryPath.listFiles();
             for (File file : listFiles) {
-                Date date = new Date(file.lastModified());
-                Map<String, Object> fileMap = new HashMap<>();
-                fileMap.put("fileName", file.getName());
-                fileMap.put("isDirectory", file.isDirectory());
-                fileMap.put("lastModified", sdf.format(date));
-                objectList.add(fileMap);
+                if (!file.isHidden()) {
+                    Date date = new Date(file.lastModified());
+                    Map<String, Object> fileMap = new HashMap<>();
+                    fileMap.put("fileName", file.getName());
+                    fileMap.put("isDirectory", file.isDirectory());
+                    fileMap.put("lastModified", sdf.format(date));
+                    objectList.add(fileMap);
+                }
             }
         } else {
             log.error("This path [{}] has not any file ", path);

@@ -575,7 +575,25 @@
         if (data.parent) {
             let listItem4 = document.createElement("li");
             listItem4.className = "list-group-item";
-            listItem4.textContent = "parent : " + data.parent;
+            // listItem4.textContent = "parent : " + data.parent;
+            let parentLabelSpan = document.createElement("span");
+            parentLabelSpan.textContent = "parent: ";
+            listItem4.appendChild(parentLabelSpan);
+            for (const parent of data.parent) {
+                let parentValueSpan = document.createElement("span");
+                let parentLink = document.createElement("a");
+                parentLink.textContent = parent; // Assuming data.parent contains the URL text
+                parentLink.href = ""; // Assuming data.parent contains the URL
+                parentLink.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Call your function here
+                    getCommit(parent);
+                });
+                parentValueSpan.appendChild(parentLink);
+                listItem4.appendChild(parentValueSpan);
+                let br = document.createElement("br");
+                listItem4.appendChild(br)
+            }
             listGroupUl.appendChild(listItem4)
         }
 

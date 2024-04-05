@@ -22,7 +22,8 @@
                         <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/form}" type="button">Init Repository</a>
+                        <a class="btn btn-link" th:href="@{/local/createRepositoryForm(path = ${path})}" type="button">Create
+                            Repository</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
@@ -72,6 +73,8 @@
                         <p th:text="${entry.getFileName()}" th:unless="${entry.getHasGit()}"></p>
                     </div>
                     <div th:unless="${entry.getIsDirectory()}">
+                        <img alt="View" height="100"
+                             src="https://visualpharm.com/assets/510/View-595b40b65ba036ed117d2714.svg" width="100">
                         <p th:text="${entry.getFileName()}"></p>
                     </div>
                 </div>
