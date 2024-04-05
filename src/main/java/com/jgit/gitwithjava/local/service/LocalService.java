@@ -5,6 +5,7 @@ import com.jgit.gitwithjava.custom.model.GitClone;
 import com.jgit.gitwithjava.frontend.model.FileModel;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -16,12 +17,15 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -281,5 +285,40 @@ public class LocalService {
             gitClone.setFilePath(DefaultCredentials.getRootFolder() + path + "/");
         }
         gitServices.cloneRepository(gitClone);
+    }
+
+    public void printCommits(String path, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
+        File gitFile = new File(DefaultCredentials.getRootFolder() + path);
+        try (Git git = Git.open(gitFile)) {
+            File file = new File(DefaultCredentials.getRootFolder() + path + "/" + fileName);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            LogCommand logCommand = git.log().all();
+            long count = 1;
+            for (RevCommit revCommit : logCommand.call()) {
+                saveDetailsInFile(revCommit, count, writer, timestamp, message, email);
+                count++;
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveDetailsInFile(RevCommit revCommit, long count, BufferedWriter bufferedWriter, boolean timestamp, boolean message, boolean email) throws IOException {
+        String data = count + " - commitId: " + revCommit.getName();  // Generate the data for each iteration
+        if (email) {
+            data = data + "  Email: " + revCommit.getCommitterIdent().getEmailAddress();
+        }
+        if (message) {
+            data = data + "  Message: " + revCommit.getFullMessage();
+        }
+        if (timestamp) {
+            Instant commitInstant = Instant.ofEpochSecond(revCommit.getCommitTime());
+            ZonedDateTime authorDateTime = ZonedDateTime.ofInstant(commitInstant, ZoneId.systemDefault());
+            String gitDateTimeFormatString = "MMM dd HH:mm yyyy";
+            data = data + "  Date: " + authorDateTime.format(DateTimeFormatter.ofPattern(gitDateTimeFormatString));
+        }
+        bufferedWriter.write(data); // Write the data to the file
+        bufferedWriter.newLine();
     }
 }

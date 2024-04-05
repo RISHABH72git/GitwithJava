@@ -91,4 +91,10 @@ public class LocalController {
         }
         return new RedirectView("/local" + customPath);
     }
+
+    @PostMapping("/printCommits")
+    public RedirectView printCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
+        localService.printCommits(path, fileName, timestamp, message, email);
+        return new RedirectView("/local/fileDetails?path=" + path);
+    }
 }
