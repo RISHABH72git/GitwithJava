@@ -224,23 +224,22 @@ public class LocalService {
         return objectMap;
     }
 
-    public List<Object> commitDiffEntry(String path, String commitId) throws IOException {
+    public Map<DiffEntry.ChangeType, List<String>> commitDiffEntry(String path, String commitId) throws IOException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         RevCommit revCommit = gitServices.getCommit(git, commitId);
-        List<Object> objectList = new ArrayList<>();
+        Map<DiffEntry.ChangeType, List<String>> listMap = new HashMap<>();
         if (revCommit.getParentCount() > 0) {
             List<DiffEntry> diffEntries = gitServices.commitDiffEntry(git, revCommit);
             diffEntries.forEach(diffEntry -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("oldPath", diffEntry.getOldPath());
-                map.put("changeType", diffEntry.getChangeType().name());
-                map.put("newPath", diffEntry.getNewPath());
-                objectList.add(map);
+                DiffEntry.ChangeType changeType = diffEntry.getChangeType();
+                String filePath = (changeType == DiffEntry.ChangeType.DELETE) ? diffEntry.getOldPath() : diffEntry.getNewPath();
+                listMap.computeIfAbsent(changeType, key -> new ArrayList<>()).add(filePath);
             });
+//            listMap = diffEntries.stream().collect(Collectors.groupingBy(DiffEntry::getChangeType, Collectors.mapping(DiffEntry::getNewPath, Collectors.toList())));
         } else {
             log.error("This Commit {} has not Parent ", commitId);
         }
-        return objectList;
+        return listMap;
     }
 
     public Map<String, Object> getFiles(String path) throws IOException, GitAPIException {

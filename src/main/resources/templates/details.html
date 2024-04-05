@@ -38,9 +38,9 @@
                     <li class="nav-item">
                         <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <!--<li class="nav-item">
                         <a class="btn btn-link" th:href="@{/form}" type="button">Init Repository</a>
-                    </li>
+                    </li>-->
                     <li class="nav-item">
                         <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
                     </li>
@@ -87,7 +87,6 @@
                 th:text="${path}">
             </h2>
             <div id="dynamicContent"></div>
-
         </main>
     </div>
 </div>
@@ -139,9 +138,7 @@
                     } else if (key === 'commitId') {
                         const anchorElement = document.createElement('a');
                         anchorElement.textContent = dataRow[key];
-                        /*
-                                                anchorElement.setAttribute('href', dataRow[key]);
-                        */
+                        anchorElement.setAttribute('href', '');
                         anchorElement.addEventListener('click', function (event) {
                             event.preventDefault();
                             // Call your function here
@@ -254,7 +251,7 @@
                 totalCount = totalCount + authorCommitsCount[authorKey]
                 data.addRow([authorKey, authorCommitsCount[authorKey]]);
             }
-            let options = {title: 'Total Commits  - ' + totalCount, is3D: true, fontSize:20};
+            let options = {title: 'Total Commits  - ' + totalCount, is3D: true, fontSize: 20};
             let chart = new google.visualization.PieChart(divElement);
             chart.draw(data, options);
         }
@@ -495,7 +492,53 @@
         let commitFiles = `/api/commitDiffEntry/${commitId}?path=${path}`
         $.get(commitFiles, function (data) {
             console.log(data)
+            showFilesAndChangeType(data)
         });
+    }
+
+    function showFilesAndChangeType(data) {
+        let accordion = document.createElement('div');
+        accordion.classList.add("accordion");
+        let listOfData = [" ADD", "MODIFY", "DELETE", "RENAME"]
+        let keys = Object.keys(data)
+        for (const listOfDatum of listOfData) {
+            if (keys.includes(listOfDatum)) {
+                let accordionItem = document.createElement("div");
+                accordionItem.classList.add("accordion-item");
+                let accordionHeader = document.createElement("h2");
+                accordionHeader.classList.add("accordion-header");
+                let accordionButton = document.createElement("button");
+                accordionButton.classList.add("accordion-button");
+                accordionButton.setAttribute("type", "button");
+                accordionButton.setAttribute("data-bs-toggle", "collapse");
+                accordionButton.setAttribute("data-bs-target", "#collapse" + listOfDatum);
+                // accordionButton.setAttribute("aria-expanded", "true");
+                accordionButton.setAttribute("aria-controls", "collapse" + listOfDatum);
+                accordionButton.textContent = listOfDatum;
+                let accordionCollapse = document.createElement("div");
+                accordionCollapse.classList.add("accordion-collapse", "collapse");
+                accordionCollapse.id = "collapse" + listOfDatum;
+                accordionCollapse.setAttribute("data-bs-parent", "#accordionExample");
+
+                let accordionBody = document.createElement("div");
+                accordionBody.classList.add("accordion-body");
+                let ulElement = document.createElement("ul");
+                for (const modify of data[listOfDatum]) {
+                    let liElement = document.createElement("li");
+                    liElement.textContent = modify
+                    ulElement.appendChild(liElement)
+                }
+                accordionBody.appendChild(ulElement)
+                // Assemble elements
+                accordionHeader.appendChild(accordionButton);
+                accordionCollapse.appendChild(accordionBody);
+                accordionItem.appendChild(accordionHeader);
+                accordionItem.appendChild(accordionCollapse);
+                accordion.appendChild(accordionItem)
+            }
+        }
+        const tableContainer = document.getElementById('dynamicContent');
+        tableContainer.appendChild(accordion);
     }
 
     function addCommitDetails(data) {
@@ -629,6 +672,7 @@
                 const td1 = document.createElement('td');
                 const anchorElement = document.createElement('a');
                 anchorElement.textContent = dataRow.fileName;
+                anchorElement.setAttribute('href', '');
                 anchorElement.addEventListener('click', function (event) {
                     event.preventDefault();
                     // Call your function here

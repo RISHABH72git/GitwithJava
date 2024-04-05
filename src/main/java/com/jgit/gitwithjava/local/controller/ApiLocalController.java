@@ -2,6 +2,7 @@ package com.jgit.gitwithjava.local.controller;
 
 import com.jgit.gitwithjava.local.service.LocalService;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Ref;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +59,7 @@ public class ApiLocalController {
     }
 
     @GetMapping("/commitDiffEntry/{commitId}")
-    public List<Object> commitDiffEntry(@RequestParam String path, @PathVariable String commitId) throws IOException {
+    public Map<DiffEntry.ChangeType, List<String>> commitDiffEntry(@RequestParam String path, @PathVariable String commitId) throws IOException {
         return localService.commitDiffEntry(path, commitId);
     }
 
