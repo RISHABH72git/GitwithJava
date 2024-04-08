@@ -64,7 +64,12 @@ public class ApiLocalController {
     }
 
     @GetMapping("/getFiles")
-    public  Map<String, Object> getFiles(@RequestParam String path) throws GitAPIException, IOException {
+    public Map<String, Object> getFiles(@RequestParam String path) throws GitAPIException, IOException {
         return localService.getFiles(path);
+    }
+
+    @GetMapping("/getDiffByChildCommitAndParentCommit")
+    public Map<String, Object> getDiffByChildCommitAndParentCommit(@RequestParam String path, String commitId, String parentCommitId) throws IOException {
+        return localService.getDiffByChildCommitAndParentCommit(path, commitId, parentCommitId);
     }
 }

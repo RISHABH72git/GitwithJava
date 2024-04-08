@@ -9,18 +9,22 @@ import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.Edit;
+import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.lib.Config;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -320,5 +324,27 @@ public class LocalService {
         }
         bufferedWriter.write(data); // Write the data to the file
         bufferedWriter.newLine();
+    }
+
+    public Map<String, Object> getDiffByChildCommitAndParentCommit(String path, String commitId, String parentCommitId) throws IOException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DiffFormatter diffFormatter = new DiffFormatter(outputStream);
+        diffFormatter.setRepository(git.getRepository());
+        diffFormatter.setContext(0);
+        List<DiffEntry> diffs = diffFormatter.scan(ObjectId.fromString(parentCommitId), ObjectId.fromString(commitId));
+        Map<DiffEntry.ChangeType, List<DiffEntry>> changeTypesList = diffs.stream().collect(Collectors.groupingBy(DiffEntry::getChangeType));
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        changeTypesList.forEach((changeType, diffEntries) -> {
+            try {
+                diffFormatter.format(diffEntries);
+                List<String> lines = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray()))).lines().collect(Collectors.toList());
+                stringObjectMap.put(changeType.name(), lines);
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return stringObjectMap;
     }
 }

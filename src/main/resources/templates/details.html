@@ -89,7 +89,8 @@
             <div id="dynamicContent"></div>
         </main>
 
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="myModal" role="dialog"
+             tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -99,26 +100,28 @@
                         <form th:action="@{/local/printCommits(path = ${path})}" th:method="post">
                             <div class="form-group">
                                 <label for="nameInput">File Name:</label>
-                                <input type="text" class="form-control" id="nameInput" name="fileName" th:value="${fileName}" placeholder="Enter filename"
-                                       required>
+                                <input class="form-control" id="nameInput" name="fileName" placeholder="Enter filename"
+                                       required th:value="${fileName}"
+                                       type="text">
                             </div>
                             <br>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" th:checked="false" name="timestamp"
-                                       th:value="true">
+                                <input class="form-check-input" name="timestamp" th:checked="false" th:value="true"
+                                       type="checkbox">
                                 <label class="form-check-label">Timestamp</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" th:checked="false" name="email" th:value="true">
+                                <input class="form-check-input" name="email" th:checked="false" th:value="true"
+                                       type="checkbox">
                                 <label class="form-check-label">Email</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" th:checked="false" name="message"
-                                       th:value="true">
+                                <input class="form-check-input" name="message" th:checked="false" th:value="true"
+                                       type="checkbox">
                                 <label class="form-check-label">Message</label>
                             </div>
                             <br>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button class="btn btn-primary" type="submit">Submit</button>
                         </form>
                     </div>
                 </div>
@@ -536,15 +539,62 @@
             console.log(data)
             addCommitDetails(data)
         });
-
-        let commitFiles = `/api/commitDiffEntry/${commitId}?path=${path}`
-        $.get(commitFiles, function (data) {
-            console.log(data)
-            showFilesAndChangeType(data)
-        });
     }
 
-    function showFilesAndChangeType(data) {
+    function createDiffForm(commitId, parentCommitIds) {
+        let formElement = document.createElement('form');
+        formElement.classList.add("row", "align-items-center")
+
+        let commitElement = document.createElement('div');
+        commitElement.classList.add("col")
+        let subCommitElement = document.createElement('div')
+        subCommitElement.classList.add("input-group")
+        let inputElement1 = document.createElement("input");
+        inputElement1.setAttribute("type", "text");
+        inputElement1.setAttribute("class", "form-control");
+        inputElement1.setAttribute("placeholder", "CommitId");
+        inputElement1.value = commitId;
+        subCommitElement.appendChild(inputElement1)
+        commitElement.appendChild(subCommitElement)
+        formElement.appendChild(commitElement)
+
+
+        let parentCommitElement = document.createElement('div');
+        parentCommitElement.classList.add("col")
+        let selectElement = document.createElement("select");
+        selectElement.setAttribute("class", "form-select");
+        for (const parentCommitId of parentCommitIds) {
+            let option2 = document.createElement("option");
+            option2.textContent = parentCommitId;
+            option2.setAttribute("value", parentCommitId);
+            selectElement.appendChild(option2);
+        }
+        parentCommitElement.appendChild(selectElement)
+        formElement.appendChild(parentCommitElement)
+
+        let divElement = document.createElement("div");
+        divElement.className = "col";
+        let buttonElement = document.createElement("button");
+        buttonElement.setAttribute("type", "submit");
+        buttonElement.setAttribute("class", "btn btn-primary");
+        buttonElement.textContent = "Difference";
+        buttonElement.addEventListener('click', function (event) {
+            event.preventDefault();
+            // Call your function here
+            let selectElement = document.querySelector(".form-select");
+            let selectedValue = selectElement.value;
+            getDiffByChildCommitAndParentCommit(path, commitId, selectedValue);
+        });
+        divElement.appendChild(buttonElement);
+        formElement.appendChild(divElement)
+
+        const dynamicContainer = document.getElementById('dynamicContent');
+        dynamicContainer.appendChild(document.createElement('br'))
+        dynamicContainer.appendChild(formElement);
+        dynamicContainer.appendChild(document.createElement('br'))
+    }
+
+    function showDiffByChildCommitAndParentCommit(data) {
         let accordion = document.createElement('div');
         accordion.classList.add("accordion");
         let listOfData = ["ADD", "MODIFY", "DELETE", "RENAME"]
@@ -570,13 +620,20 @@
 
                 let accordionBody = document.createElement("div");
                 accordionBody.classList.add("accordion-body");
-                let ulElement = document.createElement("ul");
+                let olElement = document.createElement("ol");
                 for (const modify of data[listOfDatum]) {
                     let liElement = document.createElement("li");
                     liElement.textContent = modify
-                    ulElement.appendChild(liElement)
+                    if (modify.startsWith("-")) {
+                        // Add a class for red color
+                        liElement.classList.add("text-danger");
+                    } else if (modify.startsWith("+")) {
+                        // Add a class for green color
+                        liElement.classList.add("text-success");
+                    }
+                    olElement.appendChild(liElement)
                 }
-                accordionBody.appendChild(ulElement)
+                accordionBody.appendChild(olElement)
                 // Assemble elements
                 accordionHeader.appendChild(accordionButton);
                 accordionCollapse.appendChild(accordionBody);
@@ -652,6 +709,7 @@
 
         const tableContainer = document.getElementById('dynamicContent');
         tableContainer.appendChild(cardDiv);
+        createDiffForm(data.id, data.parent)
     }
 
     function getFiles(path) {
@@ -773,6 +831,15 @@
 
     function getPathAndFolder(folder, path) {
         return path.substring(0, path.indexOf(folder));
+    }
+
+    function getDiffByChildCommitAndParentCommit(path, commitId, parentCommitId) {
+        let getFilesUrl = `/api/getDiffByChildCommitAndParentCommit?path=${path}&commitId=${commitId}&parentCommitId=${parentCommitId}`
+        console.log(getFilesUrl)
+        $.get(getFilesUrl, function (data) {
+            console.log("getDiffInFile", data)
+            showDiffByChildCommitAndParentCommit(data)
+        });
     }
 </script>
 </body>
