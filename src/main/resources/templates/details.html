@@ -326,7 +326,7 @@
             // Create table header
             const thead = document.createElement('thead');
             const headerRow = document.createElement('tr');
-            ['no', 'name', 'email'].forEach(headerText => {
+            ['no', 'name', 'email', 'commits'].forEach(headerText => {
                 const th = document.createElement('th');
                 th.scope = 'col';
                 th.textContent = headerText;
@@ -340,10 +340,19 @@
             let no = 1;
             data.forEach(dataRow => {
                 const tr = document.createElement('tr');
-                ['no', 'name', 'email'].forEach(key => {
+                ['no', 'name', 'email', 'commits'].forEach(key => {
                     const td = document.createElement('td');
                     if (key === 'no') {
                         td.textContent = no
+                    } else if (key === 'commits') {
+                        let buttonElement = document.createElement("button");
+                        buttonElement.setAttribute("type", "submit");
+                        buttonElement.setAttribute("class", "btn btn-primary");
+                        buttonElement.textContent = "show";
+                        buttonElement.addEventListener('click', function (event) {
+                            event.preventDefault();
+                        });
+                        td.appendChild(buttonElement)
                     } else {
                         td.textContent = dataRow[key];
                     }
@@ -353,7 +362,6 @@
                 no += 1;
             });
             table.appendChild(tbody);
-
             // Append table to the container
             const tableContainer = document.getElementById('dynamicContent');
             tableContainer.appendChild(table);
