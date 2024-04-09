@@ -6,6 +6,7 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Ref;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,5 +72,10 @@ public class ApiLocalController {
     @GetMapping("/getDiffByChildCommitAndParentCommit")
     public Map<String, Object> getDiffByChildCommitAndParentCommit(@RequestParam String path, String commitId, String parentCommitId) throws IOException {
         return localService.getDiffByChildCommitAndParentCommit(path, commitId, parentCommitId);
+    }
+
+    @GetMapping("/getCommitsByAuthorEmail")
+    public List<Object> getCommitsByAuthorEmail(@RequestParam String path, String email) throws GitAPIException, IOException {
+        return localService.getCommitsByAuthorEmail(path,email);
     }
 }

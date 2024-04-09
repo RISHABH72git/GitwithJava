@@ -291,16 +291,19 @@ public class LocalService {
         gitServices.cloneRepository(gitClone);
     }
 
-    public void printCommits(String path, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
+    public void printCommits(String path, String fileName, boolean timestamp, boolean message, boolean email, String[] authors) throws IOException, GitAPIException {
         File gitFile = new File(DefaultCredentials.getRootFolder() + path);
+        List<String> authorsLists = Arrays.asList(authors);
         try (Git git = Git.open(gitFile)) {
             File file = new File(DefaultCredentials.getRootFolder() + path + "/" + fileName);
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             LogCommand logCommand = git.log().all();
             long count = 1;
             for (RevCommit revCommit : logCommand.call()) {
-                saveDetailsInFile(revCommit, count, writer, timestamp, message, email);
-                count++;
+                if (authorsLists.contains(revCommit.getCommitterIdent().getEmailAddress())) {
+                    saveDetailsInFile(revCommit, count, writer, timestamp, message, email);
+                    count++;
+                }
             }
             writer.close();
         } catch (IOException e) {
@@ -346,5 +349,22 @@ public class LocalService {
             }
         });
         return stringObjectMap;
+    }
+
+    public List<Object> getCommitsByAuthorEmail(String path, String email) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        List<Object> revCommitList = new ArrayList<>();
+        gitServices.getLog(git).forEachRemaining(commit -> {
+            if (commit.getCommitterIdent().getEmailAddress().equals(email)) {
+                Map<String, Object> singleCommit = new HashMap();
+                singleCommit.put("commitId", commit.name());
+                singleCommit.put("parentCount", commit.getParentCount());
+                singleCommit.put("email", commit.getCommitterIdent().getEmailAddress());
+                singleCommit.put("name", commit.getCommitterIdent().getName());
+                singleCommit.put("timestamp", commit.getCommitTime());
+                revCommitList.add(singleCommit);
+            }
+        });
+        return revCommitList;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("local")
@@ -93,8 +94,8 @@ public class LocalController {
     }
 
     @PostMapping("/printCommits")
-    public RedirectView printCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
-        localService.printCommits(path, fileName, timestamp, message, email);
+    public RedirectView printCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email,String[] authors) throws IOException, GitAPIException {
+        localService.printCommits(path, fileName, timestamp, message, email, authors);
         return new RedirectView("/local/fileDetails?path=" + path);
     }
 }

@@ -93,4 +93,8 @@ public class GitServices {
         log.info("clone repository {}", file.getName());
     }
 
+    public Iterator<RevCommit> getLog(Git git) throws GitAPIException {
+        return git.log().call().iterator();
+    }
+
 }

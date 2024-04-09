@@ -105,6 +105,8 @@
                                        type="text">
                             </div>
                             <br>
+                            <select aria-label=".form-select-lg example" class="form-select" id="multiSelectAuthor" name="authors" multiple>
+                            </select>
                             <div class="form-check">
                                 <input class="form-check-input" name="timestamp" th:checked="false" th:value="true"
                                        type="checkbox">
@@ -151,6 +153,16 @@
 
     function showModal() {
         $('#myModal').modal('show');
+        let finalUrl = `/api/getAuthors?path=${path}`
+        $.get(finalUrl, function (data) {
+            let selectElement = document.getElementById("multiSelectAuthor");
+            for (const datum of data) {
+                let option = document.createElement("option");
+                option.value = datum.email;
+                option.text = datum.email;
+                selectElement.appendChild(option);
+            }
+        });
     }
 
     function displayData(data) {
@@ -318,6 +330,16 @@
         });
     }
 
+    function getCommitsByAuthorEmail(email) {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getCommitsByAuthorEmail?path=${path}&email=${email}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+            displayData(data)
+        });
+    }
+
     function displayAuthorsData(data) {
         if (data.length > 0) {
             const table = document.createElement('table');
@@ -340,24 +362,31 @@
             let no = 1;
             data.forEach(dataRow => {
                 const tr = document.createElement('tr');
-                ['no', 'name', 'email', 'commits'].forEach(key => {
-                    const td = document.createElement('td');
-                    if (key === 'no') {
-                        td.textContent = no
-                    } else if (key === 'commits') {
-                        let buttonElement = document.createElement("button");
-                        buttonElement.setAttribute("type", "submit");
-                        buttonElement.setAttribute("class", "btn btn-primary");
-                        buttonElement.textContent = "show";
-                        buttonElement.addEventListener('click', function (event) {
-                            event.preventDefault();
-                        });
-                        td.appendChild(buttonElement)
-                    } else {
-                        td.textContent = dataRow[key];
-                    }
-                    tr.appendChild(td);
+
+                const noEle = document.createElement('td');
+                noEle.textContent = no
+                tr.appendChild(noEle);
+
+                const nameEle = document.createElement('td');
+                nameEle.textContent = dataRow.name
+                tr.appendChild(nameEle);
+
+                const emailEle = document.createElement('td');
+                emailEle.textContent = dataRow.email
+                tr.appendChild(emailEle);
+
+                const commitsEle = document.createElement('td');
+                let buttonElement = document.createElement("button");
+                buttonElement.setAttribute("type", "submit");
+                buttonElement.setAttribute("class", "btn btn-primary");
+                buttonElement.textContent = "show";
+                buttonElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    getCommitsByAuthorEmail(dataRow.email);
                 });
+                commitsEle.appendChild(buttonElement)
+                tr.appendChild(commitsEle);
+
                 tbody.appendChild(tr);
                 no += 1;
             });
