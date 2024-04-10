@@ -8,14 +8,9 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.diff.Edit;
-import org.eclipse.jgit.diff.EditList;
-import org.eclipse.jgit.lib.Config;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.blame.BlameResult;
+import org.eclipse.jgit.diff.*;
+import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
@@ -406,5 +401,25 @@ public class LocalService {
             }
         });
         return revCommitList;
+    }
+
+    public List<Map<String, Object>> getBlame(String path, String filename) throws GitAPIException, IOException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        BlameResult blameResult = gitServices.getBlameResult(git, filename);
+        RawText rawText = blameResult.getResultContents();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        for (int i = 0; i < rawText.size(); i++) {
+            PersonIdent personIdent = blameResult.getSourceAuthor(i);
+            RevCommit revCommit = blameResult.getSourceCommit(i);
+            Map<String, Object> stringObjectMap = new HashMap<>();
+            stringObjectMap.put("name", personIdent.getName());
+            stringObjectMap.put("date", revCommit.getCommitTime());
+            stringObjectMap.put("commitId", revCommit.getName());
+            stringObjectMap.put("line", blameResult.getSourceLine(i) + 1);
+            stringObjectMap.put("text", rawText.getString(i));
+            stringObjectMap.put("message", revCommit.getFullMessage());
+            mapList.add(stringObjectMap);
+        }
+        return mapList;
     }
 }

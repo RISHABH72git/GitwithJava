@@ -106,7 +106,8 @@
                             </div>
                             <br>
                             <label for="multiSelectAuthor">Authors</label>
-                            <select aria-label=".form-select-lg example" class="form-select" id="multiSelectAuthor" name="authors" multiple>
+                            <select aria-label=".form-select-lg example" class="form-select" id="multiSelectAuthor"
+                                    multiple name="authors">
                             </select>
                             <br>
                             <div class="form-check">
@@ -132,6 +133,24 @@
             </div>
         </div>
 
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade" data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     id="staticBackdrop" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body" id="blameModelBody">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -816,7 +835,7 @@
         // Create table header
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        ['fileName', 'isDirectory', 'lastModified'].forEach(headerText => {
+        ['fileName', 'isDirectory', 'lastModified', 'action'].forEach(headerText => {
             const th = document.createElement('th');
             th.scope = 'col';
             th.textContent = headerText;
@@ -854,8 +873,30 @@
             const td3 = document.createElement('td');
             td3.textContent = dataRow.lastModified;
 
+            const td4 = document.createElement('td');
+            if (dataRow.isDirectory === false) {
+                let button = document.createElement("button");
+                button.type = "button";
+                button.className = "btn btn-primary";
+                button.setAttribute("data-bs-toggle", "modal");
+                button.setAttribute("data-bs-target", "#staticBackdrop");
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Call your function here
+                    let pathBlame = getBlameFileName(data.oldPath)
+                    if (pathBlame) {
+                        getBlame(path, pathBlame + "/" + dataRow.fileName);
+                    } else {
+                        getBlame(path, dataRow.fileName);
+                    }
+                });
+                button.textContent = "Blame";
+                td4.appendChild(button)
+            }
+
             tr.appendChild(td2);
             tr.appendChild(td3);
+            tr.appendChild(td4);
             tbody.appendChild(tr);
         }
 
@@ -868,8 +909,52 @@
         tableContainer.appendChild(mainDiv);
     }
 
+    function getBlame(path, filename) {
+        let blameModelBody = $('#blameModelBody');
+        blameModelBody.empty();
+        let getBlameUrl = `/api/getBlame?path=${path}&filename=${filename}`
+        console.log(getBlameUrl)
+        $.get(getBlameUrl, function (data) {
+            console.log("blame", data)
+            showBlame(data)
+        });
+    }
+
+    function showBlame(data) {
+        if (data.length > 0) {
+            let blameModelBody = document.getElementById("blameModelBody");
+            let count = 1;
+            for (const datum of data) {
+                let lineElement = document.createElement("p");
+                let linkElement = document.createElement("a");
+                linkElement.setAttribute("data-bs-toggle", "collapse");
+                linkElement.setAttribute("href", "#collapseExample" + count);
+                linkElement.setAttribute("role", "button");
+                linkElement.setAttribute("aria-expanded", "false");
+                linkElement.setAttribute("aria-controls", "collapseExample");
+                linkElement.textContent = `${count} | ${datum.text}`
+                lineElement.appendChild(linkElement)
+
+                let collapseDiv = document.createElement("div");
+                collapseDiv.classList.add("collapse");
+                collapseDiv.id = "collapseExample" + count;
+                let cardDiv = document.createElement("div");
+                cardDiv.classList.add("card", "card-body");
+                cardDiv.textContent = `[${datum.commitId}]  ${datum.name} : ${new Date(datum.date * 1000).toDateString()} `;
+                collapseDiv.appendChild(cardDiv);
+                blameModelBody.appendChild(lineElement);
+                blameModelBody.appendChild(collapseDiv);
+                count = count + 1;
+            }
+        }
+    }
+
     function getPathAndFolder(folder, path) {
         return path.substring(0, path.indexOf(folder));
+    }
+
+    function getBlameFileName(oldPath) {
+        return oldPath.substr(path.length + 1)
     }
 
     function getDiffByChildCommitAndParentCommit(path, commitId, parentCommitId) {

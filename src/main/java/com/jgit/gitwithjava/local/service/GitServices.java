@@ -5,8 +5,11 @@ import com.jgit.gitwithjava.custom.model.GitClone;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.RawText;
+import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.*;
@@ -97,4 +100,9 @@ public class GitServices {
         return git.log().call().iterator();
     }
 
+    public BlameResult getBlameResult(Git git, String filename) throws GitAPIException, IOException {
+        BlameResult blameResult = git.blame().setFilePath(filename).setTextComparator(RawTextComparator.DEFAULT).call();
+        blameResult.computeAll();
+        return blameResult;
+    }
 }

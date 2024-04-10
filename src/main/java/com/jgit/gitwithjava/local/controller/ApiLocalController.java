@@ -76,6 +76,11 @@ public class ApiLocalController {
 
     @GetMapping("/getCommitsByAuthorEmail")
     public List<Object> getCommitsByAuthorEmail(@RequestParam String path, String email) throws GitAPIException, IOException {
-        return localService.getCommitsByAuthorEmail(path,email);
+        return localService.getCommitsByAuthorEmail(path, email);
+    }
+
+    @GetMapping("/getBlame")
+    public List<Map<String, Object>> getBlame(@RequestParam String path, String filename) throws GitAPIException, IOException {
+        return localService.getBlame(path, filename);
     }
 }
