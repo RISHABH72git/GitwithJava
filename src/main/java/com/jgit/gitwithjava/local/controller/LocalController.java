@@ -27,7 +27,8 @@ public class LocalController {
     public String localAllFile(Model model, String path) {
         model.addAttribute("path", path);
         model.addAttribute("getAllHome", localService.localAllFile(path));
-        return "newHome";
+        model.addAttribute("parents",  localService.getParents(path));;
+         return "newHome";
     }
 
     @GetMapping("/createRepositoryForm")
@@ -94,7 +95,7 @@ public class LocalController {
     }
 
     @PostMapping("/printCommits")
-    public RedirectView printCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email,String[] authors) throws IOException, GitAPIException {
+    public RedirectView printCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email, String[] authors) throws IOException, GitAPIException {
         localService.printCommits(path, fileName, timestamp, message, email, authors);
         return new RedirectView("/local/fileDetails?path=" + path);
     }

@@ -21,10 +21,14 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.util.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -80,6 +84,42 @@ public class LocalService {
             }
         }
         return allFiles;
+    }
+
+    public LinkedList<Map<String, Object>> getParents(String path) {
+        LinkedList<Map<String, Object>> stringLinkedList = new LinkedList<>();
+        if (!Objects.isNull(path)) {
+            File file = new File(path);
+            Map<String, Object> stringObjectMap1 = new HashMap<>();
+            stringObjectMap1.put("name", file.getName());
+            stringObjectMap1.put("parentPath", file.getPath());
+            stringObjectMap1.put("isDirectory", false);
+            stringLinkedList.addFirst(stringObjectMap1);
+            while (file.getParentFile() != null) {
+                Map<String, Object> stringObjectMap = new HashMap<>();
+                file = file.getParentFile();
+                stringObjectMap.put("name", file.getName());
+                stringObjectMap.put("parentPath", file.getPath());
+                stringObjectMap.put("isDirectory", true);
+                stringLinkedList.addFirst(stringObjectMap);
+            }
+        }
+        return stringLinkedList;
+    }
+
+    private String getCurrentPath(String path) {
+        if (path.contains(File.separator)) {
+            int lastIndex = path.lastIndexOf(File.separator);
+            return path.substring(lastIndex + 1);
+        }
+        return path;
+    }
+
+    private Map<String, String> getPathAndLastFolder(String path) {
+        int lastIndex = path.lastIndexOf(File.separator);
+        String current = path.substring(lastIndex + 1);
+        String parent = path.substring(0, lastIndex);
+        return Map.of("current", current, "parent", parent);
     }
 
     public void createRepository(String path) throws IOException, GitAPIException {
