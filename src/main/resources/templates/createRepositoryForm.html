@@ -28,6 +28,19 @@
 <br>
 <div class="container">
     <h1>Create a Git Repository</h1>
+<!--    <h3 th:text="${path}"></h3>-->
+    <br>
+    <div class="container" style="text-align: center;">
+        <h5 aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" th:each="parent : ${parents}">
+                    <a th:href="@{/local/createRepositoryForm(path= ${parent.parentPath})}" th:if="${parent.isDirectory == true}"
+                       th:text="${parent.name}"></a>
+                    <span th:text="${parent.name}" th:unless="${parent.isDirectory == true}"></span>
+                </li>
+            </ol>
+        </h5>
+    </div>
     <form method="post" th:action="@{/local/createRepository}">
         <div class="form-group">
             <label for="nameInput">Repository Name</label>

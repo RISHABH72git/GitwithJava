@@ -27,13 +27,14 @@ public class LocalController {
     public String localAllFile(Model model, String path) {
         model.addAttribute("path", path);
         model.addAttribute("getAllHome", localService.localAllFile(path));
-        model.addAttribute("parents",  localService.getParents(path));;
-         return "newHome";
+        model.addAttribute("parents", localService.getParents(path));
+        return "newHome";
     }
 
     @GetMapping("/createRepositoryForm")
     public String createRepositoryForm(Model model, @RequestParam String path) {
         model.addAttribute("path", path);
+        model.addAttribute("parents", localService.getParents(path));
         return "createRepositoryForm";
     }
 
@@ -55,6 +56,7 @@ public class LocalController {
     public String cloneRepositoryForm(Model model, @RequestParam String path) {
         model.addAttribute("path", path);
         model.addAttribute("gitClone", new GitClone());
+        model.addAttribute("parents", localService.getParents(path));
         return "cloneRepositoryForm";
     }
 
