@@ -422,4 +422,12 @@ public class LocalService {
         }
         return mapList;
     }
+
+    public Map<String, Object> status(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        Status status = gitServices.getStatus(git);
+        Map<String, Object> stringSetMap = new HashMap<>();
+        stringSetMap.put("MODIFY", Map.of("added", status.getAdded(), "modified", status.getModified()));
+        return stringSetMap;
+    }
 }

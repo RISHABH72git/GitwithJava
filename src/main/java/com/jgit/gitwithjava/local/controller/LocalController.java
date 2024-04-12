@@ -101,4 +101,11 @@ public class LocalController {
         localService.printCommits(path, fileName, timestamp, message, email, authors);
         return new RedirectView("/local/fileDetails?path=" + path);
     }
+
+    @GetMapping("/status")
+    public String status(Model model, @RequestParam String path) throws GitAPIException, IOException {
+        model.addAttribute("path", path);
+        model.addAttribute("pathStatus", localService.status(path));
+        return "Manage/status";
+    }
 }
