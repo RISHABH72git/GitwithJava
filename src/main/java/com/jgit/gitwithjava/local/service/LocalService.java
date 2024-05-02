@@ -467,4 +467,57 @@ public class LocalService {
         }
         return new Details();
     }
+
+    public SiteDetail binEdit(String id) throws JAXBException {
+        File file = new File(DefaultCredentials.getApplicationFile());
+        if (file.exists()) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Details details = (Details) jaxbUnmarshaller.unmarshal(file);
+            for (SiteDetail siteDetail : details.getSiteDetailList()) {
+                if (siteDetail.getId().equals(id)) {
+                    return siteDetail;
+                }
+            }
+        }
+        return new SiteDetail();
+    }
+
+    public void binModify(String username, String password, String site, String notes, String id) throws JAXBException, FileNotFoundException {
+        File file = new File(DefaultCredentials.getApplicationFile());
+        if (file.exists()) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Details details = (Details) jaxbUnmarshaller.unmarshal(file);
+
+            details.getSiteDetailList().removeIf(siteDetail -> siteDetail.getId().equals(id));
+
+            SiteDetail siteDetail = new SiteDetail();
+            siteDetail.setUsername(username);
+            siteDetail.setSite(site);
+            siteDetail.setNotes(notes);
+            siteDetail.setPassword(password);
+            siteDetail.setId(id);
+            details.getSiteDetailList().add(siteDetail);
+
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(details, new FileOutputStream(file));
+        }
+    }
+
+    public void binDelete(String id) throws JAXBException, FileNotFoundException {
+        File file = new File(DefaultCredentials.getApplicationFile());
+        if (file.exists()) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Details details = (Details) jaxbUnmarshaller.unmarshal(file);
+
+            details.getSiteDetailList().removeIf(siteDetail -> siteDetail.getId().equals(id));
+
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(details, new FileOutputStream(file));
+        }
+    }
 }

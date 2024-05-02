@@ -1,6 +1,7 @@
 package com.jgit.gitwithjava.local.controller;
 
 import com.jgit.gitwithjava.custom.model.GitClone;
+import com.jgit.gitwithjava.local.model.SiteDetail;
 import com.jgit.gitwithjava.local.service.LocalService;
 import jakarta.xml.bind.JAXBException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -125,6 +126,29 @@ public class LocalController {
     @PostMapping("/bin/create")
     public RedirectView binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) throws JAXBException, FileNotFoundException {
         localService.binCreate(username, password, site, notes);
+        return new RedirectView("/local/bin");
+    }
+
+    @GetMapping("/bin/edit")
+    public String binEdit(Model model, @RequestParam String id) throws JAXBException {
+        SiteDetail siteDetail = localService.binEdit(id);
+        model.addAttribute("username", siteDetail.getUsername());
+        model.addAttribute("password", siteDetail.getPassword());
+        model.addAttribute("site", siteDetail.getSite());
+        model.addAttribute("notes", siteDetail.getNotes());
+        model.addAttribute("id", siteDetail.getId());
+        return "Bin/edit";
+    }
+
+    @PostMapping("/bin/modify")
+    public RedirectView binModify(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes, @RequestParam String id) throws JAXBException, FileNotFoundException {
+        localService.binModify(username, password, site, notes, id);
+        return new RedirectView("/local/bin");
+    }
+
+    @GetMapping("/bin/delete")
+    public RedirectView binDelete(@RequestParam String id) throws JAXBException, FileNotFoundException {
+        localService.binDelete(id);
         return new RedirectView("/local/bin");
     }
 }

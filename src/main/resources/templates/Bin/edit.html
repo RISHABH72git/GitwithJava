@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <form class="row g-3" method="post" th:action="@{/local/bin/create}">
+    <form class="row g-3" method="post" th:action="@{/local/bin/modify}">
         <div class="col-md-6">
             <label for="inputEmail" class="form-label">Username</label>
             <input type="text" class="form-control" id="inputEmail" name="username" required th:value="${username}">
@@ -31,6 +31,9 @@
             <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor"
                    th:value="${notes}" name="notes">
         </div>
+        <div class="col-md-6">
+            <input type="text" class="form-control" id="inputId" name="id" required th:value="${id}" hidden>
+        </div>
         <div class="col-12">
             <button class="btn btn-danger" onclick="function goBack() {
          window.history.back();
@@ -41,5 +44,6 @@
         </div>
     </form>
 </div>
+
 </body>
 </html>
