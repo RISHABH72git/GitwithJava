@@ -40,4 +40,10 @@ public class DefaultCredentials {
         }
         return root;
     }
+
+    public String getApplicationFile() {
+        String rootFile = DefaultCredentials.getRootFolder();
+        String[] rootSplit = rootFile.split(File.separator);
+        return rootFile + "." + rootSplit[2] + File.separator + "application.xml";
+    }
 }

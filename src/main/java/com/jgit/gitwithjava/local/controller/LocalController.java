@@ -2,6 +2,7 @@ package com.jgit.gitwithjava.local.controller;
 
 import com.jgit.gitwithjava.custom.model.GitClone;
 import com.jgit.gitwithjava.local.service.LocalService;
+import jakarta.xml.bind.JAXBException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -110,7 +112,8 @@ public class LocalController {
     }
 
     @GetMapping("/bin")
-    public String bin(Model model) {
+    public String bin(Model model) throws JAXBException {
+        model.addAttribute("details", localService.bin());
         return "Bin/index";
     }
 
@@ -120,8 +123,8 @@ public class LocalController {
     }
 
     @PostMapping("/bin/create")
-    public String binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) {
+    public RedirectView binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) throws JAXBException, FileNotFoundException {
         localService.binCreate(username, password, site, notes);
-        return "Bin/add";
+        return new RedirectView("/local/bin");
     }
 }

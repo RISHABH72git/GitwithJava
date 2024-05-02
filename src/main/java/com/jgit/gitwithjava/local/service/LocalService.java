@@ -3,6 +3,12 @@ package com.jgit.gitwithjava.local.service;
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.custom.model.GitClone;
 import com.jgit.gitwithjava.frontend.model.FileModel;
+import com.jgit.gitwithjava.local.model.Details;
+import com.jgit.gitwithjava.local.model.SiteDetail;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
@@ -431,12 +437,34 @@ public class LocalService {
         return stringSetMap;
     }
 
-    public void binCreate(String username, String password, String site, String notes) {
-        String rootFile = DefaultCredentials.getRootFolder();
-        String[] rootSplit = rootFile.split(File.separator);
-        File file = new File(rootFile + "." + rootSplit[2] + File.separator + "application.xml");
+    public void binCreate(String username, String password, String site, String notes) throws JAXBException, FileNotFoundException {
+        File file = new File(DefaultCredentials.getApplicationFile());
         if (file.exists()) {
-            System.out.println("file exists");
+            JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Details details = (Details) jaxbUnmarshaller.unmarshal(file);
+
+            SiteDetail siteDetail = new SiteDetail();
+            siteDetail.setUsername(username);
+            siteDetail.setSite(site);
+            siteDetail.setNotes(notes);
+            siteDetail.setPassword(password);
+            siteDetail.setId(UUID.randomUUID().toString());
+            details.getSiteDetailList().add(siteDetail);
+
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(details, new FileOutputStream(file));
         }
+    }
+
+    public Details bin() throws JAXBException {
+        File file = new File(DefaultCredentials.getApplicationFile());
+        if (file.exists()) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            return (Details) jaxbUnmarshaller.unmarshal(file);
+        }
+        return new Details();
     }
 }

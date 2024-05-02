@@ -10,32 +10,36 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container-md">
+<div class="container-md mt-5">
     <h2>Details</h2>
     <br>
     <div class="row">
-        <div class="col">
+        <div class="col-6" th:each="detail : ${details.getSiteDetailList()}">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Username</label>
-                            <input type="text" class="form-control" placeholder="username" readonly>
+                            <input th:value="${detail.getUsername()}" type="text" class="form-control"
+                                   placeholder="username" readonly>
                         </div>
                         <div class="col">
                             <label class="form-label">Password</label>
-                            <input type="password" class="form-control" placeholder="password" readonly>
+                            <input type="password" th:value="${detail.getPassword()}" class="form-control"
+                                   placeholder="password" readonly>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Sites</label>
-                            <input type="text" class="form-control" placeholder="site" readonly>
+                            <input type="text" th:value="${detail.getSite()}" class="form-control" placeholder="site"
+                                   readonly>
                         </div>
                         <div class="col">
                             <label class="form-label">Notes</label>
-                            <input type="text" class="form-control" placeholder="notes" readonly>
+                            <input type="text" th:value="${detail.getNotes()}" class="form-control" placeholder="notes"
+                                   readonly>
                         </div>
                     </div>
                     <br>
@@ -47,6 +51,7 @@
                     </div>
                 </div>
             </div>
+            <br>
         </div>
     </div>
 </div>
