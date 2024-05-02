@@ -108,4 +108,20 @@ public class LocalController {
         model.addAttribute("pathStatus", localService.status(path));
         return "Manage/status";
     }
+
+    @GetMapping("/bin")
+    public String bin(Model model) {
+        return "Bin/index";
+    }
+
+    @GetMapping("/bin/add")
+    public String binAdd(Model model) {
+        return "Bin/add";
+    }
+
+    @PostMapping("/bin/create")
+    public String binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) {
+        localService.binCreate(username, password, site, notes);
+        return "Bin/add";
+    }
 }

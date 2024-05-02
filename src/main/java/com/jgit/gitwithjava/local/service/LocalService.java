@@ -430,4 +430,13 @@ public class LocalService {
         stringSetMap.put("MODIFY", Map.of("added", status.getAdded(), "modified", status.getModified()));
         return stringSetMap;
     }
+
+    public void binCreate(String username, String password, String site, String notes) {
+        String rootFile = DefaultCredentials.getRootFolder();
+        String[] rootSplit = rootFile.split(File.separator);
+        File file = new File(rootFile + "." + rootSplit[2] + File.separator + "application.xml");
+        if (file.exists()) {
+            System.out.println("file exists");
+        }
+    }
 }
