@@ -40,8 +40,11 @@
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Sites</label>
-                            <input type="text" th:value="${detail.getSite()}" class="form-control" placeholder="site"
-                                   readonly>
+                            <br>
+                            <a th:href="'https://'+${detail.getSite()}" th:text="${detail.getSite()}"
+                               target="_blank"></a>
+                            <!--<input type="text" th:value="${detail.getSite()}" class="form-control" placeholder="site"
+                                   readonly>-->
                         </div>
                         <div class="col">
                             <label class="form-label">Notes</label>
