@@ -17,9 +17,15 @@
             <input type="text" class="form-control" id="inputEmail" name="username" required th:value="${username}">
         </div>
         <div class="col-md-6">
-            <label for="inputPassword" class="form-label">Password</label>
-            <input type="password" class="form-control" id="inputPassword" name="password" required
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" th:id="${id}" name="password" required
                    th:value="${password}">
+            <span class="form-check">
+                <input class="form-check-input" th:onclick="showPass([[${id}]])" type="checkbox" value="">
+                <label class="form-check-label">
+                    show
+                </label>
+            </span>
         </div>
         <div class="col-12">
             <label for="inputAddress" class="form-label">Site</label>
@@ -44,6 +50,15 @@
         </div>
     </form>
 </div>
-
+<script>
+    function showPass(id) {
+        let x = document.getElementById(id);
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
 </body>
 </html>

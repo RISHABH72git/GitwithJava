@@ -26,10 +26,16 @@ import org.eclipse.jgit.util.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import java.io.*;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -437,7 +443,7 @@ public class LocalService {
         return stringSetMap;
     }
 
-    public void binCreate(String username, String password, String site, String notes) throws JAXBException, FileNotFoundException {
+    public void binCreate(String username, String password, String site, String notes) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         File file = new File(DefaultCredentials.getApplicationFile());
         if (file.exists()) {
             JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
@@ -448,7 +454,11 @@ public class LocalService {
             siteDetail.setUsername(username);
             siteDetail.setSite(site);
             siteDetail.setNotes(notes);
-            siteDetail.setPassword(password);
+            SecretKey secretKey = siteDetail.generateKey();
+            String encoded = siteDetail.encryptPassword(password, secretKey);
+            siteDetail.setPassword(encoded);
+            String key = siteDetail.setEncodeKey(secretKey.getEncoded());
+            siteDetail.setKey(key);
             siteDetail.setId(UUID.randomUUID().toString());
             details.getSiteDetailList().add(siteDetail);
 
@@ -483,7 +493,7 @@ public class LocalService {
         return new SiteDetail();
     }
 
-    public void binModify(String username, String password, String site, String notes, String id) throws JAXBException, FileNotFoundException {
+    public void binModify(String username, String password, String site, String notes, String id) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         File file = new File(DefaultCredentials.getApplicationFile());
         if (file.exists()) {
             JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
@@ -496,7 +506,11 @@ public class LocalService {
             siteDetail.setUsername(username);
             siteDetail.setSite(site);
             siteDetail.setNotes(notes);
-            siteDetail.setPassword(password);
+            SecretKey secretKey = siteDetail.generateKey();
+            String encoded = siteDetail.encryptPassword(password, secretKey);
+            siteDetail.setPassword(encoded);
+            String key = siteDetail.setEncodeKey(secretKey.getEncoded());
+            siteDetail.setKey(key);
             siteDetail.setId(id);
             details.getSiteDetailList().add(siteDetail);
 

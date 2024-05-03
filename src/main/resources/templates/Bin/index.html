@@ -32,8 +32,15 @@
                         </div>
                         <div class="col">
                             <label class="form-label">Password</label>
-                            <input type="password" th:value="${detail.getPassword()}" class="form-control"
-                                   placeholder="password" readonly>
+                            <input type="password" th:value="${detail.decryptPassword()}" class="form-control"
+                                   placeholder="password" th:id="${detail.getId()}" readonly>
+                            <span class="form-check">
+                                <input class="form-check-input" th:onclick="showPass([[${detail.getId()}]])"
+                                       type="checkbox" value="">
+                                <label class="form-check-label">
+                                    show
+                                </label>
+                            </span>
                         </div>
                     </div>
                     <br>
@@ -41,7 +48,7 @@
                         <div class="col">
                             <label class="form-label">Sites</label>
                             <br>
-                            <a th:href="'https://'+${detail.getSite()}" th:text="${detail.getSite()}"
+                            <a th:href="${detail.getSite()}" th:text="${detail.getSite()}"
                                target="_blank"></a>
                             <!--<input type="text" th:value="${detail.getSite()}" class="form-control" placeholder="site"
                                    readonly>-->
@@ -57,6 +64,8 @@
                         <div class="col">
                             <a class="btn btn-outline-dark" th:href="@{/local/bin/edit(id = ${detail.getId()})}"
                                role="button">Edit</a>
+                        </div>
+                        <div class="col">
                             <a class="btn btn-outline-dark" th:href="@{/local/bin/delete(id = ${detail.getId()})}"
                                role="button">Delete</a>
                         </div>
@@ -67,5 +76,15 @@
         </div>
     </div>
 </div>
+<script>
+    function showPass(id) {
+        let x = document.getElementById(id);
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
 </body>
 </html>

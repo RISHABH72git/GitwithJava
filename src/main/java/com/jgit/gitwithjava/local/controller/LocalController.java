@@ -11,8 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 @Controller
@@ -124,16 +129,16 @@ public class LocalController {
     }
 
     @PostMapping("/bin/create")
-    public RedirectView binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) throws JAXBException, FileNotFoundException {
+    public RedirectView binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         localService.binCreate(username, password, site, notes);
         return new RedirectView("/local/bin");
     }
 
     @GetMapping("/bin/edit")
-    public String binEdit(Model model, @RequestParam String id) throws JAXBException {
+    public String binEdit(Model model, @RequestParam String id) throws JAXBException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         SiteDetail siteDetail = localService.binEdit(id);
         model.addAttribute("username", siteDetail.getUsername());
-        model.addAttribute("password", siteDetail.getPassword());
+        model.addAttribute("password", siteDetail.decryptPassword());
         model.addAttribute("site", siteDetail.getSite());
         model.addAttribute("notes", siteDetail.getNotes());
         model.addAttribute("id", siteDetail.getId());
@@ -141,7 +146,7 @@ public class LocalController {
     }
 
     @PostMapping("/bin/modify")
-    public RedirectView binModify(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes, @RequestParam String id) throws JAXBException, FileNotFoundException {
+    public RedirectView binModify(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes, @RequestParam String id) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         localService.binModify(username, password, site, notes, id);
         return new RedirectView("/local/bin");
     }
