@@ -101,9 +101,7 @@ public class SiteDetail {
         cipher.init(Cipher.DECRYPT_MODE, restoredKey);
         byte[] encryptedBytes = Base64.getDecoder().decode(this.password);
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-        String decryptedText = new String(decryptedBytes, StandardCharsets.UTF_8);
-        System.out.println("Decrypted data: " + decryptedText);
-        return decryptedText;
+        return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
     @Override
