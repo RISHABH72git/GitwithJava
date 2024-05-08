@@ -4,5 +4,9 @@ public enum ActionType {
     ADD,
     REMOVE,
     ROLLBACK,
-    COMMIT
+    COMMIT;
+
+    public String getValue() {
+        return this.name();
+    }
 }

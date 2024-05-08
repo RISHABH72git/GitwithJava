@@ -162,11 +162,8 @@ public class LocalController {
     }
 
     @PostMapping("/status/action")
-    public RedirectView statusAction(@RequestParam List<String> selectedFile, @RequestParam StatusType type, @RequestParam String path, @RequestParam ActionType action) {
-        System.out.println(path);
-        System.out.println(selectedFile);
-        System.out.println(type);
-        System.out.println(action);
+    public RedirectView statusAction(@RequestParam List<String> selectedFile, @RequestParam StatusType type, @RequestParam String path, @RequestParam ActionType action) throws IOException, GitAPIException {
+        localService.statusAction(path,selectedFile,type,action);
         return new RedirectView("/local/status?path=" + path + "&type=" + type.getValue());
     }
 }

@@ -2,6 +2,7 @@ package com.jgit.gitwithjava.local.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.custom.model.GitClone;
+import com.jgit.gitwithjava.github.model.branch.Commit;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -104,5 +105,29 @@ public class GitServices {
         BlameResult blameResult = git.blame().setFilePath(filename).setTextComparator(RawTextComparator.DEFAULT).call();
         blameResult.computeAll();
         return blameResult;
+    }
+
+    public void add(Git git, List<String> selectedFile) throws GitAPIException {
+        AddCommand addCommand = git.add();
+        for (String file : selectedFile) {
+            addCommand.addFilepattern(file);
+        }
+        addCommand.call();
+    }
+
+    public void remove(Git git, List<String> selectedFile) throws GitAPIException {
+        RmCommand rmCommand = git.rm();
+        for (String addedFile : selectedFile) {
+            rmCommand.addFilepattern(addedFile);
+        }
+        rmCommand.call();
+    }
+
+    public void commit(Git git, List<String> selectedFile) throws GitAPIException {
+        CommitCommand commitCommand = git.commit();
+        for (String addedFile : selectedFile) {
+            commitCommand.setOnly(addedFile);
+        }
+        commitCommand.setMessage("commit By Code").call();
     }
 }

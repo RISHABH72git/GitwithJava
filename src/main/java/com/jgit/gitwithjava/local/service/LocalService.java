@@ -3,6 +3,7 @@ package com.jgit.gitwithjava.local.service;
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.custom.model.GitClone;
 import com.jgit.gitwithjava.frontend.model.FileModel;
+import com.jgit.gitwithjava.local.model.ActionType;
 import com.jgit.gitwithjava.local.model.Details;
 import com.jgit.gitwithjava.local.model.SiteDetail;
 import com.jgit.gitwithjava.local.model.StatusType;
@@ -556,6 +557,26 @@ public class LocalService {
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(details, new FileOutputStream(file));
+        }
+    }
+
+    public void statusAction(String path, List<String> selectedFile, StatusType type, ActionType action) throws IOException, GitAPIException {
+        if (!selectedFile.isEmpty()) {
+            Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+            switch (action.getValue()) {
+                case "ADD":
+                    gitServices.add(git, selectedFile);
+                    break;
+                case "REMOVE":
+                    gitServices.remove(git, selectedFile);
+                    break;
+                case "ROLLBACK":
+                    break;
+                case "COMMIT":
+                    gitServices.commit(git, selectedFile);
+                    break;
+                default:
+            }
         }
     }
 }
