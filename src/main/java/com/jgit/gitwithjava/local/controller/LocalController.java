@@ -111,9 +111,10 @@ public class LocalController {
     }
 
     @GetMapping("/status")
-    public String status(Model model, @RequestParam String path) throws GitAPIException, IOException {
+    public String status(Model model, @RequestParam String path, @RequestParam String type) throws GitAPIException, IOException {
         model.addAttribute("path", path);
-        model.addAttribute("pathStatus", localService.status(path));
+        model.addAttribute("type", type);
+        model.addAttribute("pathStatus", localService.status(path, type));
         return "Manage/status";
     }
 

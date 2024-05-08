@@ -24,61 +24,58 @@
                     <li class="nav-item">
                         <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
                     </li>
+                    <li class="nav-item" th:unless="${type == 'MODIFY'}">
+                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='MODIFY' )}" type="button">MODIFY</a>
+                    </li>
+                    <li class="nav-item" th:unless="${type == 'IGNORE'}">
+                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='IGNORE' )}" type="button">IGNORE</a>
+                    </li>
+                    <li class="nav-item" th:unless="${type == 'UNTRACKED'}">
+                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='UNTRACKED')}" type="button">UNTRACKED</a>
+                    </li>
+                    <li class="nav-item" th:unless="${type == 'REMOVED'}">
+                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='REMOVED')}" type="button">REMOVED</a>
+                    </li>
+                    <li class="nav-item" th:unless="${type == 'CONFLICT'}">
+                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='CONFLICT')}" type="button">CONFLICT</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 </header>
 <br>
+<h2 style="text-align: center;">Status</h2>
 <div class="d-flex justify-content-center">
-    <h3 th:text="${path}">  </h3>
+    <br>
+    <h3 th:text="${path}"></h3>
 </div>
 <br>
 <div class="container">
-    <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    MODIFY
-                </button>
-            </h2>
-            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body">
-                    <form method="post">
-                        <div class="form-group">
-                            <table class="table">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">Select</th>
-                                    <th scope="col">File</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr scope="row" th:each="added : ${pathStatus.MODIFY.added}">
-                                    <td>
-                                        <input aria-label="Select" class="form-check-input" type="checkbox">
-                                    </td>
-                                    <td class="text-dark" th:text="${added}"></td>
-                                </tr>
-                                <tr scope="row" th:each="modified : ${pathStatus.MODIFY.modified}">
-                                    <td>
-                                        <input aria-label="Select" class="form-check-input" type="checkbox">
-                                    </td>
-                                    <td class="text-dark" th:text="${modified}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-evenly">
-                                <button class="btn btn-danger" type="submit" value="remove">Remove</button>
-                                <button class="btn btn-primary" type="submit" value="rollback">RollBack</button>
-                                <button class="btn btn-success" type="submit" value="add">Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <h4 th:text="${type}"></h4>
+    <div class="border rounded">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">File</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr scope="row" th:each="status : ${pathStatus}">
+                <td>
+                    <input aria-label="Select" class="form-check-input" type="checkbox">
+                </td>
+                <td class="text-dark" th:text="${status}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-evenly">
+            <button class="btn btn-danger" type="submit" value="remove">Remove</button>
+            <button class="btn btn-primary" type="submit" value="rollback">RollBack</button>
+            <button class="btn btn-success" type="submit" value="add">Submit</button>
         </div>
+        <br>
     </div>
 </div>
 </body>

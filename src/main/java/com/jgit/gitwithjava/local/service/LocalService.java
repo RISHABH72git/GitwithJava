@@ -435,12 +435,32 @@ public class LocalService {
         return mapList;
     }
 
-    public Map<String, Object> status(String path) throws IOException, GitAPIException {
+    public List<Object> status(String path, String type) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         Status status = gitServices.getStatus(git);
-        Map<String, Object> stringSetMap = new HashMap<>();
-        stringSetMap.put("MODIFY", Map.of("added", status.getAdded(), "modified", status.getModified()));
-        return stringSetMap;
+        status.getRemoved();
+        List<Object> objectList = new ArrayList<>();
+        switch (type) {
+            case "MODIFY":
+                objectList.addAll(status.getAdded());
+                objectList.addAll(status.getModified());
+                break;
+            case "IGNORE":
+                objectList.addAll(status.getIgnoredNotInIndex());
+                break;
+            case "CONFLICT":
+                objectList.addAll(status.getConflicting());
+                break;
+            case "UNTRACKED":
+                objectList.addAll(status.getUntracked());
+                break;
+            case "REMOVED":
+                objectList.addAll(status.getRemoved());
+                break;
+            default:
+                objectList.addAll(status.getIgnoredNotInIndex());
+        }
+        return objectList;
     }
 
     public void binCreate(String username, String password, String site, String notes) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
