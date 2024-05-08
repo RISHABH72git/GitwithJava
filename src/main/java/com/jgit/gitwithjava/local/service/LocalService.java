@@ -5,6 +5,7 @@ import com.jgit.gitwithjava.custom.model.GitClone;
 import com.jgit.gitwithjava.frontend.model.FileModel;
 import com.jgit.gitwithjava.local.model.Details;
 import com.jgit.gitwithjava.local.model.SiteDetail;
+import com.jgit.gitwithjava.local.model.StatusType;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -456,6 +457,9 @@ public class LocalService {
                 break;
             case "REMOVED":
                 objectList.addAll(status.getRemoved());
+                break;
+            case "MISSING":
+                objectList.addAll(status.getMissing());
                 break;
             default:
                 objectList.addAll(status.getIgnoredNotInIndex());

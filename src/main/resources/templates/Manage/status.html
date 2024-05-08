@@ -39,6 +39,9 @@
                     <li class="nav-item" th:unless="${type == 'CONFLICT'}">
                         <a class="btn btn-link" th:href="@{status(path = ${path}, type ='CONFLICT')}" type="button">CONFLICT</a>
                     </li>
+                    <li class="nav-item" th:unless="${type == 'MISSING'}">
+                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='MISSING')}" type="button">MISSING</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -54,27 +57,39 @@
 <div class="container">
     <h4 th:text="${type}"></h4>
     <div class="border rounded">
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">Select</th>
-                <th scope="col">File</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr scope="row" th:each="status : ${pathStatus}">
-                <td>
-                    <input aria-label="Select" class="form-check-input" type="checkbox">
-                </td>
-                <td class="text-dark" th:text="${status}"></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-evenly">
-            <button class="btn btn-danger" type="submit" value="remove">Remove</button>
-            <button class="btn btn-primary" type="submit" value="rollback">RollBack</button>
-            <button class="btn btn-success" type="submit" value="add">Submit</button>
-        </div>
+        <form th:action="@{/local/status/action(path = ${path},type= ${type})}" method="post">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Select</th>
+                    <th scope="col">File</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr scope="row" th:each="status : ${pathStatus}">
+                    <td>
+                        <input aria-label="Select" name="selectedFile" th:value="${status}" class="form-check-input"
+                               type="checkbox">
+                    </td>
+                    <td class="text-dark" th:text="${status}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-evenly">
+                <button th:if="${type == 'UNTRACKED'}" class="btn btn-success" type="submit" name="action" value="ADD">
+                    Add
+                </button>
+                <button th:if="${type == 'UNTRACKED' || type == 'MODIFY'}" class="btn btn-danger" type="submit"
+                        name="action" value="REMOVE">Remove
+                </button>
+                <button th:if="${type == 'MODIFY'}" class="btn btn-primary" type="submit" name="action"
+                        value="ROLLBACK">RollBack
+                </button>
+                <button th:if="${type == 'MODIFY'}" class="btn btn-success" type="submit" name="action" value="COMMIT">
+                    Commit
+                </button>
+            </div>
+        </form>
         <br>
     </div>
 </div>

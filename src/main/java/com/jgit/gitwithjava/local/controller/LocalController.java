@@ -1,7 +1,9 @@
 package com.jgit.gitwithjava.local.controller;
 
 import com.jgit.gitwithjava.custom.model.GitClone;
+import com.jgit.gitwithjava.local.model.ActionType;
 import com.jgit.gitwithjava.local.model.SiteDetail;
+import com.jgit.gitwithjava.local.model.StatusType;
 import com.jgit.gitwithjava.local.service.LocalService;
 import jakarta.xml.bind.JAXBException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("local")
@@ -111,10 +114,10 @@ public class LocalController {
     }
 
     @GetMapping("/status")
-    public String status(Model model, @RequestParam String path, @RequestParam String type) throws GitAPIException, IOException {
+    public String status(Model model, @RequestParam String path, @RequestParam StatusType type) throws GitAPIException, IOException {
         model.addAttribute("path", path);
-        model.addAttribute("type", type);
-        model.addAttribute("pathStatus", localService.status(path, type));
+        model.addAttribute("type", type.getValue());
+        model.addAttribute("pathStatus", localService.status(path, type.getValue()));
         return "Manage/status";
     }
 
@@ -156,5 +159,14 @@ public class LocalController {
     public RedirectView binDelete(@RequestParam String id) throws JAXBException, FileNotFoundException {
         localService.binDelete(id);
         return new RedirectView("/local/bin");
+    }
+
+    @PostMapping("/status/action")
+    public RedirectView statusAction(@RequestParam List<String> selectedFile, @RequestParam StatusType type, @RequestParam String path, @RequestParam ActionType action) {
+        System.out.println(path);
+        System.out.println(selectedFile);
+        System.out.println(type);
+        System.out.println(action);
+        return new RedirectView("/local/status?path=" + path + "&type=" + type.getValue());
     }
 }
