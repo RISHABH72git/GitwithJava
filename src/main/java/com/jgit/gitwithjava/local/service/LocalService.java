@@ -575,6 +575,9 @@ public class LocalService {
                 case "COMMIT":
                     gitServices.commit(git, selectedFile);
                     break;
+                case "CLEAN":
+                    gitServices.clean(git, selectedFile);
+                    break;
                 default:
             }
         }

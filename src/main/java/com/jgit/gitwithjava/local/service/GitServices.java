@@ -130,4 +130,12 @@ public class GitServices {
         }
         commitCommand.setMessage("commit By Code").call();
     }
+
+    public void clean(Git git, List<String> untrackedFile) throws GitAPIException {
+        CleanCommand cleanCommand = git.clean();
+        cleanCommand.setPaths(new HashSet<>(untrackedFile));
+        cleanCommand.setCleanDirectories(true);
+        cleanCommand.setDryRun(false);
+        cleanCommand.call();
+    }
 }
