@@ -123,12 +123,14 @@ public class GitServices {
         rmCommand.call();
     }
 
-    public void commit(Git git, List<String> selectedFile) throws GitAPIException {
-        CommitCommand commitCommand = git.commit();
-        for (String addedFile : selectedFile) {
-            commitCommand.setOnly(addedFile);
+    public void commit(Git git, List<String> selectedFile, String message) throws GitAPIException {
+        if (message != null) {
+            CommitCommand commitCommand = git.commit();
+            for (String addedFile : selectedFile) {
+                commitCommand.setOnly(addedFile);
+            }
+            commitCommand.setMessage(message).call();
         }
-        commitCommand.setMessage("commit By Code").call();
     }
 
     public void clean(Git git, List<String> untrackedFile) throws GitAPIException {
@@ -140,7 +142,6 @@ public class GitServices {
     }
 
     public void restore(Git git, List<String> selectedFile) throws GitAPIException {
-        System.out.println(selectedFile);
         ResetCommand resetCommand = git.reset();
         for (String addedFile : selectedFile) {
             resetCommand.addPath(addedFile);

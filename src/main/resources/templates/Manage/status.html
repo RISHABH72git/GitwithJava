@@ -24,6 +24,10 @@
                     <li class="nav-item">
                         <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link" th:href="@{/local/fileDetails(path = ${path})}"
+                           type="button">Details</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -35,6 +39,9 @@
             <div class="navbar-brand">
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <h4>Status</h4>
+                    </li>
                     <li class="nav-item" th:unless="${type == 'MODIFY'}">
                         <a class="btn btn-link" th:href="@{status(path = ${path}, type ='MODIFY' )}" type="button">MODIFY</a>
                     </li>
@@ -44,9 +51,6 @@
                     <li class="nav-item" th:unless="${type == 'UNTRACKED'}">
                         <a class="btn btn-link" th:href="@{status(path = ${path}, type ='UNTRACKED')}" type="button">UNTRACKED</a>
                     </li>
-                    <!--<li class="nav-item" th:unless="${type == 'REMOVED'}">
-                        <a class="btn btn-link" th:href="@{status(path = ${path}, type ='REMOVED')}" type="button">REMOVED</a>
-                    </li>-->
                     <li class="nav-item" th:unless="${type == 'CONFLICT'}">
                         <a class="btn btn-link" th:href="@{status(path = ${path}, type ='CONFLICT')}" type="button">CONFLICT</a>
                     </li>
@@ -58,15 +62,15 @@
             </div>
         </nav>
         <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-            <br>
-            <h2 style="text-align: center;">Status</h2>
             <div class="d-flex justify-content-center">
                 <br>
                 <h3 th:text="${path}"></h3>
             </div>
             <br>
-            <h4 th:text="${type}"></h4>
             <div class="border rounded" th:unless="${pathStatus.isEmpty()}">
+                <br>
+                <h4 style="text-align: center" th:text="${type}"></h4>
+                <hr>
                 <form th:action="@{/local/status/action(path = ${path},type= ${type})}" method="post">
                     <table class="table">
                         <thead class="thead-dark">
@@ -88,6 +92,13 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div class="form-group" th:if="${type == 'MODIFY'}">
+                        <label for="nameInput">Message:</label>
+                        <input class="form-control" id="nameInput" name="message" placeholder="Enter message"
+                                th:value="${message}"
+                               type="text">
+                    </div>
+                    <br>
                     <div class="d-flex justify-content-evenly">
                         <button th:if="${type == 'UNTRACKED'}" class="btn btn-success" type="submit"
                                 name="action" value="ADD">
@@ -103,19 +114,15 @@
                                 name="action" value="CLEAN">Remove
                         </button>
                         <button th:if="${type == 'MODIFY'}" class="btn btn-primary" type="submit" name="action"
-                                value="RESTORE">RollBack
+                                value="RESTORE">Restore
                         </button>
                         <button th:if="${type == 'MODIFY'}" class="btn btn-success" type="submit" name="action"
                                 value="COMMIT">
                             Commit
                         </button>
-                        <!--<button th:if="${type == 'REMOVED'}" class="btn btn-success" type="submit"
-                                name="action" value="RESTORE">
-                            Restore
-                        </button>-->
                         <button th:if="${type =='MISSING'}" class="btn btn-success" type="submit" name="action"
                                 value="CHECKOUT">
-                            Restore
+                            Reset
                         </button>
                     </div>
                 </form>

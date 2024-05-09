@@ -569,7 +569,7 @@ public class LocalService {
         }
     }
 
-    public void statusAction(String path, List<String> selectedFile, StatusType type, ActionType action) throws IOException, GitAPIException {
+    public void statusAction(String path, List<String> selectedFile, StatusType type, ActionType action, String message) throws IOException, GitAPIException {
         if (!selectedFile.isEmpty()) {
             Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
             switch (action.getValue()) {
@@ -583,7 +583,7 @@ public class LocalService {
                     gitServices.restore(git, selectedFile);
                     break;
                 case "COMMIT":
-                    gitServices.commit(git, selectedFile);
+                    gitServices.commit(git, selectedFile, message);
                     break;
                 case "CLEAN":
                     gitServices.clean(git, selectedFile);
