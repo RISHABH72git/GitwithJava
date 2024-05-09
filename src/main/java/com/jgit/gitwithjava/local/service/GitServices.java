@@ -138,4 +138,17 @@ public class GitServices {
         cleanCommand.setDryRun(false);
         cleanCommand.call();
     }
+
+    public void restore(Git git, List<String> selectedFile) throws GitAPIException {
+        System.out.println(selectedFile);
+        ResetCommand resetCommand = git.reset();
+        for (String addedFile : selectedFile) {
+            resetCommand.addPath(addedFile);
+        }
+        resetCommand.call();
+    }
+
+    public void checkout(Git git, List<String> selectedFile) throws GitAPIException {
+        git.checkout().addPaths(selectedFile).call();
+    }
 }

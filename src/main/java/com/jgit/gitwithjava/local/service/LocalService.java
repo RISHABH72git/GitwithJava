@@ -437,35 +437,44 @@ public class LocalService {
         return mapList;
     }
 
-    public List<Object> status(String path, String type) throws IOException, GitAPIException {
+    public Map<String, Object> status(String path, String type) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         Status status = gitServices.getStatus(git);
         status.getRemoved();
-        List<Object> objectList = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
         switch (type) {
             case "MODIFY":
-                objectList.addAll(status.getAdded());
-                objectList.addAll(status.getModified());
+                map.putAll(changeToKeyAndValue(status.getAdded(), "ADDED"));
+                map.putAll(changeToKeyAndValue(status.getModified(), "MODIFIED"));
+                map.putAll(changeToKeyAndValue(status.getRemoved(), "REMOVED"));
                 break;
             case "IGNORE":
-                objectList.addAll(status.getIgnoredNotInIndex());
+                map.putAll(changeToKeyAndValue(status.getIgnoredNotInIndex(), "IGNORE"));
                 break;
             case "CONFLICT":
-                objectList.addAll(status.getConflicting());
+                map.putAll(changeToKeyAndValue(status.getConflicting(), "CONFLICT"));
                 break;
             case "UNTRACKED":
-                objectList.addAll(status.getUntracked());
+                map.putAll(changeToKeyAndValue(status.getUntracked(), "UNTRACKED"));
                 break;
             case "REMOVED":
-                objectList.addAll(status.getRemoved());
+                map.putAll(changeToKeyAndValue(status.getRemoved(), "REMOVED"));
                 break;
             case "MISSING":
-                objectList.addAll(status.getMissing());
+                map.putAll(changeToKeyAndValue(status.getMissing(), "MISSING"));
                 break;
             default:
-                objectList.addAll(status.getIgnoredNotInIndex());
+                map.putAll(changeToKeyAndValue(status.getIgnoredNotInIndex(), "IGNORE"));
         }
-        return objectList;
+        return map;
+    }
+
+    private Map<String, Object> changeToKeyAndValue(Set<String> stringSet, String type) {
+        Map<String, Object> map = new HashMap<>();
+        for (String item : stringSet) {
+            map.put(item, type);
+        }
+        return map;
     }
 
     public void binCreate(String username, String password, String site, String notes) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
@@ -570,13 +579,17 @@ public class LocalService {
                 case "REMOVE":
                     gitServices.remove(git, selectedFile);
                     break;
-                case "ROLLBACK":
+                case "RESTORE":
+                    gitServices.restore(git, selectedFile);
                     break;
                 case "COMMIT":
                     gitServices.commit(git, selectedFile);
                     break;
                 case "CLEAN":
                     gitServices.clean(git, selectedFile);
+                    break;
+                case "CHECKOUT":
+                    gitServices.checkout(git, selectedFile);
                     break;
                 default:
             }
