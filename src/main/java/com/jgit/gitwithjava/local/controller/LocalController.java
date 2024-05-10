@@ -174,4 +174,10 @@ public class LocalController {
         localService.resetToHead(path);
         return new RedirectView("/local/status?path=" + path + "&type=" + type);
     }
+
+    @GetMapping("/operations")
+    public String operations(Model model,@RequestParam String path){
+        model.addAttribute("path",path);
+        return "Manage/operations";
+    }
 }

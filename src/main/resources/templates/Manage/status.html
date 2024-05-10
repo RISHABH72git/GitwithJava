@@ -32,6 +32,10 @@
                         <a class="btn btn-link" th:href="@{/local/resetToHead(path = ${path}, type = ${type})}"
                            type="button">RESET-TO-HEAD</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link" th:href="@{/local/operations(path = ${path})}"
+                           type="button">Operations</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -99,7 +103,7 @@
                     <div class="form-group" th:if="${type == 'MODIFY'}">
                         <label for="nameInput">Message:</label>
                         <input class="form-control" id="nameInput" name="message" placeholder="Enter message"
-                                th:value="${message}"
+                               th:value="${message}"
                                type="text">
                     </div>
                     <br>
