@@ -30,42 +30,5 @@ public class GitwithJavaApplication {
         GitCustomService gitCustomService = new GitCustomService();
         gitCustomService.gitPush(git);
         git.close();*/
-/*
-        // Create DocumentBuilder
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        // Create DOM Document
-        Document doc = builder.newDocument();
-
-        // Create root element
-        Element rootElement = doc.createElement("employees");
-        doc.appendChild(rootElement);
-
-        Element employee = doc.createElement("employee");
-        employee.setAttribute("id", String.valueOf(Math.random()));
-
-        Element nameElement = doc.createElement("name");
-        nameElement.appendChild(doc.createTextNode("kflsfklsf"));
-        employee.appendChild(nameElement);
-
-        Element positionElement = doc.createElement("position");
-        positionElement.appendChild(doc.createTextNode("software"));
-        employee.appendChild(positionElement);
-
-        Element salaryElement = doc.createElement("salary");
-        salaryElement.appendChild(doc.createTextNode("20000"));
-        employee.appendChild(salaryElement);
-        rootElement.appendChild(employee);
-
-
-        // Write the DOM document to a file
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new FileOutputStream(new File(DefaultCredentials.getRootFolder())));
-        transformer.transform(source, result);*/
     }
 }
