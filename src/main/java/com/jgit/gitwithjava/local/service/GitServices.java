@@ -152,4 +152,8 @@ public class GitServices {
     public void checkout(Git git, List<String> selectedFile) throws GitAPIException {
         git.checkout().addPaths(selectedFile).call();
     }
+
+    public void reset(Git git) throws GitAPIException {
+        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD).call();
+    }
 }

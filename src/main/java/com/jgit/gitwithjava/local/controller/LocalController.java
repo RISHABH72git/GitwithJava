@@ -168,4 +168,10 @@ public class LocalController {
         }
         return new RedirectView("/local/status?path=" + path + "&type=" + type.getValue());
     }
+
+    @GetMapping("/resetToHead")
+    public RedirectView resetToHead(@RequestParam String path, @RequestParam String type) throws IOException, GitAPIException {
+        localService.resetToHead(path);
+        return new RedirectView("/local/status?path=" + path + "&type=" + type);
+    }
 }

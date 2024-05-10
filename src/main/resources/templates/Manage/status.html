@@ -28,6 +28,10 @@
                         <a class="btn btn-link" th:href="@{/local/fileDetails(path = ${path})}"
                            type="button">Details</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link" th:href="@{/local/resetToHead(path = ${path}, type = ${type})}"
+                           type="button">RESET-TO-HEAD</a>
+                    </li>
                 </ul>
             </div>
         </div>

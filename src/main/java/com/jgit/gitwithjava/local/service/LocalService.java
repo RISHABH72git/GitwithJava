@@ -595,4 +595,9 @@ public class LocalService {
             }
         }
     }
+
+    public void resetToHead(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        gitServices.reset(git);
+    }
 }
