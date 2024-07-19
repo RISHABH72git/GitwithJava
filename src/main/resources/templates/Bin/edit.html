@@ -29,6 +29,12 @@
 <br>
 <div class="container mt-5">
     <form class="row g-3" method="post" th:action="@{/local/bin/modify}">
+        <div class="col-12">
+            <label for="inputAddress3" class="form-label">Head</label>
+            <input type="text" class="form-control" id="inputAddress3" placeholder="name"
+                   th:value="${head}" name="head">
+        </div>
+
         <div class="col-md-6">
             <label for="inputEmail" class="form-label">Username</label>
             <input type="text" class="form-control" id="inputEmail" name="username" required th:value="${username}">

@@ -25,41 +25,36 @@
                     </li>
                 </ul>
             </div>
+            <a class="btn btn-primary" href="bin/add" role="button">Add</a>
         </div>
     </nav>
 </header>
 <br>
 <div class="container-md mt-3">
-    <div class="row">
-        <div class="col">
-            <h2>Details</h2>
-        </div>
-        <div class="col">
-            <a class="btn btn-primary" href="bin/add" role="button">Add</a>
-        </div>
-    </div>
+    <h1 class="text-center">Accounts Manager</h1>
     <br>
     <div class="row">
         <div class="col-6" th:each="detail : ${details.getSiteDetailList()}">
             <div class="card">
                 <div class="card-body">
+                    <h3 class="text-center" th:text="${detail.getHead()}"></h3>
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Username</label>
-                            <input th:value="${detail.getUsername()}" type="text" class="form-control"
+                            <input th:id="'usernameText_'+${detail.getId()}" th:value="${detail.getUsername()}" type="text" class="form-control"
                                    placeholder="username" readonly>
+                            <button type="button" class="btn btn-light" th:id="'usernameButton_'+${detail.getId()}"
+                                    th:onclick="showUsername([[${detail.getId()}]])">copy
+                            </button>
                         </div>
                         <div class="col">
                             <label class="form-label">Password</label>
                             <input type="password" th:value="${detail.decryptPassword()}" class="form-control"
-                                   placeholder="password" th:id="${detail.getId()}" readonly>
-                            <span class="form-check">
-                                <input class="form-check-input" th:onclick="showPass([[${detail.getId()}]])"
-                                       type="checkbox" value="">
-                                <label class="form-check-label">
-                                    show
-                                </label>
-                            </span>
+                                   placeholder="password" th:id="'passText_'+${detail.getId()}" readonly>
+
+                            <button type="button" class="btn btn-light" th:id="'passButton_'+${detail.getId()}"
+                                    th:onclick="showPass([[${detail.getId()}]])">copy
+                            </button>
                         </div>
                     </div>
                     <br>
@@ -97,11 +92,36 @@
 </div>
 <script>
     function showPass(id) {
-        let x = document.getElementById(id);
-        if (x.type === "password") {
-            x.type = "text";
-        } else {
-            x.type = "password";
+        let x = document.getElementById('passText_' + id);
+        let button = document.getElementById("passButton_" + id);
+        if (x.value) {
+            const tempInput = document.createElement('input');
+            tempInput.value = x.value;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+    }
+
+    function showUsername(id) {
+        let x = document.getElementById('usernameText_' + id);
+        let button = document.getElementById("usernameButton_" + id);
+        if (x.value) {
+            const tempInput = document.createElement('input');
+            tempInput.value = x.value;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
         }
     }
 </script>

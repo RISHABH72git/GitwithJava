@@ -493,7 +493,7 @@ public class LocalService {
         return map;
     }
 
-    public void binCreate(String username, String password, String site, String notes) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void binCreate(String username, String password, String site, String notes, String head) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         File file = new File(DefaultCredentials.getApplicationFile());
         if (file.exists()) {
             JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
@@ -504,6 +504,7 @@ public class LocalService {
             siteDetail.setUsername(username);
             siteDetail.setSite(site);
             siteDetail.setNotes(notes);
+            siteDetail.setHead(head);
             SecretKey secretKey = siteDetail.generateKey();
             String encoded = siteDetail.encryptPassword(password, secretKey);
             siteDetail.setPassword(encoded);
@@ -543,7 +544,7 @@ public class LocalService {
         return new SiteDetail();
     }
 
-    public void binModify(String username, String password, String site, String notes, String id) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void binModify(String username, String password, String site, String notes, String id, String head) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         File file = new File(DefaultCredentials.getApplicationFile());
         if (file.exists()) {
             JAXBContext jaxbContext = JAXBContext.newInstance(Details.class);
@@ -556,6 +557,7 @@ public class LocalService {
             siteDetail.setUsername(username);
             siteDetail.setSite(site);
             siteDetail.setNotes(notes);
+            siteDetail.setHead(head);
             SecretKey secretKey = siteDetail.generateKey();
             String encoded = siteDetail.encryptPassword(password, secretKey);
             siteDetail.setPassword(encoded);

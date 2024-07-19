@@ -9,6 +9,7 @@ import java.util.Base64;
 
 public class SiteDetail {
 
+    private String head;
     private String id;
     private String site;
     private String username;
@@ -17,6 +18,14 @@ public class SiteDetail {
     private String key;
 
     public SiteDetail() {
+    }
+
+    public String getHead() {
+        return head;
+    }
+
+    public void setHead(String head) {
+        this.head = head;
     }
 
     public String getId() {
@@ -102,17 +111,5 @@ public class SiteDetail {
         byte[] encryptedBytes = Base64.getDecoder().decode(this.password);
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
         return new String(decryptedBytes, StandardCharsets.UTF_8);
-    }
-
-    @Override
-    public String toString() {
-        return "SiteDetail{" +
-                "id='" + id + '\'' +
-                ", site='" + site + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", notes='" + notes + '\'' +
-                ", key='" + key + '\'' +
-                '}';
     }
 }

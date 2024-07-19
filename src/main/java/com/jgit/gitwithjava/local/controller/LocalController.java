@@ -133,8 +133,8 @@ public class LocalController {
     }
 
     @PostMapping("/bin/create")
-    public RedirectView binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        localService.binCreate(username, password, site, notes);
+    public RedirectView binCreate(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes, String head) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        localService.binCreate(username, password, site, notes, head);
         return new RedirectView("/local/bin");
     }
 
@@ -146,12 +146,13 @@ public class LocalController {
         model.addAttribute("site", siteDetail.getSite());
         model.addAttribute("notes", siteDetail.getNotes());
         model.addAttribute("id", siteDetail.getId());
+        model.addAttribute("head", siteDetail.getHead());
         return "Bin/edit";
     }
 
     @PostMapping("/bin/modify")
-    public RedirectView binModify(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes, @RequestParam String id) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        localService.binModify(username, password, site, notes, id);
+    public RedirectView binModify(@RequestParam String username, @RequestParam String password, @RequestParam String site, @RequestParam String notes, @RequestParam String id, @RequestParam String head) throws JAXBException, FileNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        localService.binModify(username, password, site, notes, id, head);
         return new RedirectView("/local/bin");
     }
 
@@ -176,8 +177,8 @@ public class LocalController {
     }
 
     @GetMapping("/operations")
-    public String operations(Model model,@RequestParam String path){
-        model.addAttribute("path",path);
+    public String operations(Model model, @RequestParam String path) {
+        model.addAttribute("path", path);
         return "Manage/operations";
     }
 }

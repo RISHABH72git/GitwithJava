@@ -33,6 +33,7 @@ public class StartupApplication implements ApplicationListener<ContextRefreshedE
             siteDetail.setUsername("default");
             siteDetail.setSite("default");
             siteDetail.setNotes("default");
+            siteDetail.setHead("default");
             SecretKey secretKey = siteDetail.generateKey();
             String encoded = siteDetail.encryptPassword("default", secretKey);
             siteDetail.setPassword(encoded);
