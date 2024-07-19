@@ -417,6 +417,22 @@ public class LocalService {
         return revCommitList;
     }
 
+    public List<Object> getCommitsByBranch(String path, String branch) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        List<Object> revCommitList = new ArrayList<>();
+        gitServices.getLogByBranch(git, branch).forEachRemaining(commit -> {
+            Map<String, Object> singleCommit = new HashMap();
+            singleCommit.put("commitId", commit.name());
+            singleCommit.put("parentCount", commit.getParentCount());
+            singleCommit.put("email", commit.getCommitterIdent().getEmailAddress());
+            singleCommit.put("name", commit.getCommitterIdent().getName());
+            singleCommit.put("timestamp", commit.getCommitTime());
+            revCommitList.add(singleCommit);
+
+        });
+        return revCommitList;
+    }
+
     public List<Map<String, Object>> getBlame(String path, String filename) throws GitAPIException, IOException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         BlameResult blameResult = gitServices.getBlameResult(git, filename);

@@ -499,7 +499,7 @@
             // Create table header
             const thead = document.createElement('thead');
             const headerRow = document.createElement('tr');
-            ['no', 'name', 'branchType', "objectName"].forEach(headerText => {
+            ['no', 'name', 'branchType', "objectName", 'commits'].forEach(headerText => {
                 const th = document.createElement('th');
                 th.scope = 'col';
                 th.textContent = headerText;
@@ -512,11 +512,36 @@
             const tbody = document.createElement('tbody');
             data.forEach(dataRow => {
                 const tr = document.createElement('tr');
-                ['no', 'name', 'branchType', "objectName"].forEach(key => {
-                    const td = document.createElement('td');
-                    td.textContent = dataRow[key];
-                    tr.appendChild(td);
+
+                const td1 = document.createElement('td');
+                td1.textContent = dataRow.no;
+                tr.appendChild(td1);
+
+                const td2 = document.createElement('td');
+                td2.textContent = dataRow.name;
+                tr.appendChild(td2);
+
+                const td3 = document.createElement('td');
+                td3.textContent = dataRow.branchType;
+                tr.appendChild(td3);
+
+                const td4 = document.createElement('td');
+                td4.textContent = dataRow.objectName;
+                tr.appendChild(td4);
+
+                const commitsEle = document.createElement('td');
+                let buttonElement = document.createElement("button");
+                buttonElement.setAttribute("type", "submit");
+                buttonElement.setAttribute("class", "btn btn-primary");
+                buttonElement.textContent = "show";
+                buttonElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    console.log(dataRow.name)
+                    getCommitsByBranch(dataRow.name)
                 });
+                commitsEle.appendChild(buttonElement)
+                tr.appendChild(commitsEle)
+
                 tbody.appendChild(tr);
             });
             table.appendChild(tbody);
@@ -525,6 +550,16 @@
             const tableContainer = document.getElementById('dynamicContent');
             tableContainer.appendChild(table);
         }
+    }
+
+    function getCommitsByBranch(branch) {
+        let dynamicContent = $('#dynamicContent');
+        dynamicContent.empty();
+        let finalUrl = `/api/getCommitsByBranch?path=${path}&branch=${branch}`
+        $.get(finalUrl, function (data) {
+            console.log(data)
+            displayData(data)
+        });
     }
 
     function loadConfig() {

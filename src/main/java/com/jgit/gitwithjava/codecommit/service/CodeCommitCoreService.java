@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CodeCommitService {
+public class CodeCommitCoreService {
 
     public CodeCommitClient getCodeCommitClient(Region region) {
         ProfileCredentialsProvider credentialsProvider = ProfileCredentialsProvider.create("default");

@@ -101,6 +101,10 @@ public class GitServices {
         return git.log().call().iterator();
     }
 
+    public Iterator<RevCommit> getLogByBranch(Git git, String branch) throws GitAPIException, IOException {
+        return git.log().add(git.getRepository().resolve(branch)).call().iterator();
+    }
+
     public BlameResult getBlameResult(Git git, String filename) throws GitAPIException, IOException {
         BlameResult blameResult = git.blame().setFilePath(filename).setTextComparator(RawTextComparator.DEFAULT).call();
         blameResult.computeAll();
