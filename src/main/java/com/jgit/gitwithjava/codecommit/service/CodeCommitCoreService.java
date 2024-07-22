@@ -1,14 +1,17 @@
 package com.jgit.gitwithjava.codecommit.service;
 
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.codecommit.CodeCommitClient;
 import software.amazon.awssdk.services.codecommit.model.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class CodeCommitCoreService {
 
     public CodeCommitClient getCodeCommitClient(Region region) {
@@ -16,15 +19,18 @@ public class CodeCommitCoreService {
         return CodeCommitClient.builder().region(region).credentialsProvider(credentialsProvider).build();
     }
 
-    public Map<String, String> listRepositories(CodeCommitClient codeCommitClient) {
+    public List<Object> listRepositories(CodeCommitClient codeCommitClient) {
         ListRepositoriesResponse listRepositoriesResult = codeCommitClient.listRepositories();
-        Map<String, String> stringStringMap = new HashMap<>();
+        List<Object> objectList = new ArrayList<>();
         if (listRepositoriesResult.hasRepositories()) {
             for (RepositoryNameIdPair repositoryNameIdPair : listRepositoriesResult.repositories()) {
-                stringStringMap.put(repositoryNameIdPair.repositoryId(), repositoryNameIdPair.repositoryName());
+                Map<String, String> stringStringMap = new HashMap<>();
+                stringStringMap.put("repositoryId", repositoryNameIdPair.repositoryId());
+                stringStringMap.put("repositoryName", repositoryNameIdPair.repositoryName());
+                objectList.add(stringStringMap);
             }
         }
-        return stringStringMap;
+        return objectList;
     }
 
     public RepositoryMetadata getRepositoryMetadata(String repoName, CodeCommitClient codeCommitClient) {
