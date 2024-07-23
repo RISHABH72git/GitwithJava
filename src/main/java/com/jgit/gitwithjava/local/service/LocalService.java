@@ -2,11 +2,7 @@ package com.jgit.gitwithjava.local.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.custom.model.GitClone;
-import com.jgit.gitwithjava.frontend.model.FileModel;
-import com.jgit.gitwithjava.local.model.ActionType;
-import com.jgit.gitwithjava.local.model.Details;
-import com.jgit.gitwithjava.local.model.SiteDetail;
-import com.jgit.gitwithjava.local.model.StatusType;
+import com.jgit.gitwithjava.local.model.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;

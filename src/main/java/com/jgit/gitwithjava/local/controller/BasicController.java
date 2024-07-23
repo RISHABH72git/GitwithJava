@@ -1,6 +1,6 @@
-package com.jgit.gitwithjava.frontend.controller;
+package com.jgit.gitwithjava.local.controller;
 
-import com.jgit.gitwithjava.frontend.service.CrudBranchService;
+import com.jgit.gitwithjava.local.service.BasicServices;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,19 +15,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-public class CrudBranchController {
+public class BasicController {
 
-    CrudBranchService crudBranchService;
+    BasicServices basicServices;
 
     @Autowired
-    public CrudBranchController(CrudBranchService crudBranchService) {
-        this.crudBranchService = crudBranchService;
+    public BasicController(BasicServices basicServices) {
+        this.basicServices = basicServices;
     }
-
 
     @GetMapping("/")
     public String homePage(Model model) {
-        model.addAttribute("gitFileMap", crudBranchService.getGitFileNameWithPath());
+        model.addAttribute("gitFileMap", basicServices.getGitFileNameWithPath());
         return "home";
     }
 
@@ -35,7 +34,7 @@ public class CrudBranchController {
     public String commitPage(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
-        model.addAttribute("AllCommits", crudBranchService.getCommits(path));
+        model.addAttribute("AllCommits", basicServices.getCommits(path));
         return "commit";
     }
 
@@ -43,7 +42,7 @@ public class CrudBranchController {
     public String branchPage(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
-        model.addAttribute("AllBranch", crudBranchService.gitBranch(path));
+        model.addAttribute("AllBranch", basicServices.gitBranch(path));
         return "branch";
     }
 
@@ -51,7 +50,7 @@ public class CrudBranchController {
     public String statusPage(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
-        model.addAttribute("status", crudBranchService.gitStatus(path));
+        model.addAttribute("status", basicServices.gitStatus(path));
         return "status";
     }
 
@@ -59,7 +58,7 @@ public class CrudBranchController {
     public String authorPage(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
-        model.addAttribute("author", crudBranchService.getAllAuthorName(path));
+        model.addAttribute("author", basicServices.getAllAuthorName(path));
         return "author";
     }
 
@@ -67,7 +66,7 @@ public class CrudBranchController {
     public String configPage(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
-        model.addAttribute("ObjectList", crudBranchService.getGitConfig(path));
+        model.addAttribute("ObjectList", basicServices.getGitConfig(path));
         return "config";
     }
 
@@ -76,7 +75,7 @@ public class CrudBranchController {
         model.addAttribute("path", path);
         model.addAttribute("commitId", commitId);
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
-        model.addAttribute("commitDetails", crudBranchService.getCommitDetails(path, commitId));
+        model.addAttribute("commitDetails", basicServices.getCommitDetails(path, commitId));
         return "commit";
     }
 
@@ -87,7 +86,7 @@ public class CrudBranchController {
 
     @PostMapping("/createRepo")
     public String createRepoPage(Model model, @RequestParam String repo) throws GitAPIException, IOException {
-        Map<String, Object> allFile = crudBranchService.gitInitialize(repo);
+        Map<String, Object> allFile = basicServices.gitInitialize(repo);
         model.addAttribute("repoName", allFile.get("repoName"));
         model.addAttribute("path", allFile.get("path"));
         model.addAttribute("listPath", allFile.get("listPath"));
@@ -96,20 +95,20 @@ public class CrudBranchController {
 
     @PostMapping("/createBranch")
     public RedirectView createBranch(@RequestParam String path, String branchName) throws IOException, GitAPIException {
-        crudBranchService.createBranch(path, branchName);
+        basicServices.createBranch(path, branchName);
         return new RedirectView("/branch?path=" + path);
     }
 
     @GetMapping("/deleteBranch")
     public RedirectView deleteBranch(@RequestParam String path, @RequestParam String branchName) throws IOException, GitAPIException {
-        crudBranchService.deleteBranch(path, branchName);
+        basicServices.deleteBranch(path, branchName);
         return new RedirectView("/branch?path=" + path);
     }
 
     @GetMapping("/gitDiff")
     public String showDiff(Model model, @RequestParam String path, @RequestParam String firstCommit, @RequestParam String secondCommit) {
         try {
-            model.addAttribute("diffContent", crudBranchService.showDiffParentAndChildCommit(path, firstCommit, secondCommit).lines().collect(Collectors.toList()));
+            model.addAttribute("diffContent", basicServices.showDiffParentAndChildCommit(path, firstCommit, secondCommit).lines().collect(Collectors.toList()));
         } catch (IOException | GitAPIException e) {
             e.printStackTrace();
             model.addAttribute("diffContent", "Error reading the diff file.");
@@ -119,13 +118,13 @@ public class CrudBranchController {
 
     @PostMapping("/printCommits")
     public RedirectView printCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email) throws IOException, GitAPIException {
-        crudBranchService.printsAllCommits(path, fileName, timestamp, message, email);
+        basicServices.printsAllCommits(path, fileName, timestamp, message, email);
         return new RedirectView("/commit?path=" + path);
     }
 
     @PostMapping("/printAuthorsCommits")
     public RedirectView printAuthorsCommits(@RequestParam String path, String fileName, boolean timestamp, boolean message, boolean email, String emailAddress) throws IOException, GitAPIException {
-        crudBranchService.printAuthorsCommits(path, fileName, timestamp, message, email, emailAddress);
+        basicServices.printAuthorsCommits(path, fileName, timestamp, message, email, emailAddress);
         return new RedirectView("/author?path=" + path);
     }
 
@@ -133,7 +132,7 @@ public class CrudBranchController {
     public String getAllFiles(Model model, @RequestParam String path) throws IOException {
         model.addAttribute("repoName", path);
         model.addAttribute("path", path);
-        model.addAttribute("listPath", crudBranchService.getAllFilesFromDirectory(path));
+        model.addAttribute("listPath", basicServices.getAllFilesFromDirectory(path));
         return "listFilesAndGitBlame";
     }
 
@@ -143,36 +142,36 @@ public class CrudBranchController {
         model.addAttribute("repoName", path.substring(path.lastIndexOf("/") + 1));
         model.addAttribute("fileName", fileName);
         model.addAttribute("blameFile", fileName.substring(fileName.lastIndexOf("/") + 1));
-        model.addAttribute("fileWithBlame", crudBranchService.getBlame(path, fileName, print));
+        model.addAttribute("fileWithBlame", basicServices.getBlame(path, fileName, print));
         return "listFilesAndGitBlame";
     }
 
     @GetMapping("/cloneRepository")
     public RedirectView cloneRepository(@RequestParam String cloneUrl, String repoName) throws GitAPIException {
-        crudBranchService.cloneRepository(cloneUrl, repoName);
+        basicServices.cloneRepository(cloneUrl, repoName);
         return new RedirectView("/");
     }
 
     /*@GetMapping("/newHome")
     public String newHome(Model model, String path) {
         model.addAttribute("path", path);
-        model.addAttribute("getAllHome", crudBranchService.getAllHome(path));
+        model.addAttribute("getAllHome", basicServices.getAllHome(path));
         return "newHome";
     }*/
 
     @GetMapping("/directoryDetails")
     public String directoryDetails(Model model, String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
-        model.addAttribute("pieChart", crudBranchService.getAuthorsNameAndCommitsCount(path));
-        model.addAttribute("scatterChart", crudBranchService.getLastDayCommits(path).get("commits"));
-        model.addAttribute("scatterChartDate", crudBranchService.getLastDayCommits(path).get("lastDate"));
-        model.addAttribute("calenderChart", crudBranchService.getAllCommitInCalenderChart(path));
+        model.addAttribute("pieChart", basicServices.getAuthorsNameAndCommitsCount(path));
+        model.addAttribute("scatterChart", basicServices.getLastDayCommits(path).get("commits"));
+        model.addAttribute("scatterChartDate", basicServices.getLastDayCommits(path).get("lastDate"));
+        model.addAttribute("calenderChart", basicServices.getAllCommitInCalenderChart(path));
         return "directoryDetails";
     }
 
     @PostMapping("/addCommit")
     public RedirectView addCommit(@RequestParam String path, @RequestParam String message, @RequestParam String[] selectedValues) throws GitAPIException, IOException {
-        crudBranchService.addCommit(path, message, selectedValues);
+        basicServices.addCommit(path, message, selectedValues);
         return new RedirectView("/status?path=" + path);
     }
 

@@ -1,9 +1,9 @@
 package com.jgit.gitwithjava.github.controller;
 
-import com.jgit.gitwithjava.frontend.model.RepoModel;
 import com.jgit.gitwithjava.github.model.ListRepository;
 import com.jgit.gitwithjava.github.model.RepoData;
 import com.jgit.gitwithjava.github.service.GitHubRestApiService;
+import com.jgit.gitwithjava.local.model.RepoModel;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

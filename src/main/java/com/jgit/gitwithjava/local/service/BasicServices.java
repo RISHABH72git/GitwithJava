@@ -1,7 +1,7 @@
-package com.jgit.gitwithjava.frontend.service;
+package com.jgit.gitwithjava.local.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.frontend.model.FileModel;
+import com.jgit.gitwithjava.local.model.FileModel;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.*;
@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 
 @Service
 @Log4j2
-public class CrudBranchService {
+public class BasicServices {
 
     final Map<String, List<String>> allFileWithBranch = new HashMap<>();
 

@@ -42,7 +42,7 @@ public class RestController {
     }
 
     @GetMapping("repositories/{repoName}/branches/{branchName}/commits/{commitId}")
-    public Map<String, Object> branchInfo(@PathVariable String repoName, String region, @PathVariable String branchName, @PathVariable String commitId) {
+    public Map<String, Object> commitInfo(@PathVariable String repoName, String region, @PathVariable String branchName, @PathVariable String commitId) {
         return restService.commitInfo(Region.of(region), repoName, branchName, commitId);
     }
 

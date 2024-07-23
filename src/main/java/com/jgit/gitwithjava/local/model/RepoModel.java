@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.frontend.model;
+package com.jgit.gitwithjava.local.model;
 
 import lombok.Getter;
 import lombok.Setter;
