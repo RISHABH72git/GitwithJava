@@ -1,6 +1,8 @@
 package com.jgit.gitwithjava.local.service;
 
+import com.jgit.gitwithjava.DefaultCredentials;
 import com.jgit.gitwithjava.core.model.GitClone;
+import com.jgit.gitwithjava.core.model.GitRemote;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -10,6 +12,7 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.*;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
@@ -154,5 +157,9 @@ public class GitServices {
 
     public List<RemoteConfig> remoteConfigList(Git git) throws GitAPIException {
         return git.remoteList().call();
+    }
+
+    public Iterable<PushResult> push(Git git, String name) throws GitAPIException {
+        return git.push().setRemote(name).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken())).call();
     }
 }

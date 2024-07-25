@@ -16,6 +16,7 @@ import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -612,4 +613,19 @@ public class LocalService {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         return gitServices.remoteConfigList(git);
     }
+
+    public List<Object> push(String path, String name) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        Iterable<PushResult> pushResults = gitServices.push(git, name);
+        log.info("push to {}", name);
+        List<Object> response = new ArrayList<>();
+        pushResults.forEach(pushResult -> {
+            Map<String, Object> stringObjectMap = new HashMap<>();
+            stringObjectMap.put("message", pushResult.getMessages());
+            stringObjectMap.put("peerUserAgent", pushResult.getPeerUserAgent());
+            response.add(stringObjectMap);
+        });
+        return response;
+    }
+    
 }

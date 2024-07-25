@@ -88,4 +88,9 @@ public class ApiLocalController {
     public List<Map<String, Object>> getBlame(@RequestParam String path, String filename) throws GitAPIException, IOException {
         return localService.getBlame(path, filename);
     }
+
+    @GetMapping("/push")
+    public List<Object> push(@RequestParam String path, String name) throws GitAPIException, IOException {
+        return localService.push(path, name);
+    }
 }
