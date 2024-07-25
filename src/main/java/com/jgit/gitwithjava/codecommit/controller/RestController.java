@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("CodeCommit")
+@RequestMapping("codecommit")
 public class RestController {
 
     RestService restService;
