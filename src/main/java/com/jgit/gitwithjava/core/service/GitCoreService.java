@@ -1,9 +1,9 @@
-package com.jgit.gitwithjava.custom.service;
+package com.jgit.gitwithjava.core.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.custom.model.GitClone;
-import com.jgit.gitwithjava.custom.model.GitCommit;
-import com.jgit.gitwithjava.custom.model.GitRemote;
+import com.jgit.gitwithjava.core.model.GitClone;
+import com.jgit.gitwithjava.core.model.GitCommit;
+import com.jgit.gitwithjava.core.model.GitRemote;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -18,9 +18,9 @@ import java.util.List;
 
 @Service
 @Log4j2
-public class GitCustomService {
+public class GitCoreService {
 
-    public GitCustomService() {
+    public GitCoreService() {
     }
 
     public List<RemoteConfig> getGitRemoteList(Git git) throws GitAPIException {

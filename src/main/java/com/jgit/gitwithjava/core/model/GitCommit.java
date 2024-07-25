@@ -1,4 +1,4 @@
-package com.jgit.gitwithjava.custom.model;
+package com.jgit.gitwithjava.core.model;
 
 import lombok.Getter;
 import lombok.Setter;

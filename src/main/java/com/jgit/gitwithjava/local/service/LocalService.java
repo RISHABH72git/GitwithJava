@@ -1,7 +1,7 @@
 package com.jgit.gitwithjava.local.service;
 
 import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.custom.model.GitClone;
+import com.jgit.gitwithjava.core.model.GitClone;
 import com.jgit.gitwithjava.local.model.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -15,12 +15,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.*;
-import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevTree;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.jgit.util.Paths;
+import org.eclipse.jgit.transport.RemoteConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +25,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import java.io.*;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -613,5 +606,10 @@ public class LocalService {
     public void resetToHead(String path) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         gitServices.reset(git);
+    }
+
+    public List<RemoteConfig> remoteConfigList(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        return gitServices.remoteConfigList(git);
     }
 }

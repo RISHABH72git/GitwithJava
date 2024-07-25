@@ -1,31 +1,22 @@
 package com.jgit.gitwithjava.local.service;
 
-import com.jgit.gitwithjava.DefaultCredentials;
-import com.jgit.gitwithjava.custom.model.GitClone;
-import com.jgit.gitwithjava.github.model.branch.Commit;
+import com.jgit.gitwithjava.core.model.GitClone;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.diff.RawTextComparator;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.*;
+import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.jgit.treewalk.TreeWalk;
-import org.eclipse.jgit.util.IO;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Log4j2
@@ -159,5 +150,9 @@ public class GitServices {
 
     public void reset(Git git) throws GitAPIException {
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD).call();
+    }
+
+    public List<RemoteConfig> remoteConfigList(Git git) throws GitAPIException {
+        return git.remoteList().call();
     }
 }

@@ -1,6 +1,6 @@
 package com.jgit.gitwithjava.local.controller;
 
-import com.jgit.gitwithjava.custom.model.GitClone;
+import com.jgit.gitwithjava.core.model.GitClone;
 import com.jgit.gitwithjava.local.model.ActionType;
 import com.jgit.gitwithjava.local.model.SiteDetail;
 import com.jgit.gitwithjava.local.model.StatusType;
@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -177,8 +176,16 @@ public class LocalController {
     }
 
     @GetMapping("/operations")
-    public String operations(Model model, @RequestParam String path) {
+    public String operations(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
+        model.addAttribute("RemoteConfig", localService.remoteConfigList(path));
         return "Manage/operations";
+    }
+
+    @GetMapping("/operations/push")
+    public RedirectView operationPush(Model model, @RequestParam String path, @RequestParam String name, @RequestParam String uri) throws GitAPIException, IOException {
+        System.out.println(name);
+        System.out.println(uri);
+        return new RedirectView("/local/operations?path=" + path);
     }
 }
