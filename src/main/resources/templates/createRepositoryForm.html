@@ -15,10 +15,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/createRepositoryForm(path = ${path})}"
+                           type="button">Git</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/cloneRepositoryForm(path = ${path})}"
+                           type="button">Clone
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -28,13 +41,13 @@
 <br>
 <div class="container">
     <h1>Create a Git Repository</h1>
-<!--    <h3 th:text="${path}"></h3>-->
     <br>
     <div class="container" style="text-align: center;">
         <h5 aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item" th:each="parent : ${parents}">
-                    <a th:href="@{/local/createRepositoryForm(path= ${parent.parentPath})}" th:if="${parent.isDirectory == true}"
+                    <a th:href="@{/local/createRepositoryForm(path= ${parent.parentPath})}"
+                       th:if="${parent.isDirectory == true}"
                        th:text="${parent.name}"></a>
                     <span th:text="${parent.name}" th:unless="${parent.isDirectory == true}"></span>
                 </li>
