@@ -31,34 +31,8 @@ public class GitServices {
     public GitServices() {
     }
 
-    public List<Object> getCommits(Git git) throws IOException, GitAPIException {
-        List<Object> revCommitList = new ArrayList<>();
-        LogCommand logCommand = git.log().all();
-        for (RevCommit revCommit : logCommand.call()) {
-            Map<String, Object> singleCommit = new HashMap();
-            singleCommit.put("commitId", revCommit.name());
-            singleCommit.put("parentCount", revCommit.getParentCount());
-            singleCommit.put("email", revCommit.getCommitterIdent().getEmailAddress());
-            singleCommit.put("name", revCommit.getCommitterIdent().getName());
-            singleCommit.put("timestamp", revCommit.getCommitTime());
-            revCommitList.add(singleCommit);
-        }
-        return revCommitList;
-    }
-
-    public List<Map<String, String>> getAuthors(Git git) throws GitAPIException {
-        List<Map<String, String>> list = new ArrayList<>();
-        Map<String, String> authorName = new HashMap<>();
-        git.log().call().forEach(ref -> {
-            authorName.put(ref.getCommitterIdent().getEmailAddress(), ref.getCommitterIdent().getName());
-        });
-        authorName.forEach((email, name) -> {
-            Map<String, String> map = new HashMap<>();
-            map.put("name", name);
-            map.put("email", email);
-            list.add(map);
-        });
-        return list;
+    public LogCommand commits(Git git) throws IOException, GitAPIException {
+        return git.log().all();
     }
 
     public Status getStatus(Git git) throws GitAPIException {

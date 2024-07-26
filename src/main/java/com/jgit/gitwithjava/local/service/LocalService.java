@@ -130,12 +130,34 @@ public class LocalService {
 
     public List<Object> getCommits(String path) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
-        return gitServices.getCommits(git);
+        List<Object> revCommitList = new ArrayList<>();
+        LogCommand logCommand = gitServices.commits(git);
+        for (RevCommit revCommit : logCommand.call()) {
+            Map<String, Object> singleCommit = new HashMap();
+            singleCommit.put("commitId", revCommit.name());
+            singleCommit.put("parentCount", revCommit.getParentCount());
+            singleCommit.put("email", revCommit.getCommitterIdent().getEmailAddress());
+            singleCommit.put("name", revCommit.getCommitterIdent().getName());
+            singleCommit.put("timestamp", revCommit.getCommitTime());
+            revCommitList.add(singleCommit);
+        }
+        return revCommitList;
     }
 
     public List<Map<String, String>> getAuthors(String path) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
-        return gitServices.getAuthors(git);
+        List<Map<String, String>> list = new ArrayList<>();
+        Map<String, String> authorName = new HashMap<>();
+        gitServices.commits(git).call().forEach(ref -> {
+            authorName.put(ref.getCommitterIdent().getEmailAddress(), ref.getCommitterIdent().getName());
+        });
+        authorName.forEach((email, name) -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("name", name);
+            map.put("email", email);
+            list.add(map);
+        });
+        return list;
     }
 
     public Map<Object, Object> getGraph(String path) throws IOException, GitAPIException {

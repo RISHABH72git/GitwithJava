@@ -12,48 +12,39 @@
             integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
             crossorigin="anonymous"></script>
 </head>
-<body class="bg-dark">
+<body>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">GitHub</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <!--<li class="nav-item">
-                      <a class="nav-link active" aria-current="page" href="/">Your Local Home</a>
-                    </li>-->
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{github/createRepositoryForm}">Create Repository</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{github/createRepositoryForm}">New</a>
                     </li>
-                    <!-- <li class="nav-item">
-                         <p class="nav-link active" aria-current="page" th:text="${userDetails.getLogin()}"></p>
-                     </li>-->
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" onclick="showModal()">Delete</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-
 </header>
 <br>
-<h3 class="text-center text-light" th:text="${userDetails.getLogin()}"></h3>
+<h3 class="text-center" th:text="${userDetails.getLogin()}"></h3>
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8">
             <ul class="list-unstyled">
-                <li class="text-white">Public Repositories: <span th:text="${counts.get(false).size()}"></span></li>
-                <li class="text-white">Total Repositories: <span th:text="${listAllRepository.length}"></span></li>
-                <li class="text-white">Followers: <span th:text="${userDetails.getFollowers()}"></span></li>
+                <li class="text-dark">Public Repositories: <span th:text="${counts.get(false).size()}"></span></li>
+                <li class="text-dark">Total Repositories: <span th:text="${listAllRepository.length}"></span></li>
+                <li class="text-dark">Followers: <span th:text="${userDetails.getFollowers()}"></span></li>
             </ul>
         </div>
         <div class="col-6 col-md-4">
             <ul class="list-unstyled">
-                <li class="text-white">Private Repositories : <span th:text="${counts.get(true).size()}"></span></li>
-                <li class="text-white">Created at : <span th:text="${userDetails.getCreated_at()}"></span></li>
-                <li class="text-white">Updated at: <span th:text="${userDetails.getUpdated_at()}"></span></li>
+                <li class="text-dark">Private Repositories : <span th:text="${counts.get(true).size()}"></span></li>
+                <li class="text-dark">Created at : <span th:text="${userDetails.getCreated_at()}"></span></li>
+                <li class="text-dark">Updated at: <span th:text="${userDetails.getUpdated_at()}"></span></li>
             </ul>
         </div>
     </div>
@@ -66,33 +57,68 @@
                 <input type="text" id="searchInput" class="form-control" placeholder="Search commits...">
             </div>
         </div>
-        <div class="col-6" id="forsearch" th:each="repos : ${listAllRepository}">
-            <div class="card p-3">
-                <figure class="p-3 mb-0">
-                    <blockquote class="blockquote">
-                        <div class="text-center">
-                            <p th:if="${repos.myprivate}" class="text-danger" th:text="${repos.name}"></p>
-                            <p th:unless="${repos.myprivate}" th:text="${repos.name}"></p>
-                            <a th:href="@{github/branches(repoName = ${repos.name})}">
-                                <button type="button" class="btn btn-primary">Branches</button>
-                            </a>
-                            <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}">
-                                <button type="button" class="btn btn-danger">Clone</button>
-                            </a>
-                            <a th:href="@{github/commits(repoName = ${repos.name})}">
-                                <button type="button" class="btn btn-success">Commits</button>
-                            </a>
+        <div class="col-3" id="forsearch" th:each="repos : ${listAllRepository}">
+            <div class="card" style="width: 15rem;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <img th:src="@{/images/github_image4.png}" class="card-img-center" alt="github" height="50"
+                             width="50">
+                        <br>
+                        <h5 th:if="${repos.myprivate}" class="card-title" th:text="${repos.name}"></h5>
+                        <h5 class="card-title" th:unless="${repos.myprivate}" th:text="${repos.name}"></h5>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><a th:href="@{github/branches(repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-primary">Branches</button>
+                        </a></li>
+                        <li class="list-group-item"><a
+                                th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-danger">Clone</button>
+                        </a></li>
+                        <li class="list-group-item"><a th:href="@{github/commits(repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-success">Commits</button>
+                        </a></li>
+                        <li class="list-group-item">
                             <a th:href="@{github/contributors(repoName = ${repos.name})}">
                                 <button type="button" class="btn btn-dark">Contributors</button>
                             </a>
-                            <a th:href="@{github/activities(repoName = ${repos.name})}">
-                                <button type="button" class="btn btn-warning">Activities</button>
-                            </a>
-                            <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
-                        </div>
-                    </blockquote>
-                </figure>
+                        </li>
+                        <li class="list-group-item"><a th:href="@{github/activities(repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-warning">Activities</button>
+                        </a></li>
+                    </ul>
+                </div>
             </div>
+            <!--
+                        <div class="card p-3">
+                            <figure class="p-3 mb-0">
+                                <blockquote class="blockquote">
+                                    <div class="text-center">
+                                        <p th:if="${repos.myprivate}" class="text-danger" th:text="${repos.name}"></p>
+                                        <p th:unless="${repos.myprivate}" th:text="${repos.name}"></p>
+                                        <a th:href="@{github/branches(repoName = ${repos.name})}">
+                                            <button type="button" class="btn btn-primary">Branches</button>
+                                        </a>
+                                        <a th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}">
+                                            <button type="button" class="btn btn-danger">Clone</button>
+                                        </a>
+                                        <a th:href="@{github/commits(repoName = ${repos.name})}">
+                                            <button type="button" class="btn btn-success">Commits</button>
+                                        </a>
+                                        <a th:href="@{github/contributors(repoName = ${repos.name})}">
+                                            <button type="button" class="btn btn-dark">Contributors</button>
+                                        </a>
+                                        <a th:href="@{github/activities(repoName = ${repos.name})}">
+                                            <button type="button" class="btn btn-warning">Activities</button>
+                                        </a>
+                                        <button type="button" class="btn btn-primary" onclick="showModal()">Delete</button>
+                                    </div>
+                                </blockquote>
+                            </figure>
+                        </div>
+            -->
         </div>
     </div>
 </div>
@@ -126,7 +152,7 @@
         input = document.getElementById("searchInput");
         filter = input.value.toUpperCase();
         console.log(filter)
-        cards = document.getElementsByClassName("card p-3");// Adjust this class selector to match your repository card class
+        cards = document.getElementsByClassName("card");// Adjust this class selector to match your repository card class
         for (i = 0; i < cards.length; i++) {
             card = cards[i];
             txtValue = card.textContent || card.innerText;
