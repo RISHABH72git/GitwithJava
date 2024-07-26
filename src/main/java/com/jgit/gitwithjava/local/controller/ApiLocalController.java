@@ -93,4 +93,9 @@ public class ApiLocalController {
     public List<Object> push(@RequestParam String path, String name) throws GitAPIException, IOException {
         return localService.push(path, name);
     }
+
+    @GetMapping("/pull")
+    public String pull(@RequestParam String path, String name) throws GitAPIException, IOException {
+        return localService.pull(path, name);
+    }
 }

@@ -11,7 +11,9 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.*;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -161,5 +163,17 @@ public class GitServices {
 
     public Iterable<PushResult> push(Git git, String name) throws GitAPIException {
         return git.push().setRemote(name).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken())).call();
+    }
+
+    public FetchResult fetch(Git git, String name) throws GitAPIException {
+        return git.fetch().setRemote(name).setCredentialsProvider(new UsernamePasswordCredentialsProvider(DefaultCredentials.getGitUsername(), DefaultCredentials.getToken())).call();
+    }
+
+    public MergeResult merge(Git git, String remoteBranch) throws GitAPIException, IOException {
+        return git.merge().include(git.getRepository().findRef(remoteBranch)).setStrategy(MergeStrategy.RECURSIVE).call();
+    }
+
+    public PullResult pull(Git git, String name) throws GitAPIException {
+        return git.pull().setRemote(name).setStrategy(MergeStrategy.RECURSIVE).call();
     }
 }

@@ -10,12 +10,14 @@ import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -627,5 +629,11 @@ public class LocalService {
         });
         return response;
     }
-    
+
+    public String pull(String path, String name) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        PullResult pullResult = gitServices.pull(git, name);
+        return pullResult.getMergeResult().getMergeStatus().name();
+    }
+
 }

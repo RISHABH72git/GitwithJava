@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>operations</title>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" rel="stylesheet">
     <script crossorigin="anonymous"
@@ -45,25 +45,57 @@
     </nav>
 </header>
 <br>
+<br>
 <div class="container mt-4 overflow-hidden">
     <div class="card" th:each="entry : ${RemoteConfig}">
         <div class="card-body">
             <p th:text="${entry.getName()}"></p>
-            <div th:each="uri : ${entry.getURIs()}">
-                <button th:onclick="push([[${entry.getName()}]])">push</button>
+            <button class="btn btn-primary" th:onclick="push([[${entry.getName()}]])">push</button>
+            <button class="btn btn-success" th:onclick="pull([[${entry.getName()}]])">pull</button>
+        </div>
+    </div>
+</div>
+<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+    <div id="toast-container" style="position: absolute; top: 0; right: 0;">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+            <div class="toast-header">
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-body">
+                <!-- Message will be inserted here -->
             </div>
         </div>
     </div>
 </div>
+
 <script th:inline="javascript">
     const path = [[${path}]]
 
     function push(name) {
-        console.log(name)
         let finalUrl = `/api/push?path=${path}&name=${name}`
         $.get(finalUrl, function (data) {
             console.log(data)
+            showToast(data);
         });
+    }
+
+    function showToast(message) {
+        for (const messageElement of message) {
+            $('#toast-body').text(messageElement.message);
+            $('.toast').toast('show');
+        }
+    }
+
+    function pull(name) {
+        let finalUrl = `/api/pull?path=${path}&name=${name}`
+        $.get(finalUrl, function (data) {
+            showToastPull(data)
+        });
+    }
+
+    function showToastPull(message) {
+        $('#toast-body').text(message);
+        $('.toast').toast('show');
     }
 </script>
 </body>
