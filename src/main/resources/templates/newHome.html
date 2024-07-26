@@ -22,12 +22,15 @@
                         <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link fw-semibold" th:href="@{/local/createRepositoryForm(path = ${path})}"
-                           type="button">Create
-                            Repository</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/createRepositoryForm(path = ${path})}"
+                           type="button">Git</a>
                     </li>
                     <li class="nav-item">
                         <button class="btn btn-link fw-semibold" onclick="showModal()" type="button">Directory</button>
@@ -162,7 +165,6 @@
             }
         }
     }
-
     document.getElementById("searchInput").addEventListener("input", searchRepositories);
 </script>
 </body>

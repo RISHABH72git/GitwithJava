@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CodeCommit</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
+            src="https://code.jquery.com/jquery-3.6.3.slim.min.js"></script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" href="#">New</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" href="#">Delete</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container mt-4 mb-4 overflow-hidden">
+    <div class="row gy-5">
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search commits...">
+            </div>
+        </div>
+        <div class="col-3" id="forsearch" th:each="repos : ${repositories}">
+            <div class="card" style="width: 15rem;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <img th:src="@{/images/github_image4.png}" class="card-img-center" alt="github" height="50"
+                             width="50">
+                        <br>
+                        <h5 class="card-title" th:text="${repos.repositoryName}"></h5>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <ul class="list-group list-group-flush">
+                        <!--<li class="list-group-item"><a th:href="@{codecommit/(repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-primary">Branches</button>
+                        </a></li>
+                        <li class="list-group-item"><a
+                                th:href="@{/cloneRepository(cloneUrl = ${repos.clone_url}, repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-danger">Clone</button>
+                        </a></li>-->
+                        <!--<li class="list-group-item"><a th:href="@{github/commits(repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-success">Commits</button>
+                        </a></li>-->
+                        <!--<li class="list-group-item">
+                            <a th:href="@{github/contributors(repoName = ${repos.name})}">
+                                <button type="button" class="btn btn-dark">Contributors</button>
+                            </a>
+                        </li>
+                        <li class="list-group-item"><a th:href="@{github/activities(repoName = ${repos.name})}">
+                            <button type="button" class="btn btn-warning">Activities</button>
+                        </a></li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
