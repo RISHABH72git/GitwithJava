@@ -175,6 +175,13 @@ public class LocalController {
         return new RedirectView("/local/status?path=" + path + "&type=" + type);
     }
 
+    @GetMapping("/reset")
+    public String reset(Model model, @RequestParam String path) throws IOException, GitAPIException {
+//        localService.resetToHead(path);
+        model.addAttribute("path", path);
+        return "Manage/reset";
+    }
+
     @GetMapping("/operations")
     public String operations(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
