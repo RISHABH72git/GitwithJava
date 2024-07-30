@@ -47,5 +47,40 @@
 </header>
 <br>
 <h3 class="text-center" th:text="${path}"></h3>
+<br>
+<div class="container">
+    <form th:action="@{/local/reset}" th:method="post">
+        <div class="form-group">
+            <label>Commit</label>
+            <input class="form-control" placeholder="Enter commitId" required th:value="${commitId}" type="text">
+        </div>
+        <br>
+        <div class="form-group">
+            <label>Type</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                <label class="form-check-label" for="flexRadioDefault1">Soft</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                <label class="form-check-label" for="flexRadioDefault2">Mixed</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+                <label class="form-check-label" for="flexRadioDefault3">Hard</label>
+            </div>
+        </div>
+        <br>
+        <input name="path" th:value="${path}" type="hidden">
+        <br>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+    <br>
+    <button class="btn btn-danger" onclick="function goBack() {
+         window.history.back();
+        }
+        goBack()">Back
+    </button>
+</div>
 </body>
 </html>
