@@ -19,21 +19,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local/fileDetails(path = ${path})}"
+                        <a class="btn btn-link fw-semibold fw-semibold"
+                           th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/fileDetails(path = ${path})}"
                            type="button">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local/resetToHead(path = ${path}, type = ${type})}"
+                        <a class="btn btn-link fw-semibold"
+                           th:href="@{/local/resetToHead(path = ${path}, type = ${type})}"
                            type="button">RESET-TO-HEAD</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local/operations(path = ${path})}"
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/operations(path = ${path})}"
                            type="button">Operations</a>
                     </li>
                 </ul>

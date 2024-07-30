@@ -36,13 +36,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local/status(path = ${path}, type ='MODIFY' )}"
+                        <a class="btn btn-link fw-semibold" th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/status(path = ${path}, type ='MODIFY' )}"
                            type="button">Status</a>
                     </li>
                 </ul>
@@ -50,15 +54,21 @@
         </div>
     </nav>
 </header>
+
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" id="sidebar">
             <div class="navbar-brand">
                 <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
+                <ul class="nav nav-pills flex-column">
+                    <button class="btn btn-danger" onclick="function goBack() {
+           window.history.back();
+        }
+        goBack()">Back
+                    </button>
+                    <!--<li class="nav-item">
                         <button class="btn btn-link" id="statusButton" onclick="loadStatus()">Status</button>
-                    </li>
+                    </li>-->
                     <li class="nav-item">
                         <button class="btn btn-link" id="commitsButton" onclick="loadCommits()">Commits</button>
                     </li>
