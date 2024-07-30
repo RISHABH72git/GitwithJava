@@ -15,10 +15,21 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/local}" type="button">Home</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-link" th:href="@{/github}" type="button">GitHub</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/createRepositoryForm(path = ${path})}"
+                           type="button">Git</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" type="button">Clone</a>
                     </li>
                 </ul>
             </div>
@@ -59,6 +70,12 @@
         <br>
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
+    <br>
+    <button class="btn btn-danger" onclick="function goBack() {
+         window.history.back();
+        }
+        goBack()">Back
+    </button>
 </div>
 </body>
 </html>

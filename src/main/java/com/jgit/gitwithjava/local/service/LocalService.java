@@ -17,6 +17,7 @@ import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -125,7 +126,7 @@ public class LocalService {
 
     public void createRepository(String path) throws IOException, GitAPIException {
         File file = new File(DefaultCredentials.getRootFolder() + path);
-        Git.init().setDirectory(file).setInitialBranch("master").call();
+        Git.init().setDirectory(file).setInitialBranch("main").call();
     }
 
     public List<Object> getCommits(String path) throws IOException, GitAPIException {
