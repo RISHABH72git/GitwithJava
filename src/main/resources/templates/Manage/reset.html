@@ -49,38 +49,58 @@
 <h3 class="text-center" th:text="${path}"></h3>
 <br>
 <div class="container">
-    <form th:action="@{/local/reset}" th:method="post">
-        <div class="form-group">
-            <label>Commit</label>
-            <input class="form-control" placeholder="Enter commitId" required th:value="${commitId}" type="text">
+    <div class="card">
+        <div class="card-header text-center">
+            Git Reset
         </div>
-        <br>
-        <div class="form-group">
-            <label>Type</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                <label class="form-check-label" for="flexRadioDefault1">Soft</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                <label class="form-check-label" for="flexRadioDefault2">Mixed</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-                <label class="form-check-label" for="flexRadioDefault3">Hard</label>
-            </div>
+        <div class="card-body">
+            <form th:action="@{/local/reset}" th:method="post">
+                <div class="form-group">
+                    <label>Commit</label>
+                    <input class="form-control" placeholder="Enter commitId" required th:value="${commitId}"
+                           type="text">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">Soft</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                        <label class="form-check-label" for="flexRadioDefault2">Mixed</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+                        <label class="form-check-label" for="flexRadioDefault3">Hard</label>
+                    </div>
+                </div>
+                <br>
+                <input name="path" th:value="${path}" type="hidden">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
         </div>
-        <br>
-        <input name="path" th:value="${path}" type="hidden">
-        <br>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </form>
-    <br>
-    <button class="btn btn-danger" onclick="function goBack() {
+        <div class="card-footer text-body-secondary text-center">
+            <button class="btn btn-danger" onclick="function goBack() {
          window.history.back();
         }
         goBack()">Back
-    </button>
+            </button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div th:each="commit : ${commits}">
+        <div class="card mb-3">
+            <h5 class="card-header" th:text="${commit.commitId}"></h5>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${commit.name}"></h5>
+                <p class="card-text text-danger" th:text="${commit.timestamp}"></p>
+                <p class="card-text" th:text="${commit.message}"></p>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

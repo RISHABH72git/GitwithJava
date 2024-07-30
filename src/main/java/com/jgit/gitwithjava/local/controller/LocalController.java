@@ -177,8 +177,8 @@ public class LocalController {
 
     @GetMapping("/reset")
     public String reset(Model model, @RequestParam String path) throws IOException, GitAPIException {
-//        localService.resetToHead(path);
         model.addAttribute("path", path);
+        model.addAttribute("commits", localService.getCommitsByLimit(path, 10));
         return "Manage/reset";
     }
 

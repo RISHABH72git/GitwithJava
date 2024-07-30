@@ -46,6 +46,15 @@
                            type="button">CodeCommit</a>
                     </li>
                     <li class="nav-item">
+                        <a class="btn btn-link fw-semibold"
+                           type="button">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold"
+                           th:href="@{/local/reset(path = ${path})}"
+                           type="button">Reset</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="btn btn-link fw-semibold" th:href="@{/local/status(path = ${path}, type ='MODIFY' )}"
                            type="button">Status</a>
                     </li>

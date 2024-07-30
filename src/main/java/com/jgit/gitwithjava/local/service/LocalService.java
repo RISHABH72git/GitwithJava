@@ -145,6 +145,31 @@ public class LocalService {
         return revCommitList;
     }
 
+    public List<Object> getCommitsByLimit(String path, int limit) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        List<Object> revCommitList = new ArrayList<>();
+        LogCommand logCommand = gitServices.commits(git);
+        int count = 0;
+        for (RevCommit revCommit : logCommand.call()) {
+            if (count == limit) {
+                break;
+            }
+            Map<String, Object> singleCommit = new HashMap();
+            singleCommit.put("commitId", revCommit.name());
+            singleCommit.put("parentCount", revCommit.getParentCount());
+            singleCommit.put("email", revCommit.getCommitterIdent().getEmailAddress());
+            singleCommit.put("name", revCommit.getCommitterIdent().getName());
+            Instant commitInstant = Instant.ofEpochSecond(revCommit.getCommitTime());
+            ZonedDateTime authorDateTime = ZonedDateTime.ofInstant(commitInstant, ZoneId.systemDefault());
+            String gitDateTimeFormatString = "MMM dd HH:mm yyyy";
+            singleCommit.put("timestamp", authorDateTime.format(DateTimeFormatter.ofPattern(gitDateTimeFormatString)));
+            singleCommit.put("message", revCommit.getFullMessage());
+            revCommitList.add(singleCommit);
+            count++;
+        }
+        return revCommitList;
+    }
+
     public List<Map<String, String>> getAuthors(String path) throws IOException, GitAPIException {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         List<Map<String, String>> list = new ArrayList<>();
