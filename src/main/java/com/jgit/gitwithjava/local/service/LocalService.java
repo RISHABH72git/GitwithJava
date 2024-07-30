@@ -684,4 +684,13 @@ public class LocalService {
         return pullResult.getMergeResult().getMergeStatus().name();
     }
 
+    public RevCommit revert(String path, String commitId) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        return gitServices.revert(git, commitId);
+    }
+
+    public void reset(String path, String type, String commitId) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        gitServices.reset(git, type, commitId);
+    }
 }

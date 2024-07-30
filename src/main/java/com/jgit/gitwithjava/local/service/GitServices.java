@@ -131,6 +131,10 @@ public class GitServices {
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD).call();
     }
 
+    public Ref reset(Git git, String type, String commitId) throws GitAPIException {
+        return git.reset().setMode(ResetCommand.ResetType.valueOf(type)).setRef(commitId).call();
+    }
+
     public List<RemoteConfig> remoteConfigList(Git git) throws GitAPIException {
         return git.remoteList().call();
     }
@@ -149,5 +153,10 @@ public class GitServices {
 
     public PullResult pull(Git git, String name) throws GitAPIException {
         return git.pull().setRemote(name).setStrategy(MergeStrategy.RECURSIVE).call();
+    }
+
+    public RevCommit revert(Git git, String commitId) throws IOException, GitAPIException {
+        ObjectId objectId = git.getRepository().resolve(commitId);
+        return git.revert().include(objectId).call();
     }
 }

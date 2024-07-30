@@ -58,6 +58,11 @@
                         <a class="btn btn-link fw-semibold" th:href="@{/local/status(path = ${path}, type ='MODIFY' )}"
                            type="button">Status</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold"
+                           th:href="@{/local/revert(path = ${path})}"
+                           type="button">Revert</a>
+                    </li>
                 </ul>
             </div>
         </div>

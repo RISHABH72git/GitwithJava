@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reset</title>
+    <title>Revert</title>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" rel="stylesheet">
     <script crossorigin="anonymous"
@@ -34,6 +34,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-link fw-semibold"
+                           th:href="@{/local/reset(path = ${path})}"
                            type="button">Reset</a>
                     </li>
                     <li class="nav-item">
@@ -42,7 +43,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-link fw-semibold"
-                           th:href="@{/local/revert(path = ${path})}"
                            type="button">Revert</a>
                     </li>
                 </ul>
@@ -56,10 +56,10 @@
 <div class="container">
     <div class="card">
         <div class="card-header text-center">
-            Git Reset
+            Revert Commit
         </div>
         <div class="card-body">
-            <form th:action="@{/local/reset}" th:method="post">
+            <form th:action="@{/local/revert}" th:method="post">
                 <div class="form-group">
                     <label>Commit</label>
                     <input class="form-control" placeholder="Enter commitId" name="commitId" required
@@ -67,21 +67,6 @@
                            type="text">
                 </div>
                 <br>
-                <div class="form-group">
-                    <label>Type</label>
-                    <div class="form-check">
-                        <input class="form-check-input" value="SOFT" type="radio" name="type" id="flexRadioDefault1">
-                        <label class="form-check-label" for="flexRadioDefault1">Soft</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" value="MIXED" type="radio" name="type" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">Mixed</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" value="HARD" type="radio" name="type" id="flexRadioDefault3">
-                        <label class="form-check-label" for="flexRadioDefault3">Hard</label>
-                    </div>
-                </div>
                 <br>
                 <input name="path" th:value="${path}" type="hidden">
                 <button class="btn btn-primary" type="submit">Submit</button>

@@ -182,6 +182,25 @@ public class LocalController {
         return "Manage/reset";
     }
 
+    @PostMapping("/reset")
+    public RedirectView reset(@RequestParam String path, @RequestParam String type, @RequestParam String commitId) throws GitAPIException, IOException {
+        localService.reset(path, type, commitId);
+        return new RedirectView("/local/reset?path=" + path);
+    }
+
+    @GetMapping("/revert")
+    public String revert(Model model, @RequestParam String path) throws IOException, GitAPIException {
+        model.addAttribute("path", path);
+        model.addAttribute("commits", localService.getCommitsByLimit(path, 10));
+        return "Manage/revert";
+    }
+
+    @PostMapping("/revert")
+    public RedirectView revert(@RequestParam String path, @RequestParam String commitId) throws GitAPIException, IOException {
+        localService.revert(path, commitId);
+        return new RedirectView("/local/revert?path=" + path);
+    }
+
     @GetMapping("/operations")
     public String operations(Model model, @RequestParam String path) throws GitAPIException, IOException {
         model.addAttribute("path", path);
