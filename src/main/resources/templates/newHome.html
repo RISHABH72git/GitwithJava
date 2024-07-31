@@ -74,9 +74,9 @@
                     <div th:if="${entry.getIsDirectory()}">
                         <a th:href="@{/local(path=${path != null} ? ${path+ '/' + entry.getFileName()} : ${entry.getFileName()})}">
                             <img alt="Image"
-                                 height="100"
-                                 th:src="@{/images/git_image.png}"
-                                 th:if="${entry.getIsDirectory() and entry.getHasGit()}" width="100">
+                                 height="95"
+                                 th:src="@{/images/git_image_first.png}"
+                                 th:if="${entry.getIsDirectory() and entry.getHasGit()}" width="95">
                             <img alt="Image"
                                  height="100"
                                  th:src="@{/images/directory_image.png}"
