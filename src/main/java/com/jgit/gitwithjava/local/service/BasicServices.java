@@ -73,6 +73,46 @@ public class BasicServices {
         return deleteBranch1.getName() + " is Deleted ";
     }
 
+    public Map<String, String> getAllRepository() {
+        Set<Path> filePath = new HashSet<>();
+        File directoryPath = new File(DefaultCredentials.getRootFolder());
+        //List of all files and directories
+        try (Stream<Path> fileTree = Files.walk(directoryPath.toPath())) {
+            filePath.addAll(
+                    fileTree
+                            .filter(Files::isDirectory)
+                            .filter(f -> {
+                                try {
+                                    return !Files.isHidden(f);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                return false;
+                            })
+                            .flatMap(dir -> {
+                                try {
+                                    return Files.list(dir)
+                                            .filter(f -> f.getFileName().toString().equals(".git"))
+                                            .map(Path::getParent);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    return Stream.empty();
+                                }
+                            })
+                            .collect(Collectors.toList())
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> stringStringMap = new HashMap<>();
+        for (Path file : filePath) {
+            String extractedPath = file.toString().substring(DefaultCredentials.getRootFolder().length());
+            stringStringMap.put(extractedPath, extractedPath.substring(extractedPath.lastIndexOf(File.separator) + 1));
+        }
+        return stringStringMap;
+    }
+
     public Map<String, String> getGitFileNameWithPath() {
         Map<String, String> map = new HashMap<>();
         getAllGitFileAndBranch().keySet().forEach(s -> {

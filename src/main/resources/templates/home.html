@@ -9,68 +9,52 @@
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             crossorigin="anonymous"></script>
 </head>
-<body class="bg-dark">
-
+<body>
 <header>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">My Git Repository</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/githubRepositories}">GitHub</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/form}">Create Repository</a>
+                        <a class="btn btn-link fw-semibold" th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/createRepositoryForm(path = ${path})}"
+                           type="button">Git</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/cloneRepositoryForm(path = ${path})}"
+                           type="button">Clone
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-
 </header>
 <br>
-<h3 class="text-center text-light">Your Local Repositories</h3>
+<h3 class="text-center">Repositories</h3>
 <br>
-<div class="container mt-4 overflow-hidden">
-    <div class="row gy-5">
-        <div class="col-12">
-            <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search repositories...">
-            </div>
-        </div>
-        <div class="col-6" th:each="entry : ${gitFileMap}">
-            <div class="card p-3">
-                <figure class="p-3 mb-0">
-                    <blockquote class="blockquote">
-                        <div class="text-center">
-                            <p th:text="${entry.value}"></p>
-                            <a th:href="@{/branch(path = ${entry.key})}">
-                                <button type="button" class="btn btn-primary">Branchs</button>
-                            </a>
-                            <a th:href="@{/commit(path = ${entry.key})}">
-                                <button type="button" class="btn btn-success">Commits</button>
-                            </a>
-                            <a th:href="@{/author(path = ${entry.key})}">
-                                <button type="button" class="btn btn-secondary">Authors</button>
-                            </a>
-                            <a th:href="@{/status(path = ${entry.key})}">
-                                <button type="button" class="btn btn-danger">Status</button>
-                            </a>
-                            <a th:href="@{/listFiles(path = ${entry.key})}">
-                                <button type="button" class="btn btn-warning">Blame</button>
-                            </a>
-                        </div>
-                    </blockquote>
-                </figure>
+<div class="container mt-4 mb-4">
+    <div class="input-group mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search repositories...">
+    </div>
+    <div class="row g-2">
+        <div class="col-2" th:each="entry : ${repositories}">
+            <div class="p-2">
+                <div class="text-center">
+                    <img alt="Image" height="95" th:src="@{/images/git_image_first.png}" width="95">
+                    <a th:href="@{/local/fileDetails(path=${entry.key})}">
+                        <p th:text="${entry.value}"></p>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -81,7 +65,7 @@
         input = document.getElementById("searchInput");
         filter = input.value.toUpperCase();
         console.log(filter)
-        cards = document.getElementsByClassName("col-6"); // Adjust this class selector to match your repository card class
+        cards = document.getElementsByClassName("col-2"); // Adjust this class selector to match your repository card class
         for (i = 0; i < cards.length; i++) {
             card = cards[i];
             txtValue = card.textContent || card.innerText;

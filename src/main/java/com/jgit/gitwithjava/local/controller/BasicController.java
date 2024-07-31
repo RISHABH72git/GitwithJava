@@ -26,7 +26,7 @@ public class BasicController {
 
     @GetMapping("/")
     public String homePage(Model model) {
-        model.addAttribute("gitFileMap", basicServices.getGitFileNameWithPath());
+        model.addAttribute("repositories", basicServices.getAllRepository());
         return "home";
     }
 
