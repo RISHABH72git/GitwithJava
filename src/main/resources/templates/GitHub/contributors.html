@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GitHub Repository Contributors</title>
+    <title>Contributors</title>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" rel="stylesheet">
     <script crossorigin="anonymous"
@@ -11,10 +11,34 @@
             integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
             src="https://code.jquery.com/jquery-3.6.3.slim.min.js"></script>
 </head>
-<body class="bg-dark">
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{github/createRepositoryForm}">New</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<br>
 <div class="container mt-4 overflow-hidden">
     <div class="text-center">
-        <h3 class="text-center text-light" th:text="${repoName}"></h3>
+        <h3 class="text-center" th:text="${repoName}"></h3>
         <br>
     </div>
     <br>
@@ -25,13 +49,20 @@
             </div>
         </div>
         <div class="col-6" th:each="contributor : ${allContributors}">
-            <div class="card p-3">
-                <figure class="p-3 mb-0">
-                    <blockquote class="blockquote">
-                        <p>AuthorName: <span class="text-primary" th:text="${contributor.login}"></span></p>
-                        <p>contributions: <span class="text-primary" th:text="${contributor.contributions}"></span></p>
-                    </blockquote>
-                </figure>
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img th:src="@{/images/contribution_image.png}" class="img-fluid rounded-start"
+                             alt="contribution">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p>AuthorName: <span class="text-primary" th:text="${contributor.login}"></span></p>
+                            <p>contributions: <span class="text-primary" th:text="${contributor.contributions}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
