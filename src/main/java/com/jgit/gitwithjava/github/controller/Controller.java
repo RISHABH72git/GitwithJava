@@ -24,8 +24,12 @@ public class Controller {
 
     @GetMapping("")
     public String localAllFile(Model model) throws Exception {
-        ListRepository[] allRepos = gitHubRestApiService.listAllRepository();
+        if (gitHubRestApiService.getUsers().toString().startsWith("401 Unauthorized:")) {
+            model.addAttribute("error", gitHubRestApiService.getUsers());
+            return "GitHub/error";
+        }
         model.addAttribute("userDetails", gitHubRestApiService.getUsers());
+        ListRepository[] allRepos = gitHubRestApiService.listAllRepository();
         model.addAttribute("counts", gitHubRestApiService.getCountOfRepos(allRepos));
         model.addAttribute("listAllRepository", allRepos);
         return "GitHub/github";

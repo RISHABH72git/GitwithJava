@@ -33,7 +33,7 @@ public class GitHubRestApiService {
         return httpHeaders;
     }
 
-    public Users getUsers() {
+    public Object getUsers() {
         final String GET_USERS = GITHUB_API + "users/" + DefaultCredentials.getGitUsername();
         HttpEntity<String> entity = new HttpEntity<>(getHttpHeadersWithToken());
         try {
@@ -42,7 +42,7 @@ public class GitHubRestApiService {
             return Objects.requireNonNull(response.getBody());
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            return e.getMessage();
         }
     }
 

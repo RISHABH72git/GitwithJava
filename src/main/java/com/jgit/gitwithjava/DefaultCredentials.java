@@ -14,7 +14,7 @@ public class DefaultCredentials {
     public String getToken() {
         String key = "";
         try {
-            key = Files.readString(new File(".apiToken72").toPath());
+            key = Files.readString(new File(".apiToken").toPath());
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -24,7 +24,7 @@ public class DefaultCredentials {
     public String getGitUsername() {
         String username = "";
         try {
-            username = Files.readString(new File(".gitUser72").toPath());
+            username = Files.readString(new File(".gitUser").toPath());
         } catch (IOException e) {
             log.error(e.getMessage());
         }
