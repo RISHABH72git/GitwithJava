@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -158,5 +159,9 @@ public class GitServices {
     public RevCommit revert(Git git, String commitId) throws IOException, GitAPIException {
         ObjectId objectId = git.getRepository().resolve(commitId);
         return git.revert().include(objectId).call();
+    }
+
+    public List<RevCommit> stashList(Git git) throws GitAPIException {
+        return new ArrayList<>(git.stashList().call());
     }
 }

@@ -693,4 +693,9 @@ public class LocalService {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         gitServices.reset(git, type, commitId);
     }
+
+    public List<RevCommit> stashList(String path) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        return gitServices.stashList(git);
+    }
 }

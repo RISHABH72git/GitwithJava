@@ -14,37 +14,55 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Operations</a>
-        <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">push</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">pull</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">commits</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">branch</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">remotes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">github</a>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local}" type="button">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/github}" type="button">GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold fw-semibold"
+                           th:href="@{/codecommit/repositories(region = 'ap-south-1')}"
+                           type="button">CodeCommit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/fileDetails(path = ${path})}"
+                           type="button">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold"
+                           th:href="@{/local/reset(path = ${path})}"
+                           type="button">Reset</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold " style="text-decoration: none;"
+                           type=" button">Operations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold" th:href="@{/local/status(path = ${path}, type ='MODIFY' )}"
+                           type="button">Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-link fw-semibold"
+                           th:href="@{/local/revert(path = ${path})}"
+                           type="button">Revert</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 </header>
+
 <br>
+<br>
+<div class="text-center">
+    <h3 th:text="${path}"></h3>
+</div>
+
 <br>
 <div class="container mt-4 overflow-hidden">
     <div class="card" th:each="entry : ${RemoteConfig}">

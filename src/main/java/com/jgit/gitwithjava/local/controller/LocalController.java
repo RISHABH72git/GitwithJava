@@ -214,4 +214,11 @@ public class LocalController {
         System.out.println(uri);
         return new RedirectView("/local/operations?path=" + path);
     }
+
+    @GetMapping("/stash")
+    public String stash(Model model, @RequestParam String path) throws GitAPIException, IOException {
+        model.addAttribute("path", path);
+        model.addAttribute("stashList", localService.stashList(path));
+        return "Manage/stash";
+    }
 }
