@@ -221,4 +221,11 @@ public class LocalController {
         model.addAttribute("stashList", localService.stashList(path));
         return "Manage/stash";
     }
+
+    @PostMapping("/stashCreate")
+    public RedirectView stashCreate(Model model, @RequestParam String path, String indexMessage, String workingDirectoryMessage, Boolean includeUntracked) throws GitAPIException, IOException {
+        localService.stashCreate(path, indexMessage, workingDirectoryMessage, includeUntracked);
+        return new RedirectView("/local/stash?path=" + path);
+    }
+
 }

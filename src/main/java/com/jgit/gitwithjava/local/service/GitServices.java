@@ -164,4 +164,8 @@ public class GitServices {
     public List<RevCommit> stashList(Git git) throws GitAPIException {
         return new ArrayList<>(git.stashList().call());
     }
+
+    public RevCommit stashCreate(Git git, String indexMessage, String workingDirectoryMessage, Boolean includeUntracked) throws GitAPIException {
+        return git.stashCreate().setIncludeUntracked(includeUntracked).setIndexMessage(indexMessage).setWorkingDirectoryMessage(workingDirectoryMessage).call();
+    }
 }

@@ -56,5 +56,68 @@
     </nav>
 </header>
 <br>
+<h3 class="text-center text-dark" th:text="${path}"></h3>
+<br>
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center">
+            Stash Create
+        </div>
+        <div class="card-body">
+            <form th:action="@{/local/stashCreate}" th:method="post">
+                <div class="form-group">
+                    <label>Index Message</label>
+                    <input class="form-control" placeholder="indexMessage" name="indexMessage" required
+                           th:value="${indexMessage}"
+                           type="text">
+                </div>
+                <div class="form-group">
+                    <label>workingDirectoryMessage</label>
+                    <input class="form-control" placeholder="workingDirectoryMessage" name="workingDirectoryMessage"
+                           required
+                           th:value="${workingDirectoryMessage}"
+                           type="text">
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="includeUntracked" id="exampleRadios1" value=true
+                           checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                        Include Untracked
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="includeUntracked" id="exampleRadios2"
+                           value=false>
+                    <label class="form-check-label" for="exampleRadios2">
+                        Not include Untracked
+                    </label>
+                </div>
+                <br>
+                <br>
+                <input name="path" th:value="${path}" type="hidden">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="card-footer text-body-secondary text-center">
+            <button class="btn btn-danger" onclick="function goBack() {
+         window.history.back();
+        }
+        goBack()">Back
+            </button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div th:each="stash : ${stashList}">
+        <div class="card mb-3">
+            <h5 class="card-header" th:text="${stash.getName()}"></h5>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${stash.getFullMessage()}"></h5>
+                <p class="card-text text-danger" th:text="${stash.getCommitTime()}"></p>
+                <p class="card-text" th:text="${stash.getCommitterIdent().getName()}"></p>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

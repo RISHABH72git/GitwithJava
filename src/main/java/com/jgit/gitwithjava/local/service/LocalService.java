@@ -698,4 +698,9 @@ public class LocalService {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         return gitServices.stashList(git);
     }
+
+    public RevCommit stashCreate(String path, String indexMessage, String workingDirectoryMessage, Boolean includeUntracked) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        return gitServices.stashCreate(git, indexMessage, workingDirectoryMessage, includeUntracked);
+    }
 }
