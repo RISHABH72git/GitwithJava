@@ -703,4 +703,9 @@ public class LocalService {
         Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
         return gitServices.stashCreate(git, indexMessage, workingDirectoryMessage, includeUntracked);
     }
+
+    public void stashApply(String path, String stashId) throws IOException, GitAPIException {
+        Git git = Git.open(new File(DefaultCredentials.getRootFolder() + path));
+        gitServices.stashApply(git, stashId);
+    }
 }

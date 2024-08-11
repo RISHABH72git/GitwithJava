@@ -228,4 +228,10 @@ public class LocalController {
         return new RedirectView("/local/stash?path=" + path);
     }
 
+    @GetMapping("/stashApply")
+    public RedirectView stashApply(@RequestParam String path, String stashId) throws GitAPIException, IOException {
+        localService.stashApply(path, stashId);
+        return new RedirectView("/local/stash?path=" + path);
+    }
+
 }

@@ -11,6 +11,7 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.merge.ContentMergeStrategy;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.*;
 import org.eclipse.jgit.transport.FetchResult;
@@ -167,5 +168,9 @@ public class GitServices {
 
     public RevCommit stashCreate(Git git, String indexMessage, String workingDirectoryMessage, Boolean includeUntracked) throws GitAPIException {
         return git.stashCreate().setIncludeUntracked(includeUntracked).setIndexMessage(indexMessage).setWorkingDirectoryMessage(workingDirectoryMessage).call();
+    }
+
+    public void stashApply(Git git, String stashId) throws GitAPIException {
+        git.stashApply().setContentMergeStrategy(ContentMergeStrategy.CONFLICT).setStashRef(stashId).call();
     }
 }
